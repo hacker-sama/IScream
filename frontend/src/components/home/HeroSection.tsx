@@ -9,14 +9,11 @@ const socialProofAvatars = [
 
 export function HeroSection() {
   return (
-    <section className="relative mt-6 md:mt-10 overflow-hidden rounded-[2.5rem] px-8 py-12 md:py-16 md:px-14"
-      style={{
-        background: "linear-gradient(135deg, #fff9f5 0%, #fff4f0 40%, #fef2f6 100%)",
-      }}
+    <section className="relative mt-6 md:mt-10 overflow-hidden rounded-[2.5rem] bg-white border border-gray-100 shadow-sm px-8 py-12 md:py-16 md:px-14"
     >
-      {/* Decorative background circles */}
-      <div className="pointer-events-none absolute -top-20 -right-20 h-72 w-72 rounded-full bg-[#FFB347]/20 blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-16 -left-16 h-56 w-56 rounded-full bg-[#ff8fa3]/20 blur-3xl" />
+      {/* Subtle decorative circle — toned down */}
+      <div className="pointer-events-none absolute -top-20 -right-20 h-72 w-72 rounded-full bg-gray-100/80 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-16 -left-16 h-56 w-56 rounded-full bg-gray-100/80 blur-3xl" />
 
       <div className="relative flex flex-col-reverse gap-10 md:flex-row md:items-center">
         {/* ---- Text ---- */}

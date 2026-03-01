@@ -4,15 +4,8 @@ import { Badge, Button, MaterialIcon } from "@/components/ui";
 export function BookCtaSection() {
   return (
     <section
-      className="relative mt-10 overflow-hidden rounded-[2.5rem] shadow-2xl"
-      style={{
-        background: "linear-gradient(135deg, #fffbeb 0%, #fff5e6 35%, #fff0f5 70%, #fef9ff 100%)",
-      }}
+      className="relative mt-10 overflow-hidden rounded-[2.5rem] bg-[#f5f5f7] border border-gray-200 shadow-sm"
     >
-      {/* Decorative blobs */}
-      <div className="absolute -left-20 -top-20 h-72 w-72 rounded-full bg-[#FFB347]/25 blur-3xl" />
-      <div className="absolute -bottom-20 right-8 h-56 w-56 rounded-full bg-primary/15 blur-3xl" />
-      <div className="absolute right-1/3 top-0 h-40 w-40 rounded-full bg-[#ff8fa3]/20 blur-2xl" />
 
       <div className="relative flex flex-col items-center gap-10 p-8 md:flex-row md:p-16">
         {/* Copy */}
