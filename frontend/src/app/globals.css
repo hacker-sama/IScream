@@ -8,12 +8,12 @@
   --color-accent: #ff8fa3;
   --color-gold: #ffb347;
   --color-cream: #fff8f0;
-  --color-background-light: #fdf8f8;
+  --color-background-light: #f5f5f7;
   --color-background-dark: #221014;
   --color-surface-light: #ffffff;
   --color-surface-dark: #2d161b;
-  --color-text-main: #1a0a10;
-  --color-text-muted: #896169;
+  --color-text-main: #111118;
+  --color-text-muted: #374151;
 
   /* Font family */
   --font-display: var(--font-display), "Nunito", sans-serif;
@@ -87,18 +87,16 @@ html {
 }
 
 /* ===== Force input text color ===== */
-/* Chữ luôn đen khi gõ — không ép background để giữ tông màu của trang */
-input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]),
+/* Đảm bảo text khách hàng gõ vào luôn màu đen, không bị override bởi body color */
+input:not([type="checkbox"]):not([type="radio"]),
 textarea {
-  color: #111111 !important;
-  caret-color: #111111 !important;
+  color: #1a0a10 !important;
 }
 
-/* Autofill override (Chrome/Safari) — dùng nền hồng nhạt thay trắng */
+/* Autofill override (Chrome/Safari) */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus {
-  -webkit-text-fill-color: #111111 !important;
-  box-shadow: 0 0 0px 1000px #fff0f2 inset !important;
-  caret-color: #111111 !important;
+  -webkit-text-fill-color: #1a0a10 !important;
+  box-shadow: 0 0 0px 1000px #ffffff inset !important;
 }

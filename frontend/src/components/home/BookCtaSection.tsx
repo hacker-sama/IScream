@@ -4,15 +4,15 @@ import { Badge, Button, MaterialIcon } from "@/components/ui";
 export function BookCtaSection() {
   return (
     <section
-      className="relative mt-10 overflow-hidden rounded-[2.5rem] shadow-2xl"
+      className="relative mt-10 overflow-hidden rounded-[2.5rem] shadow-xl"
       style={{
-        background: "linear-gradient(135deg, #fffbeb 0%, #fff5e6 35%, #fff0f5 70%, #fef9ff 100%)",
+        background: "linear-gradient(135deg, #fffbe6 0%, #fff5d6 35%, #fff0f0 70%, #fff9f0 100%)",
       }}
     >
       {/* Decorative blobs */}
-      <div className="absolute -left-20 -top-20 h-72 w-72 rounded-full bg-[#FFB347]/25 blur-3xl" />
-      <div className="absolute -bottom-20 right-8 h-56 w-56 rounded-full bg-primary/15 blur-3xl" />
-      <div className="absolute right-1/3 top-0 h-40 w-40 rounded-full bg-[#ff8fa3]/20 blur-2xl" />
+      <div className="absolute -left-20 -top-20 h-72 w-72 rounded-full bg-amber-200/30 blur-3xl" />
+      <div className="absolute -bottom-20 right-8 h-56 w-56 rounded-full bg-primary/10 blur-3xl" />
+      <div className="absolute right-1/3 top-0 h-40 w-40 rounded-full bg-rose-200/20 blur-2xl" />
 
       <div className="relative flex flex-col items-center gap-10 p-8 md:flex-row md:p-16">
         {/* Copy */}
@@ -23,13 +23,13 @@ export function BookCtaSection() {
             Best Seller
           </Badge>
 
-          <h2 className="font-serif-display mb-4 text-3xl font-black leading-[1.1] text-text-main dark:text-white md:text-5xl">
+          <h2 className="font-serif-display mb-4 text-3xl font-black leading-[1.1] text-text-main md:text-5xl">
             Mr. A&apos;s Secret{" "}
             <br className="hidden md:block" />
             Recipes Book
           </h2>
 
-          <p className="mb-8 max-w-md text-lg leading-relaxed text-text-muted dark:text-gray-300">
+          <p className="mb-8 max-w-md text-lg leading-relaxed text-text-muted">
             Bring the parlor home. Order the official cookbook today and master
             the art of the scoop.
           </p>

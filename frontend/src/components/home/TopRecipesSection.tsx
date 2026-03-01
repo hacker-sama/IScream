@@ -96,8 +96,7 @@ export function TopRecipesSection() {
     <section className="mt-10">
       {/* Section wrapper with tinted background */}
       <div
-        className="rounded-[2rem] px-8 py-10 md:px-12 md:py-12"
-        style={{ background: "linear-gradient(160deg, #fff5f7 0%, #fff9f5 100%)" }}
+        className="rounded-[2rem] bg-white px-8 py-10 md:px-12 md:py-12"
       >
         {/* Header */}
         <div className="flex flex-col gap-4 pb-8 md:flex-row md:items-end md:justify-between">
