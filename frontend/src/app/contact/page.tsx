@@ -1,47 +1,67 @@
+import Image from "next/image";
+import { Badge, Button, MaterialIcon } from "@/components/ui";
+
 export default function ContactPage() {
   return (
-    <main className="flex-grow w-full">
-      {/* Hero + content wrapper */}
-      <div className="layout-container flex flex-col w-full max-w-[1280px] mx-auto px-4 md:px-8 py-8 md:py-12">
-        {/* Hero Section */}
-        <section className="mb-12 md:mb-20">
-          <div className="@container">
-            <div className="flex flex-col-reverse md:flex-row gap-8 items-center">
-              <div className="flex flex-col gap-6 flex-1 text-center md:text-left">
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-black leading-tight tracking-tight text-text-main dark:text-white">
-                  Have a Sweet <span className="text-primary">Question?</span>
-                </h1>
-                <p className="text-base md:text-lg text-text-muted dark:text-gray-300 max-w-xl mx-auto md:mx-0 font-medium">
-                  Whether you have a recipe idea, a question about Mr. A's latest book, or just want to say hi, we're all
-                  ears! Our team is ready to scoop up your thoughts.
-                </p>
-              </div>
+    <div className="w-full max-w-[1024px] flex flex-col gap-16 md:gap-24">
+      {/* Hero Section */}
+      <section className="relative mt-6 md:mt-10 overflow-hidden rounded-[2.5rem] bg-white px-8 py-12 md:py-16 md:px-14">
+        {/* Decorative circles */}
+        <div className="pointer-events-none absolute -top-20 -right-20 h-72 w-72 rounded-full bg-gray-100/80 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-16 -left-16 h-56 w-56 rounded-full bg-gray-100/80 blur-3xl" />
 
-              <div className="flex-1 w-full relative">
-                <div className="aspect-[4/3] w-full rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-800 shadow-xl">
-                  <img
-                    alt="Ice Cream Scoops"
-                    className="w-full h-full object-cover"
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuDxSPECTsBCgrNJB23K4GjyEIeMHCRYqqcRdyPNshxYpHO9wpMg5wDP83oW5bgyWrrvxH4Pcho0XEbYs7QI9C4P-KHKGIkgwQ2oBXwpJQPbdc1B9RrJyOZDzHJFESzcQxEAASCJ_pnQdxegEPxUM0pOKtqvc2Za_6JRlKefomyj2LQkognIOAznl7sQfQq_q7lsJr7rz-NgHqkzxr1b__f-ySyTjyK4cSKttvp0szGjBUzKRAqNSVQT7dvksBlN7lJ2Q98Z1RHiat4"
-                  />
-                </div>
+        <div className="relative flex flex-col-reverse gap-10 md:flex-row md:items-center">
+          {/* Text */}
+          <div className="flex flex-1 flex-col items-start gap-6 md:pr-8">
+            <div className="flex flex-col gap-4 text-left">
+              <Badge className="w-fit border border-amber-200 bg-amber-50 text-amber-600 dark:bg-amber-900/30 dark:text-amber-300">
+                <MaterialIcon name="mail" className="text-sm" />
+                Get in Touch
+              </Badge>
 
-                {/* Decorative Element */}
-                <div className="absolute -bottom-6 -right-6 -z-10 text-primary/10 dark:text-primary/20">
-                  <span className="material-symbols-outlined text-[120px]">icecream</span>
-                </div>
-              </div>
+              <h1 className="font-serif-display text-5xl font-black leading-[1.1] tracking-tight text-text-main md:text-6xl">
+                Have a Sweet <span className="gradient-text">Question?</span>
+              </h1>
+
+              <p className="max-w-[480px] text-lg font-medium leading-relaxed text-text-muted">
+                Whether you have a recipe idea, a question about Mr. A's latest book, or just want to say hi, we're all ears! Our team is ready to scoop up your thoughts.
+              </p>
             </div>
           </div>
-        </section>
 
-        {/* Main Content Grid: Form & Info */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16">
-          {/* Left Column: Contact Form */}
-          <div className="lg:col-span-7 bg-surface-light dark:bg-surface-dark rounded-xl p-6 md:p-8 border border-border-light dark:border-border-dark shadow-sm h-fit">
-            <div className="mb-8">
-              <h2 className="text-2xl font-bold mb-2">Send us a Message</h2>
-              <p className="text-text-muted dark:text-gray-400 text-sm">
+          {/* Hero Image */}
+          <div className="group relative w-full flex-1">
+            {/* Glow aura */}
+            <div className="absolute -inset-4 rounded-[2.5rem] bg-gradient-to-tr from-[#FFB347]/30 via-primary/15 to-[#ff8fa3]/30 opacity-70 blur-2xl transition-opacity duration-700 group-hover:opacity-100" />
+
+            <div className="relative w-full overflow-hidden rounded-[2rem] shadow-2xl shadow-primary/15 transition-transform duration-500 hover:-translate-y-2">
+              <Image
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDxSPECTsBCgrNJB23K4GjyEIeMHCRYqqcRdyPNshxYpHO9wpMg5wDP83oW5bgyWrrvxH4Pcho0XEbYs7QI9C4P-KHKGIkgwQ2oBXwpJQPbdc1B9RrJyOZDzHJFESzcQxEAASCJ_pnQdxegEPxUM0pOKtqvc2Za_6JRlKefomyj2LQkognIOAznl7sQfQq_q7lsJr7rz-NgHqkzxr1b__f-ySyTjyK4cSKttvp0szGjBUzKRAqNSVQT7dvksBlN7lJ2Q98Z1RHiat4"
+                alt="Ice Cream Scoops"
+                width={600}
+                height={450}
+                className="aspect-square w-full object-cover md:aspect-[4/3]"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Contact Form & Info Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+        {/* Contact Form Section */}
+        <section className="relative overflow-hidden rounded-[2.5rem] bg-white px-8 py-12 md:py-16 md:px-14">
+          {/* Decorative circles */}
+          <div className="pointer-events-none absolute -top-20 -right-20 h-72 w-72 rounded-full bg-amber-100/60 blur-3xl" />
+          <div className="pointer-events-none absolute -bottom-16 -left-16 h-56 w-56 rounded-full bg-primary/10 blur-3xl" />
+
+          <div className="relative">
+            <div className="mb-10">
+              <h2 className="font-serif-display text-3xl font-black text-text-main md:text-4xl mb-3">
+                Send us a <span className="gradient-text">Message</span>
+              </h2>
+              <p className="text-text-muted dark:text-gray-400 text-base">
                 Fill out the form below and we'll get back to you faster than ice cream melts.
               </p>
             </div>
@@ -52,7 +72,7 @@ export default function ContactPage() {
                 <label className="flex flex-col flex-1 gap-2">
                   <span className="text-sm font-bold text-text-main dark:text-gray-200">Name</span>
                   <input
-                    className="w-full h-12 px-4 rounded-xl bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark focus:border-primary focus:ring-primary text-text-main dark:text-white placeholder:text-text-muted/60 transition-colors"
+                    className="w-full h-12 px-4 rounded-xl bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-600 focus:border-primary focus:ring-2 focus:ring-primary/20 text-text-main dark:text-white placeholder:text-text-muted/60 transition-all"
                     placeholder="Your Name"
                     type="text"
                   />
@@ -61,7 +81,7 @@ export default function ContactPage() {
                 <label className="flex flex-col flex-1 gap-2">
                   <span className="text-sm font-bold text-text-main dark:text-gray-200">Email</span>
                   <input
-                    className="w-full h-12 px-4 rounded-xl bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark focus:border-primary focus:ring-primary text-text-main dark:text-white placeholder:text-text-muted/60 transition-colors"
+                    className="w-full h-12 px-4 rounded-xl bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-600 focus:border-primary focus:ring-2 focus:ring-primary/20 text-text-main dark:text-white placeholder:text-text-muted/60 transition-all"
                     placeholder="your@email.com"
                     type="email"
                   />
@@ -72,7 +92,7 @@ export default function ContactPage() {
               <label className="flex flex-col gap-2">
                 <span className="text-sm font-bold text-text-main dark:text-gray-200">Topic</span>
                 <div className="relative">
-                  <select className="w-full h-12 px-4 rounded-xl bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark focus:border-primary focus:ring-primary text-text-main dark:text-white appearance-none cursor-pointer transition-colors">
+                  <select className="w-full h-12 px-4 rounded-xl bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-600 focus:border-primary focus:ring-2 focus:ring-primary/20 text-text-main dark:text-white appearance-none cursor-pointer transition-all">
                     <option value="" disabled defaultValue="">
                       Select a topic...
                     </option>
@@ -81,9 +101,7 @@ export default function ContactPage() {
                     <option value="book">Book Inquiry</option>
                     <option value="franchise">Franchise Opportunities</option>
                   </select>
-                  <span className="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none">
-                    expand_more
-                  </span>
+                  <MaterialIcon name="expand_more" className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none" />
                 </div>
               </label>
 
@@ -91,92 +109,106 @@ export default function ContactPage() {
               <label className="flex flex-col gap-2">
                 <span className="text-sm font-bold text-text-main dark:text-gray-200">Message</span>
                 <textarea
-                  className="w-full p-4 rounded-xl bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark focus:border-primary focus:ring-primary text-text-main dark:text-white placeholder:text-text-muted/60 resize-none transition-colors"
+                  className="w-full p-4 rounded-xl bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-600 focus:border-primary focus:ring-2 focus:ring-primary/20 text-text-main dark:text-white placeholder:text-text-muted/60 resize-none transition-all"
                   placeholder="Tell us what's on your mind..."
                   rows={5}
                 />
               </label>
 
               {/* Submit Button */}
-              <button
-                className="mt-2 w-full md:w-auto self-start bg-primary hover:bg-primary-dark text-white font-bold py-3 px-8 rounded-full transition-all transform active:scale-95 flex items-center justify-center gap-2"
-                type="button"
-              >
+              <Button className="mt-2 h-12 flex-1 shadow-lg shadow-primary/25 transition-all hover:scale-105 hover:shadow-primary/40">
                 <span>Send Message</span>
-                <span className="material-symbols-outlined text-sm">send</span>
-              </button>
+                <MaterialIcon name="send" className="text-sm" />
+              </Button>
             </form>
           </div>
+        </section>
 
-          {/* Right Column: Info & Map */}
-          <div className="lg:col-span-5 flex flex-col gap-8">
-            {/* Contact Cards */}
-            <div className="bg-primary/5 dark:bg-primary/10 rounded-xl p-8 border border-primary/10 dark:border-primary/5">
-              <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-                <span className="material-symbols-outlined text-primary">storefront</span>
+        {/* Contact Information Section */}
+        <section className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-primary/10 via-primary/5 to-white p-8 md:p-16">
+          {/* Decorative elements */}
+          <div className="absolute -top-20 -left-20 h-64 w-64 rounded-full bg-primary/10 blur-3xl" />
+          <div className="absolute -bottom-20 -right-20 h-64 w-64 rounded-full bg-rose-200/20 blur-3xl" />
+
+          <div className="relative space-y-8">
+            <div>
+              <h2 className="font-serif-display text-3xl font-black text-text-main md:text-4xl mb-6 flex items-center gap-3">
+                <div className="rounded-full bg-primary/20 p-2">
+                  <MaterialIcon name="storefront" className="text-primary" />
+                </div>
                 Visit Our Parlor
-              </h3>
-
-              <div className="flex flex-col gap-6">
-                <div className="flex items-start gap-4 group">
-                  <div className="size-10 rounded-full bg-white dark:bg-surface-dark flex items-center justify-center text-primary shadow-sm group-hover:scale-110 transition-transform">
-                    <span className="material-symbols-outlined text-xl">location_on</span>
-                  </div>
-                  <div>
-                    <p className="font-bold text-text-main dark:text-white">Headquarters</p>
-                    <p className="text-text-muted dark:text-gray-300 text-sm mt-1 leading-relaxed">
-                      123 Scoop Street,
-                      <br />
-                      Creamery District, NY 10012
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4 group">
-                  <div className="size-10 rounded-full bg-white dark:bg-surface-dark flex items-center justify-center text-primary shadow-sm group-hover:scale-110 transition-transform">
-                    <span className="material-symbols-outlined text-xl">call</span>
-                  </div>
-                  <div>
-                    <p className="font-bold text-text-main dark:text-white">Phone</p>
-                    <p className="text-text-muted dark:text-gray-300 text-sm mt-1">(555) SCOOPS-4U</p>
-                    <p className="text-text-muted dark:text-gray-400 text-xs mt-1">Mon-Sun, 10am - 9pm</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4 group">
-                  <div className="size-10 rounded-full bg-white dark:bg-surface-dark flex items-center justify-center text-primary shadow-sm group-hover:scale-110 transition-transform">
-                    <span className="material-symbols-outlined text-xl">mail</span>
-                  </div>
-                  <div>
-                    <p className="font-bold text-text-main dark:text-white">Email</p>
-                    <a
-                      className="text-text-muted dark:text-gray-300 text-sm mt-1 hover:text-primary transition-colors"
-                      href="mailto:hello@mrasicecream.com"
-                    >
-                      hello@mrasicecream.com
-                    </a>
-                  </div>
-                </div>
-              </div>
+              </h2>
             </div>
 
-            {/* Map Section */}
-            <div className="relative w-full h-64 md:h-auto md:flex-1 rounded-xl overflow-hidden shadow-lg border-2 border-white dark:border-border-dark group">
-              <img
-                alt="Map Location"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDM6c1xoQANWXMixAmPrPs5hnObmb7rOZflkq9t0P5ftnkrlYlzYz4zebXGRM_Py-994-lOCa_-QlKO9xIDnnOojMQHZh5qVHpRteZ36LLANIWRGK2Lcgedvzq8n-ciqlCZ2htmIjiTjVen9U5PChIpUgtu3-86Mvews2Gsq0DP5j4DVIfHkYrVl8h2ffAPx-VKlvfckiX-SFZj2SgcwZ4DR6KThnv5g2xfmPJ9X7of4pls4FuubXpvPpefDuYtvuLV2Ts0506pSOY"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-6">
-                <button className="bg-white text-text-main text-sm font-bold py-2 px-4 rounded-full shadow-lg flex items-center gap-2 hover:bg-gray-50 transition-colors">
-                  <span className="material-symbols-outlined text-primary text-lg">directions</span>
-                  Get Directions
-                </button>
+            {/* Contact Info Items */}
+            {[
+              {
+                icon: "location_on",
+                title: "Headquarters",
+                content: (
+                  <>
+                    123 Scoop Street,<br />
+                    Creamery District, NY 10012
+                  </>
+                ),
+              },
+              {
+                icon: "call",
+                title: "Phone",
+                content: (
+                  <>
+                    (555) SCOOPS-4U<br />
+                    <span className="text-xs text-text-muted">Mon-Sun, 10am - 9pm</span>
+                  </>
+                ),
+              },
+              {
+                icon: "mail",
+                title: "Email",
+                content: (
+                  <a
+                    className="font-semibold text-primary hover:text-primary-dark transition-colors"
+                    href="mailto:hello@mrasicecream.com"
+                  >
+                    hello@mrasicecream.com
+                  </a>
+                ),
+              },
+            ].map((item) => (
+              <div key={item.title} className="flex items-start gap-4 group">
+                <div className="flex-shrink-0 w-12 h-12 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center text-primary shadow-sm group-hover:scale-110 transition-transform border border-white/50">
+                  <MaterialIcon name={item.icon} className="text-xl" />
+                </div>
+                <div>
+                  <p className="font-bold text-text-main dark:text-white text-sm">
+                    {item.title}
+                  </p>
+                  <p className="text-text-muted dark:text-gray-400 text-sm mt-1 leading-relaxed">
+                    {item.content}
+                  </p>
+                </div>
               </div>
-            </div>
+            ))}
           </div>
-        </div>
+        </section>
       </div>
-    </main>
+
+      {/* Map Section */}
+      <section className="relative overflow-hidden rounded-[2.5rem] h-96 md:h-[500px] group shadow-xl">
+        <Image
+          alt="Map Location"
+          src="https://lh3.googleusercontent.com/aida-public/AB6AXuDM6c1xoQANWXMixAmPrPs5hnObmb7rOZflkq9t0P5ftnkrlYlzYz4zebXGRM_Py-994-lOCa_-QlKO9xIDnnOojMQHZh5qVHpRteZ36LLANIWRGK2Lcgedvzq8n-ciqlCZ2htmIjiTjVen9U5PChIpUgtu3-86Mvews2Gsq0DP5j4DVIfHkYrVl8h2ffAPx-VKlvfckiX-SFZj2SgcwZ4DR6KThnv5g2xfmPJ9X7of4pls4FuubXpvPpefDuYtvuLV2Ts0506pSOY"
+          alt="Map Location"
+          fill
+          className="object-cover group-hover:scale-105 transition-transform duration-700"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent flex items-end p-6 md:p-8">
+          <Button className="text-base gap-2 shadow-lg">
+            <MaterialIcon name="directions" className="text-lg" />
+            Get Directions
+          </Button>
+        </div>
+      </section>
+    </div>
   );
 }
