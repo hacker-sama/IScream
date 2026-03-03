@@ -7,7 +7,7 @@ export const routes = {
   home: "/",
   recipes: "/recipes",
   orderBooks: "/order-books",
-  addRecipe: "/add-recipe",
+  addRecipe: "/submit",
   login: "/login",
   register: "/register",
   profile: "/profile",
