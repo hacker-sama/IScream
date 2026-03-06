@@ -17,7 +17,7 @@ export default function FeedbackPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.message.trim()) {
-      setError("Vui lòng nhập nội dung phản hồi.");
+      setError("Please enter your feedback message.");
       return;
     }
     setSubmitting(true);
@@ -26,7 +26,7 @@ export default function FeedbackPage() {
       await feedbackService.submit(form);
       setSuccess(true);
     } catch {
-      setError("Gửi phản hồi thất bại. Vui lòng thử lại.");
+      setError("Failed to send feedback. Please try again.");
     } finally {
       setSubmitting(false);
     }
@@ -78,16 +78,16 @@ export default function FeedbackPage() {
                   <span className="material-symbols-outlined text-5xl">check_circle</span>
                 </div>
                 <h3 className="text-2xl font-black text-text-main dark:text-white">
-                  Cảm ơn bạn! 🎉
+                  Thank you! 🎉
                 </h3>
                 <p className="text-text-muted dark:text-gray-400">
-                  Phản hồi của bạn đã được gửi thành công. Chúng tôi sẽ xem xét sớm nhất có thể!
+                  Your feedback has been sent successfully. We will review it as soon as possible!
                 </p>
                 <button
                   onClick={() => { setSuccess(false); setForm({ name: "", email: "", message: "" }); }}
                   className="h-12 px-8 rounded-full bg-primary text-white font-bold hover:bg-red-600 transition-colors"
                 >
-                  Gửi phản hồi khác
+                  Send another feedback
                 </button>
               </div>
             ) : (
@@ -159,7 +159,7 @@ export default function FeedbackPage() {
                   {submitting ? (
                     <>
                       <span className="material-symbols-outlined animate-spin mr-2">progress_activity</span>
-                      Đang gửi...
+                      Sending...
                     </>
                   ) : (
                     <>

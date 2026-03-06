@@ -6,37 +6,56 @@ import { MaterialIcon, Badge } from "@/components/ui";
 import { routes } from "@/config";
 import { useAuth } from "@/context/AuthContext";
 import { membershipService } from "@/services";
+import type { MembershipPlan } from "@/types";
 
-const PLANS = {
-    MONTHLY_15: { name: "The Single Scoop", type: "Monthly Membership", price: 15.00 },
-    YEARLY_150: { name: "The Sundae Special", type: "Yearly Membership", price: 150.00 }
-};
+import { Suspense } from "react";
 
-export default function CheckoutPage() {
+function CheckoutContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const { user, isLoggedIn, loading: isAuthLoading } = useAuth();
 
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
+    const [plans, setPlans] = useState<MembershipPlan[]>([]);
+    const [fetchingPlans, setFetchingPlans] = useState(true);
 
-    const planId = searchParams.get("plan") as keyof typeof PLANS | null;
-    const selectedPlan = planId && PLANS[planId] ? PLANS[planId] : null;
+    const planIdStr = searchParams.get("plan");
+    const planId = planIdStr ? parseInt(planIdStr, 10) : null;
+
+    useEffect(() => {
+        const fetchPlans = async () => {
+            try {
+                const data = await membershipService.getPlans();
+                setPlans(data);
+            } catch (error) {
+                console.error("Failed to fetch plans:", error);
+            } finally {
+                setFetchingPlans(false);
+            }
+        };
+        fetchPlans();
+    }, []);
+
+    const selectedPlan = planId ? plans.find(p => p.id === planId) : null;
 
     useEffect(() => {
         if (!isAuthLoading && !isLoggedIn) {
-            router.push(`${routes.login}?returnUrl=${encodeURIComponent(`/membership/checkout?plan=${planId || ""}`)}`);
+            router.push(`${routes.login}?returnUrl=${encodeURIComponent(`/membership/checkout?plan=${planIdStr || ""}`)}`);
         }
-        if (!isAuthLoading && isLoggedIn && !selectedPlan) {
+        if (!isAuthLoading && isLoggedIn && !fetchingPlans && !selectedPlan) {
             router.push(routes.membership);
         }
-    }, [isLoggedIn, isAuthLoading, planId, selectedPlan, router]);
+    }, [isLoggedIn, isAuthLoading, planIdStr, fetchingPlans, selectedPlan, router]);
 
     const handlePayment = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (!planId) return;
+
         setLoading(true);
         try {
-            await membershipService.subscribe({ planId: planId || "" });
+            // No real payment gateway — subscribe without a fakePaymentId; backend will create and confirm it.
+            await membershipService.subscribe({ planId });
             setSuccess(true);
         } catch (error) {
             alert(error instanceof Error ? error.message : "Failed to process payment");
@@ -45,7 +64,7 @@ export default function CheckoutPage() {
         }
     };
 
-    if (isAuthLoading || (!isLoggedIn && !success)) {
+    if (isAuthLoading || fetchingPlans || (!isLoggedIn && !success)) {
         return <div className="flex min-h-[60vh] items-center justify-center">Loading...</div>;
     }
 
@@ -58,7 +77,7 @@ export default function CheckoutPage() {
                     </div>
                     <div>
                         <h2 className="text-4xl font-black text-text-main dark:text-white mb-2">Payment Successful!</h2>
-                        <p className="mt-2 text-lg text-text-muted">Welcome to the Scoop Squad. Your {selectedPlan?.name} is now active.</p>
+                        <p className="mt-2 text-lg text-text-muted">Welcome to the Scoop Squad. Your {selectedPlan?.code} Plan is now active.</p>
                     </div>
                     <button
                         onClick={() => router.push(routes.home)}
@@ -99,8 +118,8 @@ export default function CheckoutPage() {
                                 <MaterialIcon name="icecream" filled className="text-3xl" />
                             </div>
                             <div>
-                                <h3 className="font-bold text-lg text-text-main dark:text-white">{selectedPlan.name}</h3>
-                                <p className="text-sm text-text-muted">{selectedPlan.type}</p>
+                                <h3 className="font-bold text-lg text-text-main dark:text-white">{selectedPlan.code} Plan</h3>
+                                <p className="text-sm text-text-muted">{selectedPlan.durationDays} Days Membership</p>
                                 <button onClick={() => router.push(routes.membership)} className="text-xs font-bold text-primary mt-1 hover:underline">
                                     Change Plan
                                 </button>
@@ -246,5 +265,13 @@ export default function CheckoutPage() {
                 </div>
             </div>
         </div>
+    );
+}
+
+export default function CheckoutPage() {
+    return (
+        <Suspense fallback={<div className="flex min-h-[60vh] items-center justify-center">Loading...</div>}>
+            <CheckoutContent />
+        </Suspense>
     );
 }

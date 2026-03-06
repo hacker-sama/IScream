@@ -4,7 +4,7 @@ import Link from "next/link";
 export default function FaqPage() {
   return (
     <div className="w-full max-w-7xl mx-auto px-4 md:px-10 py-10 md:py-14">
-      {/* Header / Top nav (nếu bạn đã có Navbar global thì có thể bỏ block này) */}
+      {/* Header / Top nav (if you have a global Navbar you can remove this block) */}
       <div className="w-full mb-10">
         <div className="flex items-center justify-between gap-6 rounded-2xl border border-gray-200 dark:border-white/10 bg-white/70 dark:bg-card-dark/70 backdrop-blur-md px-5 md:px-8 py-4">
           <div className="flex items-center gap-3">

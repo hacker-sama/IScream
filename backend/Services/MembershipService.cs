@@ -5,6 +5,7 @@
 
 using IScream.Data;
 using IScream.Models;
+using System.Text.Json;
 
 namespace IScream.Services
 {
@@ -14,7 +15,7 @@ namespace IScream.Services
         Task<List<MembershipPlan>> GetAllPlansAsync();
         Task<MembershipSubscription?> GetActiveSubscriptionAsync(Guid userId);
         Task<List<MembershipSubscription>> GetSubscriptionHistoryAsync(Guid userId);
-        Task<(Guid subId, string error)> SubscribeAsync(SubscribeRequest req);
+        Task<(Guid subId, Guid paymentId, string error)> SubscribeAsync(SubscribeRequest req);
         Task<(bool ok, string error)> CancelSubscriptionAsync(Guid subscriptionId, Guid userId);
         Task<(int planId, string error)> CreatePlanAsync(CreatePlanRequest req);
         Task<(bool ok, string error)> UpdatePlanAsync(int planId, UpdatePlanRequest req);
@@ -39,33 +40,59 @@ namespace IScream.Services
         public Task<List<MembershipSubscription>> GetSubscriptionHistoryAsync(Guid userId)
             => _repo.ListSubscriptionsAsync(userId);
 
-        public async Task<(Guid subId, string error)> SubscribeAsync(SubscribeRequest req)
+        public async Task<(Guid subId, Guid paymentId, string error)> SubscribeAsync(SubscribeRequest req)
         {
             if (req.UserId == Guid.Empty)
-                return (Guid.Empty, "Invalid UserId.");
+                return (Guid.Empty, Guid.Empty, "Invalid UserId.");
 
             var plan = await _repo.GetPlanByIdAsync(req.PlanId);
             if (plan == null)
-                return (Guid.Empty, "Plan not found or is no longer active.");
+                return (Guid.Empty, Guid.Empty, "Plan not found or is no longer active.");
 
-            // Check existing active subscription for same plan
+            // Check existing active subscription
             var existing = await _repo.GetActiveSubscriptionAsync(req.UserId);
-            if (existing != null && existing.PlanId == req.PlanId)
-                return (Guid.Empty, "You already have an active subscription for this plan.");
+            if (existing != null)
+            {
+                if (existing.PlanId == req.PlanId)
+                    return (Guid.Empty, Guid.Empty, "You already have an active subscription for this plan.");
+
+                // Cancel existing active subscription before subscribing to a new plan (upgrade/downgrade)
+                await CancelSubscriptionAsync(existing.Id, req.UserId);
+            }
 
             var now = DateTime.UtcNow;
+
+            // --- Create a real PAYMENTS record first to satisfy the FK constraint ---
+            var metaJson = JsonSerializer.Serialize(new
+            {
+                planCode = plan.Code,
+                planId = plan.Id,
+                source = "mock-checkout"
+            });
+            var payment = new Payment
+            {
+                UserId = req.UserId,
+                Amount = plan.Price,
+                Currency = plan.Currency,
+                Type = "MEMBERSHIP",
+                MetaJson = metaJson
+            };
+            var paymentId = await _repo.CreatePaymentAsync(payment);
+            await _repo.ConfirmPaymentAsync(paymentId);
+            // ---------------------------------------------------------------------------
+
             var sub = new MembershipSubscription
             {
                 UserId = req.UserId,
                 PlanId = req.PlanId,
-                PaymentId = req.PaymentId,
+                PaymentId = paymentId,
                 StartDate = now,
                 EndDate = now.AddDays(plan.DurationDays),
-                Status = req.PaymentId.HasValue ? "ACTIVE" : "PENDING"
+                Status = "ACTIVE"
             };
 
             var id = await _repo.CreateSubscriptionAsync(sub);
-            return (id, string.Empty);
+            return (id, paymentId, string.Empty);
         }
 
         public async Task<(bool ok, string error)> CancelSubscriptionAsync(Guid subscriptionId, Guid userId)
@@ -116,7 +143,7 @@ namespace IScream.Services
             page = Math.Max(1, page);
             pageSize = Math.Clamp(pageSize, 1, 100);
             var (users, total) = await _repo.ListActiveMembersAsync(page, pageSize);
-            return new PagedResult<AppUser> { Items = users, Page = page, PageSize = pageSize, Total = total };
+            return new PagedResult<AppUser> { Items = users, Page = page, PageSize = pageSize, TotalCount = total };
         }
     }
 }

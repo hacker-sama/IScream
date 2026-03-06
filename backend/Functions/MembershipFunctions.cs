@@ -103,12 +103,16 @@ namespace IScream.Functions
                 // Force userId from JWT to prevent spoofing
                 body.UserId = claims.Value.userId;
 
-                var (subId, error) = await _svc.SubscribeAsync(body);
+                var (subId, paymentId, error) = await _svc.SubscribeAsync(body);
                 if (subId == Guid.Empty) return await FunctionHelper.BadRequest(req, error);
 
-                return await FunctionHelper.Created(req, new { subscriptionId = subId }, "Membership subscription created successfully.");
+                return await FunctionHelper.Created(req, new { subscriptionId = subId, paymentId }, "Membership subscription created successfully.");
             }
-            catch (Exception ex) { return await FunctionHelper.ServerError(req, ex, _log, nameof(Subscribe)); }
+            catch (Exception ex)
+            {
+                _log.LogError(ex, "Error in Subscribe");
+                return await FunctionHelper.BadRequest(req, "Exception: " + ex.ToString());
+            }
         }
 
         [Function("Membership_Cancel")]

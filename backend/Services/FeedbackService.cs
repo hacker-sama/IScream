@@ -46,7 +46,7 @@ namespace IScream.Services
             pageSize = Math.Clamp(pageSize, 1, 100);
             var items = await _repo.ListFeedbacksAsync(page, pageSize);
             var total = await _repo.CountFeedbacksAsync();
-            return new PagedResult<Feedback> { Items = items, Page = page, PageSize = pageSize, Total = total };
+            return new PagedResult<Feedback> { Items = items, Page = page, PageSize = pageSize, TotalCount = total };
         }
 
         public async Task<(Feedback? feedback, string error)> GetByIdAsync(Guid id)

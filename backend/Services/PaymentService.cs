@@ -119,7 +119,7 @@ namespace IScream.Services
             pageSize = Math.Clamp(pageSize, 1, 100);
             var items = await _repo.ListPaymentsAsync(userId, status, page, pageSize);
             var total = await _repo.CountPaymentsAsync(userId, status);
-            return new PagedResult<Payment> { Items = items, Page = page, PageSize = pageSize, Total = total };
+            return new PagedResult<Payment> { Items = items, Page = page, PageSize = pageSize, TotalCount = total };
         }
 
         // ── Private: Mock card validation ────────────────────────────────────

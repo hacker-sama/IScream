@@ -94,12 +94,12 @@ namespace IScream.Data
             var newId = Guid.NewGuid();
             await ExecuteAsync("""
                 INSERT INTO public_data.MEMBERSHIP_SUBSCRIPTIONS
-                    (Id, UserId, PlanId, PaymentId, StartDate, EndDate, Status)
-                VALUES (@Id, @UserId, @PlanId, @PaymentId, @StartDate, @EndDate, @Status)
+                    (Id, UserId, PlanId, PaymentId, StartDate, EndDate, Status, CreatedAt)
+                VALUES (@Id, @UserId, @PlanId, @PaymentId, @StartDate, @EndDate, @Status, @CreatedAt)
                 """,
                 [P("@Id", newId), P("@UserId", sub.UserId), P("@PlanId", sub.PlanId),
                  P("@PaymentId", sub.PaymentId), P("@StartDate", sub.StartDate),
-                 P("@EndDate", sub.EndDate), P("@Status", sub.Status)]);
+                 P("@EndDate", sub.EndDate), P("@Status", sub.Status), P("@CreatedAt", DateTime.UtcNow)]);
             return newId;
         }
 

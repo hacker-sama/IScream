@@ -58,16 +58,10 @@ export default function AdminLoginPage() {
         setLoading(true);
         setErrors({});
         try {
-            const result = await authService.login({
+            await authService.adminLogin({
                 usernameOrEmail: form.usernameOrEmail.trim(),
                 password: form.password,
             });
-            // Check admin role
-            if (result.user.role !== "ADMIN") {
-                tokenStorage.clear();
-                setErrors({ general: "Access denied. This portal is for administrators only." });
-                return;
-            }
             router.push(routes.adminDashboard);
         } catch (err: unknown) {
             setErrors({ general: extractApiError(err, "Login failed. Please check your credentials.") });
@@ -77,7 +71,7 @@ export default function AdminLoginPage() {
     }
 
     return (
-        <div className="flex min-h-screen w-full items-center justify-center bg-background-light p-4">
+        <div className="flex min-h-screen w-full items-center justify-center bg-pink-100 p-4">
             <div className="flex w-full max-w-[920px] overflow-hidden rounded-[2rem] shadow-2xl shadow-black/15">
 
                 {/* ── LEFT: Branding / Photo panel ── */}

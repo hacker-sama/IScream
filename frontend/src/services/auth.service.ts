@@ -28,6 +28,11 @@ export interface RegisterRequest {
     fullName?: string;
 }
 
+export interface UpdateProfileRequest {
+    fullName?: string;
+    email?: string;
+}
+
 export interface LoginRequest {
     /** Username or email address. */
     usernameOrEmail: string;
@@ -144,6 +149,44 @@ export const authService = {
         const loginData = res.data!;
         tokenStorage.save(loginData.token, loginData.user);
         return loginData;
+    },
+
+    /**
+     * POST /api/auth/admin/login
+     * Admin-specific login that forces server-side role check.
+     * HTTP 403 Forbidden is returned if the user is not an admin.
+     */
+    async adminLogin(data: LoginRequest): Promise<LoginResponse> {
+        const res = await apiClient.post<ApiResponse<LoginResponse>>(
+            "/auth/admin/login",
+            {
+                usernameOrEmail: data.usernameOrEmail,
+                password: data.password,
+            },
+        );
+        if (!res.success) throw new Error(res.message ?? "Admin login failed.");
+        const loginData = res.data!;
+        tokenStorage.save(loginData.token, loginData.user);
+        return loginData;
+    },
+
+    /**
+     * GET /api/auth/me
+     * Fetch the authenticated user's current profile from backend.
+     */
+    async getMe(): Promise<UserInfo> {
+        const res = await apiClient.get<ApiResponse<UserInfo>>("/auth/me");
+        if (!res.success) throw new Error(res.message ?? "Failed to fetch profile.");
+        return res.data!;
+    },
+
+    /**
+     * PUT /api/auth/profile
+     * Updates the authenticated user's profile.
+     */
+    async updateProfile(data: UpdateProfileRequest): Promise<void> {
+        const res = await apiClient.put<ApiResponse>("/auth/profile", data);
+        if (!res.success) throw new Error(res.message ?? "Failed to update profile.");
     },
 
     /**

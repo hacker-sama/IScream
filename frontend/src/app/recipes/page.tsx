@@ -64,7 +64,7 @@ export default function RecipesPage() {
         setRecipes(res.data?.items ?? []);
         setTotalPages(res.data?.totalPages ?? 1);
       })
-      .catch(() => setError("Không thể tải danh sách công thức. Vui lòng thử lại."))
+      .catch(() => setError("Could not load recipes. Please try again."))
       .finally(() => setLoading(false));
   }, [page]);
 
@@ -163,7 +163,7 @@ export default function RecipesPage() {
                 ? (
                   <div className="col-span-4 py-20 text-center text-gray-400">
                     <span className="material-symbols-outlined text-5xl mb-4 block">icecream</span>
-                    <p className="text-lg font-medium">Chưa có công thức nào. Hãy quay lại sau!</p>
+                    <p className="text-lg font-medium">No recipes yet. Check back later!</p>
                   </div>
                 )
                 : recipes.map((r) => <RecipeCard key={r.id} recipe={r} />)}

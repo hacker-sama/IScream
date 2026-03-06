@@ -1,19 +1,36 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { MaterialIcon, Badge } from "@/components/ui";
 import { routes } from "@/config";
 import { useAuth } from "@/context/AuthContext";
 import { membershipService } from "@/services";
+import type { MembershipPlan } from "@/types";
 
 export default function MembershipPage() {
     const router = useRouter();
     const { user, isLoggedIn } = useAuth();
     const [loading, setLoading] = useState(false);
+    const [plans, setPlans] = useState<MembershipPlan[]>([]);
+    const [fetchingPlans, setFetchingPlans] = useState(true);
+
+    useEffect(() => {
+        const fetchPlans = async () => {
+            try {
+                const data = await membershipService.getPlans();
+                setPlans(data.filter(p => p.isActive));
+            } catch (error) {
+                console.error("Failed to fetch plans:", error);
+            } finally {
+                setFetchingPlans(false);
+            }
+        };
+        fetchPlans();
+    }, []);
 
     // Navigate to checkout with the selected plan
-    const handleSubscribe = async (planId: "MONTHLY_15" | "YEARLY_150") => {
+    const handleSubscribe = async (planId: number) => {
         if (!isLoggedIn) {
             router.push(`${routes.login}?returnUrl=${encodeURIComponent(routes.membership)}`);
             return;
@@ -42,84 +59,92 @@ export default function MembershipPage() {
             </div>
 
             {/* Pricing Cards */}
-            <div className="grid w-full gap-8 md:grid-cols-2 md:max-w-[900px]">
+            <div className={`grid w-full gap-8 md:max-w-[900px] ${fetchingPlans ? 'md:grid-cols-1' : 'md:grid-cols-2'}`}>
+                {fetchingPlans ? (
+                    <div className="flex justify-center p-12 text-text-muted">Loading plans...</div>
+                ) : plans.length === 0 ? (
+                    <div className="flex justify-center p-12 text-text-muted col-span-2">No plans available at the moment.</div>
+                ) : (
+                    plans.map((plan) => {
+                        const isPro = plan.code.toUpperCase().includes("PRO");
+                        return (
+                            <div key={plan.id} className={`relative flex flex-col items-start rounded-[2.5rem] p-10 
+                                ${isPro ? 'shadow-2xl shadow-primary/10 border-[3px] border-primary bg-white dark:bg-surface-dark' : 'bg-white shadow-xl shadow-gray-200/50 dark:bg-surface-dark dark:shadow-none border border-gray-100'}
+                            `}>
+                                {isPro && (
+                                    <div className="absolute -top-5 left-1/2 -translate-x-1/2 rounded-full bg-primary px-4 py-1.5 flex items-center gap-1.5 shadow-lg shadow-primary/20">
+                                        <MaterialIcon name="verified" filled className="text-white text-sm" />
+                                        <span className="text-xs font-black uppercase tracking-wider text-white">Best Value</span>
+                                    </div>
+                                )}
 
-                {/* Monthly Plan */}
-                <div className="relative flex flex-col items-start rounded-[2.5rem] bg-white p-10 shadow-xl shadow-gray-200/50 dark:bg-surface-dark dark:shadow-none border border-gray-100">
-                    <h3 className="text-sm font-black tracking-widest uppercase text-text-muted mb-6">The Single Scoop</h3>
-                    <div className="flex items-end gap-2 mb-4">
-                        <span className="text-6xl font-black text-text-main dark:text-white">$15</span>
-                        <span className="text-xl font-bold text-text-muted pb-2">/ mo</span>
-                    </div>
-                    <p className="text-sm text-text-muted mb-10 w-full pb-8 border-b border-gray-100">Perfect for tasting the waters.</p>
+                                <h3 className={`text-sm font-black tracking-widest uppercase mb-6 ${isPro ? 'text-primary' : 'text-text-muted'}`}>
+                                    {plan.code} Plan
+                                </h3>
 
-                    <ul className="flex flex-col gap-5 mb-12 w-full">
-                        {[
-                            "Full Recipe Access",
-                            "Monthly Newsletter",
-                            "Community Forum Access"
-                        ].map((perk, i) => (
-                            <li key={i} className="flex items-center gap-4 text-text-main font-semibold">
-                                <MaterialIcon name="icecream" filled className="text-primary text-xl" />
-                                {perk}
-                            </li>
-                        ))}
-                    </ul>
+                                <div className="flex items-end gap-2 mb-4">
+                                    <span className="text-6xl font-black text-text-main dark:text-white">${plan.price}</span>
+                                    <span className="text-xl font-bold text-text-muted pb-2">/ {plan.durationDays} days</span>
+                                </div>
 
-                    <button
-                        onClick={() => handleSubscribe("MONTHLY_15")}
-                        disabled={loading}
-                        className="mt-auto w-full rounded-full border-2 border-gray-200 py-4 font-bold text-text-main hover:border-text-main transition-colors disabled:opacity-50"
-                    >
-                        {loading ? "Processing..." : "Select Monthly"}
-                    </button>
-                </div>
+                                <div className="mb-10 w-full pb-8 border-b border-gray-100">
+                                    {isPro ? (
+                                        <span className="inline-block rounded-full bg-green-50 px-3 py-1 text-xs font-bold text-green-600">
+                                            Unlock maximum features!
+                                        </span>
+                                    ) : (
+                                        <p className="text-sm text-text-muted">Perfect for tasting the waters.</p>
+                                    )}
+                                </div>
 
-                {/* Yearly Plan (Best Value) */}
-                <div className="relative flex flex-col items-start rounded-[2.5rem] bg-white p-10 shadow-2xl shadow-primary/10 border-[3px] border-primary dark:bg-surface-dark">
-                    {/* Badge */}
-                    <div className="absolute -top-5 left-1/2 -translate-x-1/2 rounded-full bg-primary px-4 py-1.5 flex items-center gap-1.5 shadow-lg shadow-primary/20">
-                        <MaterialIcon name="verified" filled className="text-white text-sm" />
-                        <span className="text-xs font-black uppercase tracking-wider text-white">Best Value</span>
-                    </div>
+                                <ul className="flex flex-col gap-5 mb-12 w-full">
+                                    {isPro ? (
+                                        <>
+                                            <li className="flex items-center gap-4 text-text-main font-bold">
+                                                <MaterialIcon name="check_circle" filled className="text-primary text-xl" />
+                                                All Basic perks
+                                            </li>
+                                            {[
+                                                "Full Recipe Access",
+                                                "Early Access to Books",
+                                                "Exclusive Merch",
+                                                "\"Mr. A's\" Secret Menu"
+                                            ].map((perk, i) => (
+                                                <li key={i} className="flex items-center gap-4 text-text-main font-semibold">
+                                                    <MaterialIcon name="icecream" filled className="text-primary text-xl" />
+                                                    {perk}
+                                                </li>
+                                            ))}
+                                        </>
+                                    ) : (
+                                        <>
+                                            {[
+                                                "Basic Recipe Access",
+                                                "Monthly Newsletter",
+                                                "Community Forum Access"
+                                            ].map((perk, i) => (
+                                                <li key={i} className="flex items-center gap-4 text-text-main font-semibold">
+                                                    <MaterialIcon name="icecream" filled className="text-primary text-xl" />
+                                                    {perk}
+                                                </li>
+                                            ))}
+                                        </>
+                                    )}
+                                </ul>
 
-                    <h3 className="text-sm font-black tracking-widest uppercase text-primary mb-6">The Sundae Special</h3>
-                    <div className="flex items-end gap-2 mb-4">
-                        <span className="text-6xl font-black text-text-main dark:text-white">$150</span>
-                        <span className="text-xl font-bold text-text-muted pb-2">/ yr</span>
-                    </div>
-
-                    <div className="mb-10 w-full pb-8 border-b border-gray-100">
-                        <span className="inline-block rounded-full bg-green-50 px-3 py-1 text-xs font-bold text-green-600">
-                            Save $30 compared to monthly!
-                        </span>
-                    </div>
-
-                    <ul className="flex flex-col gap-5 mb-12 w-full">
-                        <li className="flex items-center gap-4 text-text-main font-bold">
-                            <MaterialIcon name="check_circle" filled className="text-primary text-xl" />
-                            All Monthly perks
-                        </li>
-                        {[
-                            "Early Access to Books",
-                            "Exclusive Merch",
-                            "\"Mr. A's\" Secret Menu"
-                        ].map((perk, i) => (
-                            <li key={i} className="flex items-center gap-4 text-text-main font-semibold">
-                                <MaterialIcon name="icecream" filled className="text-primary text-xl" />
-                                {perk}
-                            </li>
-                        ))}
-                    </ul>
-
-                    <button
-                        onClick={() => handleSubscribe("YEARLY_150")}
-                        disabled={loading}
-                        className="mt-auto w-full rounded-full bg-primary py-4 font-bold text-white shadow-lg shadow-primary/30 hover:bg-primary-hover hover:scale-[1.02] transition-all disabled:opacity-50 disabled:hover:scale-100"
-                    >
-                        {loading ? "Processing..." : "Proceed to Payment"}
-                    </button>
-                </div>
+                                <button
+                                    onClick={() => handleSubscribe(plan.id)}
+                                    disabled={loading}
+                                    className={`mt-auto w-full rounded-full py-4 font-bold transition-all disabled:opacity-50 
+                                        ${isPro ? 'bg-primary text-white shadow-lg shadow-primary/30 hover:bg-primary-hover hover:scale-[1.02] disabled:hover:scale-100' : 'border-2 border-gray-200 text-text-main hover:border-text-main'}
+                                    `}
+                                >
+                                    {loading ? "Processing..." : (isPro ? "Proceed to Payment" : "Select Basic")}
+                                </button>
+                            </div>
+                        );
+                    })
+                )}
             </div>
 
             {/* Footer Trust Markers */}

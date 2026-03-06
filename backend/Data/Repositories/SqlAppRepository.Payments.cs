@@ -32,11 +32,12 @@ namespace IScream.Data
         {
             var newId = Guid.NewGuid();
             await ExecuteAsync("""
-                INSERT INTO public_data.PAYMENTS (Id, UserId, Amount, Currency, Type, Status, MetaJson)
-                VALUES (@Id, @UserId, @Amount, @Currency, @Type, 'INIT', @MetaJson)
+                INSERT INTO public_data.PAYMENTS (Id, UserId, Amount, Currency, Type, Status, MetaJson, CreatedAt)
+                VALUES (@Id, @UserId, @Amount, @Currency, @Type, 'PENDING', @MetaJson, @CreatedAt)
                 """,
                 [P("@Id", newId), P("@UserId", payment.UserId), P("@Amount", payment.Amount),
-                 P("@Currency", payment.Currency), P("@Type", payment.Type), P("@MetaJson", payment.MetaJson)]);
+                 P("@Currency", payment.Currency), P("@Type", payment.Type), P("@MetaJson", payment.MetaJson),
+                 P("@CreatedAt", DateTime.UtcNow)]);
             return newId;
         }
 
@@ -48,7 +49,7 @@ namespace IScream.Data
         public async Task<bool> ConfirmPaymentAsync(Guid id)
         {
             var rows = await ExecuteAsync(
-                "UPDATE public_data.PAYMENTS SET Status = 'SUCCESS' WHERE Id = @Id AND Status = 'INIT'",
+                "UPDATE public_data.PAYMENTS SET Status = 'SUCCESS' WHERE Id = @Id AND Status = 'PENDING'",
                 [P("@Id", id)]);
             return rows > 0;
         }
@@ -56,7 +57,7 @@ namespace IScream.Data
         public async Task<bool> FailPaymentAsync(Guid id)
         {
             var rows = await ExecuteAsync(
-                "UPDATE public_data.PAYMENTS SET Status = 'FAILED' WHERE Id = @Id AND Status = 'INIT'",
+                "UPDATE public_data.PAYMENTS SET Status = 'FAILED' WHERE Id = @Id AND Status = 'PENDING'",
                 [P("@Id", id)]);
             return rows > 0;
         }
