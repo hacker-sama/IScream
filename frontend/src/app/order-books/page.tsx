@@ -43,7 +43,7 @@ function OrderModal({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.customerName.trim()) {
-      setError("Vui lòng nhập tên của bạn.");
+      setError("Please enter your name.");
       return;
     }
     setSubmitting(true);
@@ -52,7 +52,7 @@ function OrderModal({
       const res = await orderService.placeOrder({ ...form, itemId: item.id });
       setOrderId(res.data?.orderId ?? "N/A");
     } catch {
-      setError("Đặt hàng thất bại. Vui lòng thử lại.");
+      setError("Order failed. Please try again.");
     } finally {
       setSubmitting(false);
     }
@@ -74,19 +74,19 @@ function OrderModal({
             <div className="size-16 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center text-green-600">
               <span className="material-symbols-outlined text-4xl">check_circle</span>
             </div>
-            <h3 className="text-xl font-black">Đặt hàng thành công! 🎉</h3>
+            <h3 className="text-xl font-black">Order placed successfully! 🎉</h3>
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              Mã đơn hàng của bạn:
+              Your order ID:
             </p>
             <code className="bg-gray-100 dark:bg-gray-800 px-4 py-2 rounded-lg text-sm font-mono break-all">
               {orderId}
             </code>
-            <p className="text-xs text-gray-400">Chúng tôi sẽ liên hệ sớm nhất có thể!</p>
+            <p className="text-xs text-gray-400">We will contact you as soon as possible!</p>
             <button
               onClick={onClose}
               className="mt-2 h-11 px-8 rounded-full bg-primary text-white font-bold hover:bg-red-600 transition-colors"
             >
-              Đóng
+              Close
             </button>
           </div>
         ) : (
@@ -114,11 +114,11 @@ function OrderModal({
             <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
               <div className="flex flex-col gap-1">
                 <label className="text-sm font-bold text-gray-700 dark:text-gray-300">
-                  Họ tên <span className="text-primary">*</span>
+                  Full Name <span className="text-primary">*</span>
                 </label>
                 <input
                   type="text"
-                  placeholder="Nguyễn Văn A"
+                  placeholder="Jane Doe"
                   value={form.customerName}
                   onChange={(e) => setForm((f) => ({ ...f, customerName: e.target.value }))}
                   className="h-11 px-4 rounded-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
@@ -138,7 +138,7 @@ function OrderModal({
               </div>
 
               <div className="flex flex-col gap-1">
-                <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Số điện thoại</label>
+                <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Phone Number</label>
                 <input
                   type="tel"
                   placeholder="0912 345 678"
@@ -149,10 +149,10 @@ function OrderModal({
               </div>
 
               <div className="flex flex-col gap-1">
-                <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Địa chỉ giao hàng</label>
+                <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Shipping Address</label>
                 <input
                   type="text"
-                  placeholder="123 Đường ABC, TP. HCM"
+                  placeholder="123 Main St, New York, NY"
                   value={form.address}
                   onChange={(e) => setForm((f) => ({ ...f, address: e.target.value }))}
                   className="h-11 px-4 rounded-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
@@ -160,7 +160,7 @@ function OrderModal({
               </div>
 
               <div className="flex flex-col gap-1">
-                <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Số lượng</label>
+                <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Quantity</label>
                 <input
                   type="number"
                   min={1}
@@ -179,12 +179,12 @@ function OrderModal({
                 {submitting ? (
                   <>
                     <span className="material-symbols-outlined animate-spin text-lg">progress_activity</span>
-                    Đang xử lý...
+                    Processing...
                   </>
                 ) : (
                   <>
                     <span className="material-symbols-outlined text-lg">shopping_bag</span>
-                    Xác nhận đặt hàng
+                    Confirm Order
                   </>
                 )}
               </button>
@@ -208,7 +208,7 @@ export default function OrderBooksPage() {
     itemService
       .getAll(1, 12)
       .then((res) => setItems(res.data?.items ?? []))
-      .catch(() => setError("Không thể tải danh sách sách. Vui lòng thử lại."))
+      .catch(() => setError("Could not load the books. Please try again."))
       .finally(() => setLoading(false));
   }, []);
 
@@ -280,7 +280,7 @@ export default function OrderBooksPage() {
                 ? (
                   <div className="col-span-4 py-20 text-center text-gray-400">
                     <span className="material-symbols-outlined text-5xl mb-4 block">auto_stories</span>
-                    <p className="text-lg font-medium">Chưa có sách nào. Hãy quay lại sau!</p>
+                    <p className="text-lg font-medium">No books yet. Check back later!</p>
                   </div>
                 )
                 : items.map((item) => (
@@ -296,7 +296,7 @@ export default function OrderBooksPage() {
                       {item.stock === 0 && (
                         <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
                           <span className="bg-white/90 text-gray-800 text-xs font-bold px-3 py-1 rounded-full">
-                            Hết hàng
+                            Out of Stock
                           </span>
                         </div>
                       )}
@@ -327,7 +327,7 @@ export default function OrderBooksPage() {
                         className="flex w-full items-center justify-center gap-2 rounded-full bg-primary py-3 text-sm font-bold text-white transition-colors hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         <span className="material-symbols-outlined text-lg">shopping_bag</span>
-                        {item.stock === 0 ? "Hết hàng" : "Mua ngay"}
+                        {item.stock === 0 ? "Out of Stock" : "Buy Now"}
                       </button>
                     </div>
                   </article>

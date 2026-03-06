@@ -2,27 +2,27 @@ import { apiClient } from "@/lib/api-client";
 import type { ApiResponse, MembershipPlan, MembershipSubscription } from "@/types";
 
 export interface CreateSubscriptionRequest {
-    planId: string;
-    // We typically might capture payment details here, but our backend handles the mock flow
+    planId: number;
+    paymentId?: string; // Optional payment ID from payment gateway
 }
 
 export const membershipService = {
     /**
-     * GET /api/memberships/plans
+     * GET /api/membership/plans
      * Returns the list of available membership plans
      */
     async getPlans(): Promise<MembershipPlan[]> {
-        const res = await apiClient.get<ApiResponse<MembershipPlan[]>>("/memberships/plans");
+        const res = await apiClient.get<ApiResponse<MembershipPlan[]>>("/membership/plans");
         return res.data ?? [];
     },
 
     /**
-     * GET /api/memberships/status
+     * GET /api/membership/me
      * Returns the current user's membership subscription status, if any.
      */
     async getStatus(): Promise<MembershipSubscription | null> {
         try {
-            const res = await apiClient.get<ApiResponse<MembershipSubscription>>("/memberships/status");
+            const res = await apiClient.get<ApiResponse<MembershipSubscription>>("/membership/me");
             return res.data ?? null;
         } catch {
             // Handled when user has no active subscription (404/400 depends on backend)
@@ -31,11 +31,11 @@ export const membershipService = {
     },
 
     /**
-     * POST /api/memberships/subscribe
+     * POST /api/membership/subscribe
      * Subscribe to a specific membership plan
      */
     async subscribe(data: CreateSubscriptionRequest): Promise<void> {
-        const res = await apiClient.post<ApiResponse>("/memberships/subscribe", data);
+        const res = await apiClient.post<ApiResponse>("/membership/subscribe", data);
         if (!res.success) {
             throw new Error(res.message || "Failed to subscribe to the membership plan.");
         }

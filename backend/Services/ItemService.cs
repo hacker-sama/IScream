@@ -37,7 +37,7 @@ namespace IScream.Services
                 Items = items,
                 Page = page,
                 PageSize = pageSize,
-                Total = total
+                TotalCount = total
             }, string.Empty);
         }
 

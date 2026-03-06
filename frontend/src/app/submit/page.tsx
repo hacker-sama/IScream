@@ -34,7 +34,7 @@ export default function SubmitRecipePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim()) {
-      setError("Vui lòng nhập tên công thức.");
+      setError("Please enter the recipe name.");
       return;
     }
     setSubmitting(true);
@@ -57,7 +57,7 @@ export default function SubmitRecipePage() {
       setSubmissionId(res.data?.submissionId ?? null);
       setSuccess(true);
     } catch {
-      setError("Gửi công thức thất bại. Vui lòng thử lại.");
+      setError("Failed to submit recipe. Please try again.");
     } finally {
       setSubmitting(false);
     }
@@ -93,14 +93,14 @@ export default function SubmitRecipePage() {
               <span className="material-symbols-outlined text-5xl">check_circle</span>
             </div>
             <h2 className="text-2xl font-black text-[#181112] dark:text-white">
-              Công thức đã được gửi! 🎉
+              Recipe submitted successfully! 🎉
             </h2>
             <p className="text-[#896169] dark:text-[#ccb0b6]">
               Recipe submitted successfully. We will review and respond as soon as possible.
             </p>
             {submissionId && (
               <div className="bg-gray-50 dark:bg-[#2a151a] rounded-lg px-5 py-3">
-                <p className="text-xs text-gray-400 mb-1">Mã submission của bạn:</p>
+                <p className="text-xs text-gray-400 mb-1">Your submission ID:</p>
                 <code className="text-sm font-mono text-primary break-all">{submissionId}</code>
               </div>
             )}
@@ -108,7 +108,7 @@ export default function SubmitRecipePage() {
               onClick={handleReset}
               className="mt-2 h-12 px-8 rounded-full bg-primary text-white font-bold hover:bg-[#d92348] transition-colors"
             >
-              Gửi công thức khác
+              Submit another recipe
             </button>
           </div>
         ) : (
@@ -228,7 +228,7 @@ export default function SubmitRecipePage() {
                   {submitting ? (
                     <>
                       <span className="material-symbols-outlined animate-spin mr-2">progress_activity</span>
-                      Đang gửi...
+                      Submitting...
                     </>
                   ) : (
                     <>

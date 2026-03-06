@@ -185,7 +185,7 @@ namespace IScream.Services
                 Items = summaries,
                 Page = page,
                 PageSize = pageSize,
-                Total = total
+                TotalCount = total
             };
         }
 

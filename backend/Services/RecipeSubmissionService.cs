@@ -60,7 +60,7 @@ namespace IScream.Services
             pageSize = Math.Clamp(pageSize, 1, 100);
             var items = await _repo.ListSubmissionsAsync(status, page, pageSize);
             var total = await _repo.CountSubmissionsAsync(status);
-            return new PagedResult<RecipeSubmission> { Items = items, Page = page, PageSize = pageSize, Total = total };
+            return new PagedResult<RecipeSubmission> { Items = items, Page = page, PageSize = pageSize, TotalCount = total };
         }
 
         public async Task<(bool ok, string error)> ReviewAsync(Guid id, ReviewSubmissionRequest req)

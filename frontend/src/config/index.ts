@@ -7,6 +7,7 @@ export const routes = {
     register: "/register",
     profile: "/profile",
     adminDashboard: "/admin/recipes",
+    adminLogin: "/admin/login",
     addRecipe: "/submit",
     feedback: "/feedback",
     contact: "/contact",

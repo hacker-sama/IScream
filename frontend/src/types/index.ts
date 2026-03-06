@@ -115,9 +115,8 @@ export interface CreateSubmissionRequest {
 
 /* ===== Membership ===== */
 export interface MembershipPlan {
-  id: string;
-  name: string;
-  description?: string;
+  id: number;
+  code: string;
   price: number;
   currency: string;
   durationDays: number;
@@ -127,12 +126,14 @@ export interface MembershipPlan {
 export interface MembershipSubscription {
   id: string;
   userId: string;
-  planId: string;
-  planName: string;
+  planId: number;
+  paymentId?: string;
   startDate: string;
   endDate: string;
-  isActive: boolean;
+  status: string;
   createdAt: string;
+  planCode?: string;
+  planPrice?: number;
 }
 
 /* ===== User ===== */

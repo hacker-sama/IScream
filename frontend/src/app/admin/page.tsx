@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 
 export default function AdminIndexPage() {
-    // Tạm thời redirect thẳng vào trang quản lý recipes
+    // Temporarily redirect straight to recipes management page
     redirect("/admin/recipes");
 }
