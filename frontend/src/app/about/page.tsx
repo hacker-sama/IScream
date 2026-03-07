@@ -16,9 +16,9 @@ export default function AboutPage() {
                   Scooping Happiness Since 1985
                 </h1>
                 <p className="text-lg md:text-xl font-normal leading-relaxed text-gray-600 dark:text-gray-300">
-                  Meet Mr. A, the man behind the flavor, and discover the story of
-                  how a single cart and a big dream became a sweet empire loved by
-                  thousands.
+                  Meet IScream, the man behind the flavor, and discover the
+                  story of how a single cart and a big dream became a sweet
+                  empire loved by thousands.
                 </p>
               </div>
 
@@ -66,13 +66,15 @@ export default function AboutPage() {
                 backgroundImage:
                   'url("https://lh3.googleusercontent.com/aida-public/AB6AXuCobioVydCugk9scZ2kkPQN1nALSAxrvCphMh893p6nKoBPhc6hbaG38HIfyS2voZfc4itNXuC2Wftwsi0CkjOdlXRX5bbyzA7G_Mfql_IXbZNI0C3SV_N64Is1Kcqtu7xtsKFL6y602CcXubIutqobPhrXJR-OAhAFzUtT9F8MK3EFAdY6JJbkswlrc89eC2oMHDaxZuIP7ffro6zCTx1MZ0NgLH8VC9QYLqTlJOiJ8ozb2q5Uh35rYdXUuADCrw6JUOSO9h0U93o")',
               }}
-              aria-label="Small circular portrait of Mr. A"
+              aria-label="Small circular portrait of IScream"
             />
             <div className="text-left">
               <p className="font-bold text-text-main dark:text-white">
-                Arthur "Mr. A" Anderson
+                Arthur "IScream" Anderson
               </p>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Founder</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Founder
+              </p>
             </div>
           </div>
         </div>
@@ -100,9 +102,11 @@ export default function AboutPage() {
           </div>
           <div className="flex flex-1 flex-col py-3 pb-10">
             <span className="text-primary font-bold text-lg">1985</span>
-            <h3 className="text-xl font-bold dark:text-white">The First Cart</h3>
+            <h3 className="text-xl font-bold dark:text-white">
+              The First Cart
+            </h3>
             <p className="text-gray-600 dark:text-gray-400 mt-2">
-              Mr. A bought a vintage pushcart and started selling his homemade
+              IScream bought a vintage pushcart and started selling his homemade
               vanilla bean ice cream at the local park. It sold out in 2 hours.
             </p>
           </div>
@@ -136,8 +140,8 @@ export default function AboutPage() {
               Recipe Book Published
             </h3>
             <p className="text-gray-600 dark:text-gray-400 mt-2">
-              "Scoops of Joy" hit the shelves, sharing IScream's secret techniques
-              with home cooks around the world.
+              "Scoops of Joy" hit the shelves, sharing IScream's secret
+              techniques with home cooks around the world.
             </p>
           </div>
 
@@ -215,7 +219,9 @@ export default function AboutPage() {
                   sentiment_very_satisfied
                 </span>
               </div>
-              <h3 className="text-xl font-bold mb-3 dark:text-white">Pure Joy</h3>
+              <h3 className="text-xl font-bold mb-3 dark:text-white">
+                Pure Joy
+              </h3>
               <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
                 No artificial preservatives or grumpy faces allowed. We believe
                 happiness is the most important ingredient.

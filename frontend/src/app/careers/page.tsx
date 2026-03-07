@@ -40,8 +40,8 @@ export default function CareersPage() {
                     Join the Sweetest Team on Earth!
                   </h1>
                   <p className="text-white/90 text-lg md:text-xl max-w-2xl font-medium">
-                    We&apos;re not just scooping ice cream; we&apos;re crafting happiness. Ready to sprinkle some joy
-                    into your career?
+                    We&apos;re not just scooping ice cream; we&apos;re crafting
+                    happiness. Ready to sprinkle some joy into your career?
                   </p>
                 </div>
               </div>
@@ -50,22 +50,34 @@ export default function CareersPage() {
             {/* Introduction & Stats */}
             <section className="px-6 md:px-20 py-12 flex flex-col md:flex-row justify-between items-start gap-8">
               <div className="flex-1">
-                <h2 className="text-slate-900 dark:text-slate-50 text-4xl font-black mb-6">Work with Perks.</h2>
+                <h2 className="text-slate-900 dark:text-slate-50 text-4xl font-black mb-6">
+                  Work with Perks.
+                </h2>
                 <p className="text-slate-600 dark:text-slate-400 text-lg leading-relaxed max-w-xl">
-                  At Mr. A&apos;s, we believe work should be as fun as a double-scoop sundae with extra cherries.
-                  We&apos;re looking for energetic, creative, and friendly humans to join our growing family.
+                  At IScream&apos;s, we believe work should be as fun as a
+                  double-scoop sundae with extra cherries. We&apos;re looking
+                  for energetic, creative, and friendly humans to join our
+                  growing family.
                 </p>
               </div>
 
               <div className="grid grid-cols-2 gap-4 w-full md:w-auto">
                 <div className="p-6 rounded-lg text-center">
-                  <span className="material-symbols-outlined text-primary text-3xl mb-2">savings</span>
-                  <p className="text-slate-900 dark:text-slate-100 font-bold text-lg">Sweet Pay</p>
+                  <span className="material-symbols-outlined text-primary text-3xl mb-2">
+                    savings
+                  </span>
+                  <p className="text-slate-900 dark:text-slate-100 font-bold text-lg">
+                    Sweet Pay
+                  </p>
                   <p className="text-slate-500 text-sm">Competitive wages</p>
                 </div>
                 <div className="p-6 rounded-lg text-center">
-                  <span className="material-symbols-outlined text-primary text-3xl mb-2">celebration</span>
-                  <p className="text-slate-900 dark:text-slate-100 font-bold text-lg">Free Scoops</p>
+                  <span className="material-symbols-outlined text-primary text-3xl mb-2">
+                    celebration
+                  </span>
+                  <p className="text-slate-900 dark:text-slate-100 font-bold text-lg">
+                    Free Scoops
+                  </p>
                   <p className="text-slate-500 text-sm">Shift rewards</p>
                 </div>
               </div>
@@ -74,8 +86,12 @@ export default function CareersPage() {
             {/* Open Roles */}
             <section className="px-6 md:px-20 py-16 bg-white dark:bg-slate-900/50">
               <div className="mb-12">
-                <h2 className="text-slate-900 dark:text-slate-50 text-3xl font-extrabold">Current Openings</h2>
-                <p className="text-slate-500 mt-2">Find the flavor of work that suits you best.</p>
+                <h2 className="text-slate-900 dark:text-slate-50 text-3xl font-extrabold">
+                  Current Openings
+                </h2>
+                <p className="text-slate-500 mt-2">
+                  Find the flavor of work that suits you best.
+                </p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -91,17 +107,25 @@ export default function CareersPage() {
                   />
                   <div className="px-4 pb-6 flex flex-col h-full">
                     <div className="flex justify-between items-start mb-2">
-                      <h3 className="text-xl font-bold text-slate-900 dark:text-slate-50">Scoop Master</h3>
+                      <h3 className="text-xl font-bold text-slate-900 dark:text-slate-50">
+                        Scoop Master
+                      </h3>
                       <span className="bg-primary text-slate-900 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider">
                         Urgent
                       </span>
                     </div>
                     <p className="text-slate-600 dark:text-slate-400 text-sm mb-6 flex-grow">
-                      The heart of our parlor. You&apos;ll craft beautiful cones, engage with fans, and keep the vibes
-                      high.
+                      The heart of our parlor. You&apos;ll craft beautiful
+                      cones, engage with fans, and keep the vibes high.
                     </p>
-                    <Link href="/register" className="w-full bg-primary hover:bg-primary/90 text-slate-900 font-bold py-3 rounded-full transition-colors flex items-center justify-center gap-2">
-                      Apply Now <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                    <Link
+                      href="/register"
+                      className="w-full bg-primary hover:bg-primary/90 text-slate-900 font-bold py-3 rounded-full transition-colors flex items-center justify-center gap-2"
+                    >
+                      Apply Now{" "}
+                      <span className="material-symbols-outlined text-sm">
+                        arrow_forward
+                      </span>
                     </Link>
                   </div>
                 </div>
@@ -118,13 +142,22 @@ export default function CareersPage() {
                   />
                   <div className="px-4 pb-6 flex flex-col h-full">
                     <div className="flex justify-between items-start mb-2">
-                      <h3 className="text-xl font-bold text-slate-900 dark:text-slate-50">Flavor Inventor</h3>
+                      <h3 className="text-xl font-bold text-slate-900 dark:text-slate-50">
+                        Flavor Inventor
+                      </h3>
                     </div>
                     <p className="text-slate-600 dark:text-slate-400 text-sm mb-6 flex-grow">
-                      Work in our lab to create the next viral sensation. Chemistry meets deliciousness.
+                      Work in our lab to create the next viral sensation.
+                      Chemistry meets deliciousness.
                     </p>
-                    <Link href="/register" className="w-full bg-slate-200 dark:bg-slate-800 hover:bg-primary text-slate-900 dark:text-slate-100 dark:hover:text-slate-900 font-bold py-3 rounded-full transition-colors flex items-center justify-center gap-2">
-                      Submit Portfolio <span className="material-symbols-outlined text-sm">science</span>
+                    <Link
+                      href="/register"
+                      className="w-full bg-slate-200 dark:bg-slate-800 hover:bg-primary text-slate-900 dark:text-slate-100 dark:hover:text-slate-900 font-bold py-3 rounded-full transition-colors flex items-center justify-center gap-2"
+                    >
+                      Submit Portfolio{" "}
+                      <span className="material-symbols-outlined text-sm">
+                        science
+                      </span>
                     </Link>
                   </div>
                 </div>
@@ -141,14 +174,22 @@ export default function CareersPage() {
                   />
                   <div className="px-4 pb-6 flex flex-col h-full">
                     <div className="flex justify-between items-start mb-2">
-                      <h3 className="text-xl font-bold text-slate-900 dark:text-slate-50">Delivery Star</h3>
+                      <h3 className="text-xl font-bold text-slate-900 dark:text-slate-50">
+                        Delivery Star
+                      </h3>
                     </div>
                     <p className="text-slate-600 dark:text-slate-400 text-sm mb-6 flex-grow">
-                      Bring the parlor to our customers&apos; doors. Speed, safety, and a smile are your tools of the
-                      trade.
+                      Bring the parlor to our customers&apos; doors. Speed,
+                      safety, and a smile are your tools of the trade.
                     </p>
-                    <Link href="/register" className="w-full bg-slate-200 dark:bg-slate-800 hover:bg-primary text-slate-900 dark:text-slate-100 dark:hover:text-slate-900 font-bold py-3 rounded-full transition-colors flex items-center justify-center gap-2">
-                      Start Rolling <span className="material-symbols-outlined text-sm">delivery_dining</span>
+                    <Link
+                      href="/register"
+                      className="w-full bg-slate-200 dark:bg-slate-800 hover:bg-primary text-slate-900 dark:text-slate-100 dark:hover:text-slate-900 font-bold py-3 rounded-full transition-colors flex items-center justify-center gap-2"
+                    >
+                      Start Rolling{" "}
+                      <span className="material-symbols-outlined text-sm">
+                        delivery_dining
+                      </span>
                     </Link>
                   </div>
                 </div>
@@ -183,9 +224,11 @@ export default function CareersPage() {
                     <span className="text-primary">Sprinkled with Love</span>
                   </h2>
                   <p className="text-slate-600 dark:text-slate-400 text-lg mb-8 leading-relaxed">
-                    We&apos;re a diverse group of dreamers who believe that a simple cone can change someone&apos;s day.
-                    Our parlors are safe spaces for creativity, laughter, and high-fives. We celebrate wins together and
-                    support each other through the busiest rushes.
+                    We&apos;re a diverse group of dreamers who believe that a
+                    simple cone can change someone&apos;s day. Our parlors are
+                    safe spaces for creativity, laughter, and high-fives. We
+                    celebrate wins together and support each other through the
+                    busiest rushes.
                   </p>
 
                   <div className="space-y-4">
@@ -196,7 +239,9 @@ export default function CareersPage() {
                     ].map((t) => (
                       <div key={t} className="flex items-center gap-4">
                         <div className="size-6 bg-primary rounded-full flex items-center justify-center text-slate-900">
-                          <span className="material-symbols-outlined text-sm font-bold">check</span>
+                          <span className="material-symbols-outlined text-sm font-bold">
+                            check
+                          </span>
                         </div>
                         <p className="font-bold">{t}</p>
                       </div>
@@ -215,10 +260,14 @@ export default function CareersPage() {
                 Don&apos;t be cold, apply today!
               </h2>
               <p className="text-white/90 text-xl mb-10 max-w-2xl mx-auto relative z-10">
-                We&apos;re always looking for stars. Even if you don&apos;t see your perfect role, send us a note about
-                why you&apos;d be a great fit for the Mr. A family.
+                We&apos;re always looking for stars. Even if you don&apos;t see
+                your perfect role, send us a note about why you&apos;d be a
+                great fit for the IScream family.
               </p>
-              <Link href="/register" className="inline-block bg-white text-primary font-bold text-lg px-10 py-4 rounded-full hover:scale-105 transition-transform relative z-10">
+              <Link
+                href="/register"
+                className="inline-block bg-white text-primary font-bold text-lg px-10 py-4 rounded-full hover:scale-105 transition-transform relative z-10"
+              >
                 General Application
               </Link>
             </section>

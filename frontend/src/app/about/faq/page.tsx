@@ -9,22 +9,38 @@ export default function FaqPage() {
         <div className="flex items-center justify-between gap-6 rounded-2xl border border-gray-200 dark:border-white/10 bg-white/70 dark:bg-card-dark/70 backdrop-blur-md px-5 md:px-8 py-4">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
-              <span className="material-symbols-outlined text-2xl">icecream</span>
+              <span className="material-symbols-outlined text-2xl">
+                icecream
+              </span>
             </div>
-            <div className="font-extrabold tracking-tight text-lg">Mr. A&apos;s</div>
+            <div className="font-extrabold tracking-tight text-lg">
+              IScream&apos;s
+            </div>
           </div>
 
           <nav className="hidden md:flex items-center gap-8">
-            <Link className="text-sm font-semibold text-gray-700 dark:text-gray-300 hover:text-primary" href="/">
+            <Link
+              className="text-sm font-semibold text-gray-700 dark:text-gray-300 hover:text-primary"
+              href="/"
+            >
               Menu
             </Link>
-            <Link className="text-sm font-semibold text-gray-700 dark:text-gray-300 hover:text-primary" href="/order-books">
+            <Link
+              className="text-sm font-semibold text-gray-700 dark:text-gray-300 hover:text-primary"
+              href="/order-books"
+            >
               Shop
             </Link>
-            <Link className="text-sm font-semibold text-gray-700 dark:text-gray-300 hover:text-primary" href="/recipes">
+            <Link
+              className="text-sm font-semibold text-gray-700 dark:text-gray-300 hover:text-primary"
+              href="/recipes"
+            >
               Recipes
             </Link>
-            <Link className="text-sm font-semibold text-gray-700 dark:text-gray-300 hover:text-primary" href="/contact">
+            <Link
+              className="text-sm font-semibold text-gray-700 dark:text-gray-300 hover:text-primary"
+              href="/contact"
+            >
               Contact
             </Link>
           </nav>
@@ -32,7 +48,9 @@ export default function FaqPage() {
           <div className="flex items-center gap-3">
             <label className="hidden sm:block">
               <div className="flex items-center gap-2 rounded-full bg-white dark:bg-background-dark border border-gray-200 dark:border-white/10 px-4 h-10">
-                <span className="material-symbols-outlined text-xl text-gray-400">search</span>
+                <span className="material-symbols-outlined text-xl text-gray-400">
+                  search
+                </span>
                 <input
                   className="w-56 bg-transparent outline-none text-sm text-text-main dark:text-white placeholder:text-gray-400"
                   placeholder="Ask a question..."
@@ -63,7 +81,8 @@ export default function FaqPage() {
             </h1>
 
             <p className="mt-5 text-base md:text-lg text-text-muted dark:text-gray-300 max-w-md mx-auto md:mx-0">
-              Everything you need to know about Mr. A&apos;s sweet world. From scooping tips to secret recipes!
+              Everything you need to know about IScream&apos;s sweet world. From
+              scooping tips to secret recipes!
             </p>
           </div>
 
@@ -78,8 +97,12 @@ export default function FaqPage() {
             </div>
 
             <div className="absolute -bottom-4 -left-2 md:-left-4 bg-white dark:bg-background-dark p-4 rounded-2xl shadow-xl flex items-center gap-2 -rotate-2 border border-gray-200 dark:border-white/10">
-              <span className="material-symbols-outlined text-primary">favorite</span>
-              <span className="font-bold text-text-main dark:text-white">Loved by kids!</span>
+              <span className="material-symbols-outlined text-primary">
+                favorite
+              </span>
+              <span className="font-bold text-text-main dark:text-white">
+                Loved by kids!
+              </span>
             </div>
           </div>
         </div>
@@ -89,7 +112,9 @@ export default function FaqPage() {
       <section className="mt-12 grid grid-cols-1 lg:grid-cols-12 gap-10">
         {/* Sidebar */}
         <aside className="lg:col-span-3 flex flex-col gap-3">
-          <p className="text-xs font-bold uppercase tracking-widest text-text-muted px-2">Categories</p>
+          <p className="text-xs font-bold uppercase tracking-widest text-text-muted px-2">
+            Categories
+          </p>
 
           <button className="flex items-center gap-3 p-4 rounded-2xl bg-primary text-white font-bold shadow-lg shadow-primary/30 text-left">
             <span className="material-symbols-outlined">star</span>
@@ -119,7 +144,9 @@ export default function FaqPage() {
               <div className="h-10 w-10 rounded-full bg-primary/10 text-primary flex items-center justify-center">
                 <span className="material-symbols-outlined">info</span>
               </div>
-              <h2 className="text-2xl font-extrabold text-text-main dark:text-white">General Questions</h2>
+              <h2 className="text-2xl font-extrabold text-text-main dark:text-white">
+                General Questions
+              </h2>
             </div>
 
             <div className="space-y-4">
@@ -129,8 +156,11 @@ export default function FaqPage() {
                 a={
                   <>
                     We&apos;re open for sprinkles and smiles from{" "}
-                    <span className="font-bold text-primary">10 AM to 9 PM</span> every single day! On weekends, we stay
-                    open until 11 PM for those late-night sugar cravings.
+                    <span className="font-bold text-primary">
+                      10 AM to 9 PM
+                    </span>{" "}
+                    every single day! On weekends, we stay open until 11 PM for
+                    those late-night sugar cravings.
                   </>
                 }
               />
@@ -139,17 +169,19 @@ export default function FaqPage() {
                 q="Do you have dairy-free options?"
                 a={
                   <>
-                    Absolutely! We have fruit sorbets and coconut-milk based ice creams that are 100% vegan and dairy-free.
-                    Try our &quot;Midnight Coconut&quot; — it&apos;s a fan favorite!
+                    Absolutely! We have fruit sorbets and coconut-milk based ice
+                    creams that are 100% vegan and dairy-free. Try our
+                    &quot;Midnight Coconut&quot; — it&apos;s a fan favorite!
                   </>
                 }
               />
 
               <FaqItem
-                q="Where is Mr. A's located?"
+                q="Where is IScream's located?"
                 a={
                   <>
-                    You can find our main parlor at 123 Gelato Lane. Just follow the smell of fresh waffle cones!
+                    You can find our main parlor at 123 Gelato Lane. Just follow
+                    the smell of fresh waffle cones!
                   </>
                 }
               />
@@ -160,9 +192,13 @@ export default function FaqPage() {
           <section>
             <div className="flex items-center gap-3 mb-5">
               <div className="h-10 w-10 rounded-full bg-primary/10 text-primary flex items-center justify-center">
-                <span className="material-symbols-outlined">workspace_premium</span>
+                <span className="material-symbols-outlined">
+                  workspace_premium
+                </span>
               </div>
-              <h2 className="text-2xl font-extrabold text-text-main dark:text-white">Membership &amp; Recipes</h2>
+              <h2 className="text-2xl font-extrabold text-text-main dark:text-white">
+                Membership &amp; Recipes
+              </h2>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -185,7 +221,9 @@ export default function FaqPage() {
               <div className="h-10 w-10 rounded-full bg-primary text-white flex items-center justify-center">
                 <span className="material-symbols-outlined">menu_book</span>
               </div>
-              <h2 className="text-2xl font-extrabold text-text-main dark:text-white">Ordering Books</h2>
+              <h2 className="text-2xl font-extrabold text-text-main dark:text-white">
+                Ordering Books
+              </h2>
             </div>
 
             <div className="relative overflow-hidden rounded-3xl bg-text-main dark:bg-card-dark text-white p-7 md:p-10 border border-white/10">
@@ -197,16 +235,21 @@ export default function FaqPage() {
                     &quot;The Ultimate Ice Cream Guide&quot;
                   </h3>
                   <p className="text-white/70 mb-6">
-                    Our best-selling colorful guide for young chefs is now available for shipping worldwide!
+                    Our best-selling colorful guide for young chefs is now
+                    available for shipping worldwide!
                   </p>
 
                   <div className="space-y-3">
                     <div className="flex items-center gap-2">
-                      <span className="material-symbols-outlined text-primary">check_circle</span>
+                      <span className="material-symbols-outlined text-primary">
+                        check_circle
+                      </span>
                       <span>Step-by-step illustrations</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="material-symbols-outlined text-primary">check_circle</span>
+                      <span className="material-symbols-outlined text-primary">
+                        check_circle
+                      </span>
                       <span>Over 50 kid-friendly flavors</span>
                     </div>
                   </div>
@@ -233,9 +276,12 @@ export default function FaqPage() {
 
           {/* Contact support */}
           <section className="rounded-3xl bg-white dark:bg-card-dark border border-gray-200 dark:border-white/10 p-8 md:p-12 text-center">
-            <h2 className="text-3xl font-black text-text-main dark:text-white">Still have questions?</h2>
+            <h2 className="text-3xl font-black text-text-main dark:text-white">
+              Still have questions?
+            </h2>
             <p className="mt-3 text-text-muted dark:text-gray-300 max-w-xl mx-auto">
-              Can&apos;t find what you&apos;re looking for? Our friendly scoopers are here to help with anything you need!
+              Can&apos;t find what you&apos;re looking for? Our friendly
+              scoopers are here to help with anything you need!
             </p>
 
             <div className="mt-7 flex flex-wrap justify-center gap-4">
@@ -261,15 +307,24 @@ export default function FaqPage() {
 
       {/* Footer note */}
       <div className="mt-14 pt-8 border-t border-gray-200 dark:border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-text-muted uppercase tracking-widest font-bold">
-        <p>© 2024 Mr. A&apos;s Ice Cream Parlor. All rights reserved.</p>
+        <p>© 2024 IScream&apos;s Ice Cream Parlor. All rights reserved.</p>
         <div className="flex gap-6">
-          <Link href="/privacy" className="hover:text-text-main dark:hover:text-white">
+          <Link
+            href="/privacy"
+            className="hover:text-text-main dark:hover:text-white"
+          >
             Privacy
           </Link>
-          <Link href="/terms" className="hover:text-text-main dark:hover:text-white">
+          <Link
+            href="/terms"
+            className="hover:text-text-main dark:hover:text-white"
+          >
             Terms
           </Link>
-          <Link href="/cookies" className="hover:text-text-main dark:hover:text-white">
+          <Link
+            href="/cookies"
+            className="hover:text-text-main dark:hover:text-white"
+          >
             Cookies
           </Link>
         </div>
@@ -293,12 +348,16 @@ function FaqItem({
       open={open}
     >
       <summary className="flex items-center justify-between p-6 cursor-pointer list-none">
-        <span className="font-extrabold text-lg text-text-main dark:text-white">{q}</span>
+        <span className="font-extrabold text-lg text-text-main dark:text-white">
+          {q}
+        </span>
         <span className="material-symbols-outlined text-primary transition-transform group-open:rotate-180">
           expand_more
         </span>
       </summary>
-      <div className="px-6 pb-6 text-text-muted dark:text-gray-300 leading-relaxed">{a}</div>
+      <div className="px-6 pb-6 text-text-muted dark:text-gray-300 leading-relaxed">
+        {a}
+      </div>
     </details>
   );
 }
@@ -318,7 +377,9 @@ function InfoCard({
         <span className="material-symbols-outlined text-primary">{icon}</span>
         {title}
       </h3>
-      <p className="text-text-muted dark:text-gray-300 text-sm leading-relaxed">{desc}</p>
+      <p className="text-text-muted dark:text-gray-300 text-sm leading-relaxed">
+        {desc}
+      </p>
     </div>
   );
 }

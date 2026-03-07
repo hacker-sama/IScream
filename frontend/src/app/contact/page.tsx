@@ -12,8 +12,9 @@ export default function ContactPage() {
                   Have a Sweet <span className="text-primary">Question?</span>
                 </h1>
                 <p className="text-base md:text-lg text-text-muted dark:text-gray-300 max-w-xl mx-auto md:mx-0 font-medium">
-                  Whether you have a recipe idea, a question about Mr. A's latest book, or just want to say hi, we're all
-                  ears! Our team is ready to scoop up your thoughts.
+                  Whether you have a recipe idea, a question about IScream's
+                  latest book, or just want to say hi, we're all ears! Our team
+                  is ready to scoop up your thoughts.
                 </p>
               </div>
 
@@ -28,7 +29,9 @@ export default function ContactPage() {
 
                 {/* Decorative Element */}
                 <div className="absolute -bottom-6 -right-6 -z-10 text-primary/10 dark:text-primary/20">
-                  <span className="material-symbols-outlined text-[120px]">icecream</span>
+                  <span className="material-symbols-outlined text-[120px]">
+                    icecream
+                  </span>
                 </div>
               </div>
             </div>
@@ -42,7 +45,8 @@ export default function ContactPage() {
             <div className="mb-8">
               <h2 className="text-2xl font-bold mb-2">Send us a Message</h2>
               <p className="text-text-muted dark:text-gray-400 text-sm">
-                Fill out the form below and we'll get back to you faster than ice cream melts.
+                Fill out the form below and we'll get back to you faster than
+                ice cream melts.
               </p>
             </div>
 
@@ -50,7 +54,9 @@ export default function ContactPage() {
               {/* Name & Email Row */}
               <div className="flex flex-col md:flex-row gap-6">
                 <label className="flex flex-col flex-1 gap-2">
-                  <span className="text-sm font-bold text-text-main dark:text-gray-200">Name</span>
+                  <span className="text-sm font-bold text-text-main dark:text-gray-200">
+                    Name
+                  </span>
                   <input
                     className="w-full h-12 px-4 rounded-xl bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark focus:border-primary focus:ring-primary text-text-main dark:text-white placeholder:text-text-muted/60 transition-colors"
                     placeholder="Your Name"
@@ -59,7 +65,9 @@ export default function ContactPage() {
                 </label>
 
                 <label className="flex flex-col flex-1 gap-2">
-                  <span className="text-sm font-bold text-text-main dark:text-gray-200">Email</span>
+                  <span className="text-sm font-bold text-text-main dark:text-gray-200">
+                    Email
+                  </span>
                   <input
                     className="w-full h-12 px-4 rounded-xl bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark focus:border-primary focus:ring-primary text-text-main dark:text-white placeholder:text-text-muted/60 transition-colors"
                     placeholder="your@email.com"
@@ -70,7 +78,9 @@ export default function ContactPage() {
 
               {/* Topic Select */}
               <label className="flex flex-col gap-2">
-                <span className="text-sm font-bold text-text-main dark:text-gray-200">Topic</span>
+                <span className="text-sm font-bold text-text-main dark:text-gray-200">
+                  Topic
+                </span>
                 <div className="relative">
                   <select className="w-full h-12 px-4 rounded-xl bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark focus:border-primary focus:ring-primary text-text-main dark:text-white appearance-none cursor-pointer transition-colors">
                     <option value="" disabled defaultValue="">
@@ -89,7 +99,9 @@ export default function ContactPage() {
 
               {/* Message Textarea */}
               <label className="flex flex-col gap-2">
-                <span className="text-sm font-bold text-text-main dark:text-gray-200">Message</span>
+                <span className="text-sm font-bold text-text-main dark:text-gray-200">
+                  Message
+                </span>
                 <textarea
                   className="w-full p-4 rounded-xl bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark focus:border-primary focus:ring-primary text-text-main dark:text-white placeholder:text-text-muted/60 resize-none transition-colors"
                   placeholder="Tell us what's on your mind..."
@@ -113,17 +125,23 @@ export default function ContactPage() {
             {/* Contact Cards */}
             <div className="bg-primary/5 dark:bg-primary/10 rounded-xl p-8 border border-primary/10 dark:border-primary/5">
               <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-                <span className="material-symbols-outlined text-primary">storefront</span>
+                <span className="material-symbols-outlined text-primary">
+                  storefront
+                </span>
                 Visit Our Parlor
               </h3>
 
               <div className="flex flex-col gap-6">
                 <div className="flex items-start gap-4 group">
                   <div className="size-10 rounded-full bg-white dark:bg-surface-dark flex items-center justify-center text-primary shadow-sm group-hover:scale-110 transition-transform">
-                    <span className="material-symbols-outlined text-xl">location_on</span>
+                    <span className="material-symbols-outlined text-xl">
+                      location_on
+                    </span>
                   </div>
                   <div>
-                    <p className="font-bold text-text-main dark:text-white">Headquarters</p>
+                    <p className="font-bold text-text-main dark:text-white">
+                      Headquarters
+                    </p>
                     <p className="text-text-muted dark:text-gray-300 text-sm mt-1 leading-relaxed">
                       123 Scoop Street,
                       <br />
@@ -134,21 +152,33 @@ export default function ContactPage() {
 
                 <div className="flex items-start gap-4 group">
                   <div className="size-10 rounded-full bg-white dark:bg-surface-dark flex items-center justify-center text-primary shadow-sm group-hover:scale-110 transition-transform">
-                    <span className="material-symbols-outlined text-xl">call</span>
+                    <span className="material-symbols-outlined text-xl">
+                      call
+                    </span>
                   </div>
                   <div>
-                    <p className="font-bold text-text-main dark:text-white">Phone</p>
-                    <p className="text-text-muted dark:text-gray-300 text-sm mt-1">(555) SCOOPS-4U</p>
-                    <p className="text-text-muted dark:text-gray-400 text-xs mt-1">Mon-Sun, 10am - 9pm</p>
+                    <p className="font-bold text-text-main dark:text-white">
+                      Phone
+                    </p>
+                    <p className="text-text-muted dark:text-gray-300 text-sm mt-1">
+                      (555) SCOOPS-4U
+                    </p>
+                    <p className="text-text-muted dark:text-gray-400 text-xs mt-1">
+                      Mon-Sun, 10am - 9pm
+                    </p>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-4 group">
                   <div className="size-10 rounded-full bg-white dark:bg-surface-dark flex items-center justify-center text-primary shadow-sm group-hover:scale-110 transition-transform">
-                    <span className="material-symbols-outlined text-xl">mail</span>
+                    <span className="material-symbols-outlined text-xl">
+                      mail
+                    </span>
                   </div>
                   <div>
-                    <p className="font-bold text-text-main dark:text-white">Email</p>
+                    <p className="font-bold text-text-main dark:text-white">
+                      Email
+                    </p>
                     <a
                       className="text-text-muted dark:text-gray-300 text-sm mt-1 hover:text-primary transition-colors"
                       href="mailto:hello@mrasicecream.com"
@@ -169,7 +199,9 @@ export default function ContactPage() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-6">
                 <button className="bg-white text-text-main text-sm font-bold py-2 px-4 rounded-full shadow-lg flex items-center gap-2 hover:bg-gray-50 transition-colors">
-                  <span className="material-symbols-outlined text-primary text-lg">directions</span>
+                  <span className="material-symbols-outlined text-primary text-lg">
+                    directions
+                  </span>
                   Get Directions
                 </button>
               </div>

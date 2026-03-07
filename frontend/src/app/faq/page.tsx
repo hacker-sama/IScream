@@ -4,7 +4,6 @@ import Link from "next/link";
 export default function FaqPage() {
   return (
     <div className="w-full max-w-7xl mx-auto px-4 md:px-10 py-10 md:py-14">
-      
       {/* Hero */}
       <section className="relative overflow-hidden rounded-3xl bg-white dark:bg-card-dark border border-gray-200 dark:border-white/10 p-6 md:p-12">
         <div className="grid gap-10 md:grid-cols-2 items-center">
@@ -19,7 +18,8 @@ export default function FaqPage() {
             </h1>
 
             <p className="mt-5 text-base md:text-lg text-text-muted dark:text-gray-300 max-w-md mx-auto md:mx-0">
-              Everything you need to know about Mr. A&apos;s sweet world. From scooping tips to secret recipes!
+              Everything you need to know about IScream&apos;s sweet world. From
+              scooping tips to secret recipes!
             </p>
           </div>
 
@@ -34,8 +34,12 @@ export default function FaqPage() {
             </div>
 
             <div className="absolute -bottom-4 -left-2 md:-left-4 bg-white dark:bg-background-dark p-4 rounded-2xl shadow-xl flex items-center gap-2 -rotate-2 border border-gray-200 dark:border-white/10">
-              <span className="material-symbols-outlined text-primary">favorite</span>
-              <span className="font-bold text-text-main dark:text-white">Loved by kids!</span>
+              <span className="material-symbols-outlined text-primary">
+                favorite
+              </span>
+              <span className="font-bold text-text-main dark:text-white">
+                Loved by kids!
+              </span>
             </div>
           </div>
         </div>
@@ -89,7 +93,9 @@ export default function FaqPage() {
                 a={
                   <>
                     We&apos;re open for sprinkles and smiles from{" "}
-                    <span className="font-bold text-primary">10 AM to 9 PM</span>{" "}
+                    <span className="font-bold text-primary">
+                      10 AM to 9 PM
+                    </span>{" "}
                     every single day! On weekends, we stay open until 11 PM for
                     those late-night sugar cravings.
                   </>
@@ -107,7 +113,7 @@ export default function FaqPage() {
               />
 
               <FaqItem
-                q="Where is Mr. A's located?"
+                q="Where is IScream's located?"
                 a={
                   <>
                     You can find our main parlor at 123 Gelato Lane. Just follow
@@ -178,9 +184,7 @@ function FaqItem({
           expand_more
         </span>
       </summary>
-      <div className="px-6 pb-6 text-text-muted dark:text-gray-300">
-        {a}
-      </div>
+      <div className="px-6 pb-6 text-text-muted dark:text-gray-300">{a}</div>
     </details>
   );
 }

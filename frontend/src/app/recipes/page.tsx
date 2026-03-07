@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { recipeService } from "@/services";
+import { RequireAuth } from "@/components/auth/RequireAuth";
 import type { Recipe } from "@/types";
 
 /* ─── Skeleton Card ─────────────────────────────────── */
@@ -64,12 +65,12 @@ export default function RecipesPage() {
         setRecipes(res.data?.items ?? []);
         setTotalPages(res.data?.totalPages ?? 1);
       })
-      .catch(() => setError("Could not load recipes. Please try again."))
+      .catch(() => setError("Could not load  recipes. Please try again."))
       .finally(() => setLoading(false));
   }, [page]);
 
   return (
-    <>
+    <RequireAuth featureName="recipes">
       {/* Hero Section */}
       <section className="w-full max-w-7xl py-8 md:py-12">
         <div className="bg-white dark:bg-gray-900 rounded-xl p-6 md:p-12 shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden relative">
@@ -79,7 +80,9 @@ export default function RecipesPage() {
           <div className="flex flex-col md:flex-row gap-8 items-center relative z-10">
             <div className="flex-1 flex flex-col gap-6 text-center md:text-left items-center md:items-start">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wide">
-                <span className="material-symbols-outlined text-sm">auto_awesome</span>
+                <span className="material-symbols-outlined text-sm">
+                  auto_awesome
+                </span>
                 New Recipes Added Weekly
               </div>
 
@@ -89,16 +92,23 @@ export default function RecipesPage() {
               </h1>
 
               <p className="text-lg text-gray-600 dark:text-gray-300 max-w-md">
-                Dive into Mr. A&apos;s secret stash of frozen delights. From classic sorbets to wild sundae experiments.
+                Dive into IScream&apos;s secret stash of frozen delights. From
+                classic sorbets to wild sundae experiments.
               </p>
 
               <div className="flex flex-wrap gap-3 justify-center md:justify-start pt-2">
                 <button
-                  onClick={() => document.getElementById("recipes-grid")?.scrollIntoView({ behavior: "smooth" })}
+                  onClick={() =>
+                    document
+                      .getElementById("recipes-grid")
+                      ?.scrollIntoView({ behavior: "smooth" })
+                  }
                   className="h-12 px-8 rounded-full bg-primary text-white font-bold text-base shadow-xl shadow-primary/20 hover:bg-red-600 transition-all flex items-center gap-2"
                 >
                   Browse Recipes
-                  <span className="material-symbols-outlined">arrow_downward</span>
+                  <span className="material-symbols-outlined">
+                    arrow_downward
+                  </span>
                 </button>
                 <a
                   href="/submit"
@@ -125,8 +135,12 @@ export default function RecipesPage() {
                   <span className="material-symbols-outlined">star</span>
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-gray-400 uppercase">Top Rated</p>
-                  <p className="font-bold">{recipes[0]?.flavorName ?? "Loading..."}</p>
+                  <p className="text-xs font-bold text-gray-400 uppercase">
+                    Top Rated
+                  </p>
+                  <p className="font-bold">
+                    {recipes[0]?.flavorName ?? "Loading..."}
+                  </p>
                 </div>
               </div>
             </div>
@@ -138,13 +152,19 @@ export default function RecipesPage() {
       <section id="recipes-grid" className="w-full max-w-7xl pb-16">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-black">
-            {loading ? "Loading..." : error ? "Error" : `${recipes.length > 0 ? "All Recipes" : "No Recipes Yet"}`}
+            {loading
+              ? "Loading..."
+              : error
+                ? "Error"
+                : `${recipes.length > 0 ? "All Recipes" : "No Recipes Yet"}`}
           </h2>
         </div>
 
         {error && (
           <div className="w-full py-12 flex flex-col items-center gap-4 text-center">
-            <span className="material-symbols-outlined text-4xl text-red-400">error</span>
+            <span className="material-symbols-outlined text-4xl text-red-400">
+              error
+            </span>
             <p className="text-gray-500 dark:text-gray-400">{error}</p>
             <button
               onClick={() => setPage(1)}
@@ -157,16 +177,20 @@ export default function RecipesPage() {
 
         {!error && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {loading
-              ? Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)
-              : recipes.length === 0
-                ? (
-                  <div className="col-span-4 py-20 text-center text-gray-400">
-                    <span className="material-symbols-outlined text-5xl mb-4 block">icecream</span>
-                    <p className="text-lg font-medium">No recipes yet. Check back later!</p>
-                  </div>
-                )
-                : recipes.map((r) => <RecipeCard key={r.id} recipe={r} />)}
+            {loading ? (
+              Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)
+            ) : recipes.length === 0 ? (
+              <div className="col-span-4 py-20 text-center text-gray-400">
+                <span className="material-symbols-outlined text-5xl mb-4 block">
+                  icecream
+                </span>
+                <p className="text-lg font-medium">
+                  No recipes yet. Check back later!
+                </p>
+              </div>
+            ) : (
+              recipes.map((r) => <RecipeCard key={r.id} recipe={r} />)
+            )}
           </div>
         )}
 
@@ -178,7 +202,9 @@ export default function RecipesPage() {
               onClick={() => setPage((p) => p - 1)}
               className="h-10 w-10 rounded-full border border-gray-200 dark:border-gray-700 flex items-center justify-center disabled:opacity-40 hover:border-primary transition-colors"
             >
-              <span className="material-symbols-outlined text-sm">chevron_left</span>
+              <span className="material-symbols-outlined text-sm">
+                chevron_left
+              </span>
             </button>
             <span className="flex items-center text-sm font-semibold text-gray-600 dark:text-gray-300">
               {page} / {totalPages}
@@ -188,11 +214,13 @@ export default function RecipesPage() {
               onClick={() => setPage((p) => p + 1)}
               className="h-10 w-10 rounded-full border border-gray-200 dark:border-gray-700 flex items-center justify-center disabled:opacity-40 hover:border-primary transition-colors"
             >
-              <span className="material-symbols-outlined text-sm">chevron_right</span>
+              <span className="material-symbols-outlined text-sm">
+                chevron_right
+              </span>
             </button>
           </div>
         )}
       </section>
-    </>
+    </RequireAuth>
   );
 }
