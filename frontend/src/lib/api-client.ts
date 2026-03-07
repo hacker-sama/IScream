@@ -1,7 +1,8 @@
 import { tokenStorage } from "@/services/auth.service";
 
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:7071/api";
+  process.env.NEXT_PUBLIC_API_URL ??
+  "http://iscream-d2bcdxh5aqhsd5fd.southeastasia-01.azurewebsites.net/api";
 
 type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
@@ -52,11 +53,11 @@ async function request<T>(
   // Helper to convert PascalCase keys to camelCase deeply
   function camelizeKeys(obj: any): any {
     if (Array.isArray(obj)) {
-      return obj.map(v => camelizeKeys(v));
-    } else if (obj !== null && typeof obj === 'object') {
+      return obj.map((v) => camelizeKeys(v));
+    } else if (obj !== null && typeof obj === "object") {
       return Object.keys(obj).reduce((result, key) => {
         let camelKey = key.charAt(0).toLowerCase() + key.slice(1);
-        if (key === 'ID') camelKey = 'id';
+        if (key === "ID") camelKey = "id";
         result[camelKey as keyof typeof result] = camelizeKeys(obj[key]);
         return result;
       }, {} as any);
