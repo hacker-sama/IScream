@@ -9,45 +9,57 @@
  *   DELETE /api/management/recipes/{id}    — soft-delete (ADMIN)
  */
 import { apiClient } from "@/lib/api-client";
+import { API_ENDPOINTS } from "@/config";
 import type { ApiResponse, Recipe, PagedResult } from "@/types";
 
 export interface CreateRecipeRequest {
-    flavorName: string;
-    shortDescription?: string;
-    ingredients?: string;
-    procedure?: string;
-    imageUrl?: string;
+  flavorName: string;
+  shortDescription?: string;
+  ingredients?: string;
+  procedure?: string;
+  imageUrl?: string;
 }
 
 export interface UpdateRecipeRequest {
-    flavorName?: string;
-    shortDescription?: string;
-    ingredients?: string;
-    procedure?: string;
-    imageUrl?: string;
-    isActive?: boolean;
+  flavorName?: string;
+  shortDescription?: string;
+  ingredients?: string;
+  procedure?: string;
+  imageUrl?: string;
+  isActive?: boolean;
 }
 
 export const adminRecipeService = {
-    /** List all recipes (admin sees both active & inactive) */
-    getAll: (page = 1, pageSize = 10, isActive?: boolean) => {
-        const params: Record<string, string> = {
-            page: String(page),
-            pageSize: String(pageSize),
-        };
-        if (isActive !== undefined) params.isActive = String(isActive);
-        return apiClient.get<ApiResponse<PagedResult<Recipe>>>("/recipes", { params });
-    },
+  /** List all recipes (admin sees both active & inactive) */
+  getAll: (page = 1, pageSize = 10, isActive?: boolean) => {
+    const params: Record<string, string> = {
+      page: String(page),
+      pageSize: String(pageSize),
+    };
+    if (isActive !== undefined) params.isActive = String(isActive);
+    return apiClient.get<ApiResponse<PagedResult<Recipe>>>(
+      API_ENDPOINTS.recipes.list,
+      { params },
+    );
+  },
 
-    /** Create a new recipe */
-    create: (data: CreateRecipeRequest) =>
-        apiClient.post<ApiResponse<{ id: string }>>("/management/recipes", data),
+  /** Create a new recipe */
+  create: (data: CreateRecipeRequest) =>
+    apiClient.post<ApiResponse<{ id: string }>>(
+      API_ENDPOINTS.management.recipes.create,
+      data,
+    ),
 
-    /** Update an existing recipe */
-    update: (id: string, data: UpdateRecipeRequest) =>
-        apiClient.put<ApiResponse<void>>(`/management/recipes/${id}`, data),
+  /** Update an existing recipe */
+  update: (id: string, data: UpdateRecipeRequest) =>
+    apiClient.put<ApiResponse<void>>(
+      API_ENDPOINTS.management.recipes.update(id),
+      data,
+    ),
 
-    /** Soft-delete a recipe */
-    remove: (id: string) =>
-        apiClient.delete<ApiResponse<void>>(`/management/recipes/${id}`),
+  /** Soft-delete a recipe */
+  remove: (id: string) =>
+    apiClient.delete<ApiResponse<void>>(
+      API_ENDPOINTS.management.recipes.delete(id),
+    ),
 };

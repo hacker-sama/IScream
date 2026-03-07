@@ -25,7 +25,7 @@ export function BookCtaSection() {
           </Badge>
 
           <h2 className="font-serif-display mb-4 text-3xl font-black leading-[1.1] text-text-main md:text-5xl">
-            Mr. A&apos;s Secret <br className="hidden md:block" />
+            IScream&apos;s Secret <br className="hidden md:block" />
             Recipes Book
           </h2>
 
