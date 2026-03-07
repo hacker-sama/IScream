@@ -10,25 +10,35 @@ import { membershipService } from "@/services";
 import type { MembershipPlan } from "@/types";
 
 export default function MembershipPage() {
-  const router = useRouter();
-  const { user, isLoggedIn } = useAuth();
-  const [loading, setLoading] = useState(false);
-  const [plans, setPlans] = useState<MembershipPlan[]>([]);
-  const [fetchingPlans, setFetchingPlans] = useState(true);
+    const router = useRouter();
+    const { user, isLoggedIn, loading: authLoading } = useAuth();
+    const [loading, setLoading] = useState(false);
+    const [plans, setPlans] = useState<MembershipPlan[]>([]);
+    const [fetchingPlans, setFetchingPlans] = useState(true);
 
-  useEffect(() => {
-    const fetchPlans = async () => {
-      try {
-        const data = await membershipService.getPlans();
-        setPlans(data.filter((p) => p.isActive));
-      } catch (error) {
-        console.error("Failed to fetch plans:", error);
-      } finally {
-        setFetchingPlans(false);
-      }
-    };
-    fetchPlans();
-  }, []);
+    useEffect(() => {
+        if (authLoading) return; // Wait for auth state
+
+        const fetchPlans = async () => {
+            try {
+                if (isLoggedIn) {
+                    const subStatus = await membershipService.getStatus();
+                    if (subStatus?.status === "ACTIVE") {
+                        router.push("/membership/vip");
+                        return;
+                    }
+                }
+
+                const data = await membershipService.getPlans();
+                setPlans(data.filter(p => p.isActive));
+            } catch (error) {
+                console.error("Failed to fetch plans:", error);
+            } finally {
+                setFetchingPlans(false);
+            }
+        };
+        fetchPlans();
+    }, [isLoggedIn, authLoading, router]);
 
   // Navigate to checkout with the selected plan
   const handleSubscribe = async (planId: number) => {
@@ -43,15 +53,22 @@ export default function MembershipPage() {
     router.push(`/membership/checkout?plan=${planId}`);
   };
 
-  return (
-    <RequireAuth featureName="membership plans">
-      <div className="flex w-full flex-col items-center px-4 py-16 md:py-24 max-w-[1200px] mx-auto">
-        {/* Header Section */}
-        <div className="mb-16 flex flex-col items-center text-center">
-          <Badge className="mb-6 border-transparent bg-primary/10 text-primary dark:bg-primary/20 flex gap-2 w-max">
-            <MaterialIcon name="stars" className="text-sm" />
-            PREMIUM ACCESS
-          </Badge>
+    if (authLoading || fetchingPlans) {
+        return (
+            <div className="flex justify-center items-center min-h-[60vh]">
+                <MaterialIcon name="sync" className="animate-spin text-4xl text-primary" />
+            </div>
+        );
+    }
+
+    return (
+        <div className="flex w-full flex-col items-center px-4 py-16 md:py-24 max-w-[1200px] mx-auto">
+            {/* Header Section */}
+            <div className="mb-16 flex flex-col items-center text-center">
+                <Badge className="mb-6 border-transparent bg-primary/10 text-primary dark:bg-primary/20 flex gap-2 w-max">
+                    <MaterialIcon name="stars" className="text-sm" />
+                    PREMIUM ACCESS
+                </Badge>
 
           <h1 className="font-serif-display text-5xl md:text-[5rem] font-black leading-tight tracking-tight text-text-main dark:text-white mb-6">
             Sweeten the Deal!
