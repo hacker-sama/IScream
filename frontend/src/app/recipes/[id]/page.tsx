@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { recipeService } from "@/services";
 import { useAuth } from "@/context/AuthContext";
@@ -12,8 +12,6 @@ const FALLBACK_IMG =
 
 /* ─── Locked content overlay ──────────────────────── */
 function LockedOverlay() {
-  const { isLoggedIn } = useAuth();
-
   return (
     <div className="relative rounded-xl overflow-hidden">
       {/* Blurred placeholder */}
@@ -34,18 +32,16 @@ function LockedOverlay() {
         </div>
         <h3 className="text-lg font-bold mb-1">Members Only</h3>
         <p className="text-sm text-gray-500 dark:text-gray-400 mb-4 text-center max-w-xs">
-          {isLoggedIn
-            ? "Subscribe to a membership plan to unlock full recipe details."
-            : "Log in and subscribe to unlock the full recipe."}
+          Subscribe to a membership plan to unlock full recipe details.
         </p>
         <Link
-          href={isLoggedIn ? "/membership" : "/login"}
+          href="/membership"
           className="h-11 px-8 rounded-full bg-primary text-white font-bold text-sm shadow-lg shadow-primary/20 hover:bg-red-600 transition-all flex items-center gap-2"
         >
           <span className="material-symbols-outlined text-base">
-            {isLoggedIn ? "card_membership" : "login"}
+            card_membership
           </span>
-          {isLoggedIn ? "View Membership Plans" : "Log In"}
+          View Membership Plans
         </Link>
       </div>
     </div>
@@ -56,13 +52,22 @@ function LockedOverlay() {
 export default function RecipeDetailPage() {
   const params = useParams();
   const id = params.id as string;
+  const router = useRouter();
+  const { isLoggedIn, loading: authLoading } = useAuth();
 
   const [recipe, setRecipe] = useState<RecipeDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Auth guard — redirect to login if not authenticated
   useEffect(() => {
-    if (!id) return;
+    if (!authLoading && !isLoggedIn) {
+      router.replace(`/login?redirect=/recipes/${id}`);
+    }
+  }, [authLoading, isLoggedIn, id, router]);
+
+  useEffect(() => {
+    if (!id || !isLoggedIn) return;
     setLoading(true);
     setError(null);
     recipeService
@@ -70,7 +75,16 @@ export default function RecipeDetailPage() {
       .then((res) => setRecipe(res.data ?? null))
       .catch(() => setError("Could not load this recipe."))
       .finally(() => setLoading(false));
-  }, [id]);
+  }, [id, isLoggedIn]);
+
+  /* Auth loading / redirecting */
+  if (authLoading || !isLoggedIn) {
+    return (
+      <div className="flex flex-1 items-center justify-center min-h-[60vh]">
+        <div className="h-10 w-10 rounded-full border-4 border-primary border-t-transparent animate-spin" />
+      </div>
+    );
+  }
 
   /* Loading */
   if (loading) {
@@ -85,13 +99,19 @@ export default function RecipeDetailPage() {
   if (error || !recipe) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-        <span className="material-symbols-outlined text-5xl text-red-400">error</span>
-        <p className="text-gray-500 dark:text-gray-400">{error ?? "Recipe not found."}</p>
+        <span className="material-symbols-outlined text-5xl text-red-400">
+          error
+        </span>
+        <p className="text-gray-500 dark:text-gray-400">
+          {error ?? "Recipe not found."}
+        </p>
         <Link
           href="/recipes"
           className="h-10 px-6 rounded-full bg-primary text-white text-sm font-bold flex items-center gap-2"
         >
-          <span className="material-symbols-outlined text-base">arrow_back</span>
+          <span className="material-symbols-outlined text-base">
+            arrow_back
+          </span>
           Back to Recipes
         </Link>
       </div>
@@ -106,7 +126,9 @@ export default function RecipeDetailPage() {
           href="/recipes"
           className="inline-flex items-center gap-1 text-sm font-medium text-gray-500 hover:text-primary transition-colors"
         >
-          <span className="material-symbols-outlined text-base">arrow_back</span>
+          <span className="material-symbols-outlined text-base">
+            arrow_back
+          </span>
           All Recipes
         </Link>
       </div>
@@ -115,7 +137,9 @@ export default function RecipeDetailPage() {
       <div className="w-full max-w-4xl">
         <div
           className="w-full aspect-[16/7] rounded-2xl bg-gray-200 dark:bg-gray-800 bg-center bg-cover shadow-lg"
-          style={{ backgroundImage: `url('${recipe.imageUrl || FALLBACK_IMG}')` }}
+          style={{
+            backgroundImage: `url('${recipe.imageUrl || FALLBACK_IMG}')`,
+          }}
         />
       </div>
 
@@ -124,7 +148,9 @@ export default function RecipeDetailPage() {
         {/* Title & description */}
         <div>
           <div className="flex items-center gap-3 mb-3">
-            <h1 className="text-3xl md:text-4xl font-black">{recipe.flavorName}</h1>
+            <h1 className="text-3xl md:text-4xl font-black">
+              {recipe.flavorName}
+            </h1>
             {recipe.isLocked && (
               <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 text-xs font-bold uppercase">
                 <span className="material-symbols-outlined text-sm">lock</span>
@@ -144,7 +170,9 @@ export default function RecipeDetailPage() {
           {/* Ingredients */}
           <div>
             <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-              <span className="material-symbols-outlined text-primary">kitchen</span>
+              <span className="material-symbols-outlined text-primary">
+                kitchen
+              </span>
               Ingredients
             </h2>
             {recipe.isLocked ? (
@@ -161,7 +189,9 @@ export default function RecipeDetailPage() {
           {/* Procedure */}
           <div>
             <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-              <span className="material-symbols-outlined text-primary">receipt_long</span>
+              <span className="material-symbols-outlined text-primary">
+                receipt_long
+              </span>
               Procedure
             </h2>
             {recipe.isLocked ? (

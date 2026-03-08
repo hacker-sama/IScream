@@ -175,7 +175,7 @@ export default function OrderBooksPage() {
                     <button
                       disabled={item.stock === 0}
                       onClick={() =>
-                        router.push(`/order-books/checkout?item=${item.id}`)
+                        router.push(`/shop/checkout?item=${item.id}`)
                       }
                       className="flex w-full items-center justify-center gap-2 rounded-full bg-primary py-3 text-sm font-bold text-white transition-colors hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed"
                     >

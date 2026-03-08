@@ -3,7 +3,7 @@ export { API_ENDPOINTS } from "./api-endpoints";
 export const routes = {
   home: "/",
   recipes: "/recipes",
-  orderBooks: "/order-books",
+  orderBooks: "/shop",
   login: "/login",
   register: "/register",
   profile: "/profile",

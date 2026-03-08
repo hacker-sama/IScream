@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { recipeService } from "@/services";
+import { recipeService, membershipService } from "@/services";
+import { useAuth } from "@/context/AuthContext";
 import type { Recipe } from "@/types";
 import { routes } from "@/config";
 
@@ -29,7 +30,9 @@ function RecipeCard({ recipe }: { recipe: Recipe }) {
       <div className="group flex flex-col gap-3 bg-white dark:bg-gray-900 p-3 rounded-xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer border border-gray-100 dark:border-gray-800">
         <div
           className="w-full aspect-[4/3] rounded-lg bg-gray-200 dark:bg-gray-800 bg-center bg-cover relative overflow-hidden"
-          style={{ backgroundImage: `url('${recipe.imageUrl || fallbackImg}')` }}
+          style={{
+            backgroundImage: `url('${recipe.imageUrl || fallbackImg}')`,
+          }}
         >
           <div className="absolute top-3 right-3 bg-primary text-white px-2 py-1 rounded text-xs font-bold uppercase tracking-wider shadow-lg">
             Free
@@ -51,15 +54,72 @@ function RecipeCard({ recipe }: { recipe: Recipe }) {
   );
 }
 
+/* ─── Locked Recipe Card ────────────────────────────── */
+function LockedRecipeCard({
+  recipe,
+  isLoggedIn,
+}: {
+  recipe: Recipe;
+  isLoggedIn: boolean;
+}) {
+  const fallbackImg =
+    "https://lh3.googleusercontent.com/aida-public/AB6AXuAuml-kcfcPWeQBjMtTp9qNy2__FOkkxDJDXMp0QJqHwBlOeWZADpnNTXmemZ9LqvyaimNAdVs1EGRnnOUxNMUVxkrc0G9BGEVgFph5XOdJhYy2DbTEeql1E5LtYvl2Ozk2t1qF1tNfOu5xOilaYGbIWexibTqnCvXEQdONhyYHbLYA2E4Z1DZsnovxi6InrGGTvSbitgbig_XcxY6jjCD031OVC4KSu7-vM88HV18iiqoRA9Y0GU2N_YkcSxDgjCk_I1c9wmUBWrA";
+
+  return (
+    <div className="flex flex-col gap-3 bg-white dark:bg-gray-900 p-3 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 relative overflow-hidden">
+      {/* Blurred image */}
+      <div
+        className="w-full aspect-[4/3] rounded-lg bg-gray-200 dark:bg-gray-800 bg-center bg-cover relative overflow-hidden"
+        style={{ backgroundImage: `url('${recipe.imageUrl || fallbackImg}')` }}
+      >
+        <div className="absolute inset-0 backdrop-blur-sm bg-black/40" />
+        <div className="absolute top-3 right-3 bg-amber-500 text-white px-2 py-1 rounded text-xs font-bold uppercase tracking-wider shadow-lg flex items-center gap-1">
+          <span className="material-symbols-outlined text-xs">lock</span>
+          Members
+        </div>
+        {/* Lock CTA overlay */}
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 px-4">
+          <div className="bg-white/20 backdrop-blur-sm p-2.5 rounded-full">
+            <span className="material-symbols-outlined text-2xl text-white">
+              lock
+            </span>
+          </div>
+          <Link
+            href={isLoggedIn ? "/membership" : "/login"}
+            className="h-8 px-5 rounded-full bg-primary text-white font-bold text-xs shadow-lg shadow-primary/20 hover:bg-red-600 transition-all flex items-center gap-1"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {isLoggedIn ? "Subscribe" : "Join for Free"}
+          </Link>
+        </div>
+      </div>
+
+      <div className="px-1 pb-2">
+        <h3 className="text-lg font-bold leading-tight mb-1 text-gray-400 dark:text-gray-500">
+          {recipe.flavorName}
+        </h3>
+        {recipe.shortDescription && (
+          <p className="text-xs text-gray-300 dark:text-gray-600 line-clamp-2 blur-[3px] select-none">
+            {recipe.shortDescription}
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}
+
 /* ─── Page ───────────────────────────────────────────── */
 export default function RecipesPage() {
+  const { isLoggedIn, loading: authLoading } = useAuth();
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [isSubscribed, setIsSubscribed] = useState(false);
 
   useEffect(() => {
+    if (!isLoggedIn) return;
     setLoading(true);
     setError(null);
     recipeService
@@ -70,7 +130,21 @@ export default function RecipesPage() {
       })
       .catch(() => setError("Could not load  recipes. Please try again."))
       .finally(() => setLoading(false));
-  }, [page]);
+  }, [page, isLoggedIn]);
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      setIsSubscribed(false);
+      return;
+    }
+    membershipService.getStatus().then((sub) => {
+      setIsSubscribed(sub != null && sub.status === "ACTIVE");
+    });
+  }, [isLoggedIn]);
+
+  const FREE_SLOTS = 4;
+  const isFree = (index: number) =>
+    isSubscribed || (page === 1 && index < FREE_SLOTS);
 
   return (
     <div className="flex flex-col items-center w-full">
@@ -155,11 +229,13 @@ export default function RecipesPage() {
       <section id="recipes-grid" className="w-full max-w-7xl pb-16">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-black">
-            {loading
-              ? "Loading..."
-              : error
-                ? "Error"
-                : `${recipes.length > 0 ? "All Recipes" : "No Recipes Yet"}`}
+            {!isLoggedIn
+              ? "Recipes"
+              : loading
+                ? "Loading..."
+                : error
+                  ? "Error"
+                  : `${recipes.length > 0 ? "All Recipes" : "No Recipes Yet"}`}
           </h2>
         </div>
 
@@ -178,7 +254,47 @@ export default function RecipesPage() {
           </div>
         )}
 
-        {!error && (
+        {/* Auth gate */}
+        {!authLoading && !isLoggedIn && (
+          <div className="w-full py-20 flex flex-col items-center gap-6 text-center">
+            <div className="bg-primary/10 p-5 rounded-full">
+              <span className="material-symbols-outlined text-5xl text-primary">
+                lock_person
+              </span>
+            </div>
+            <div>
+              <h2 className="text-2xl font-black mb-2">
+                Sign In to Browse Recipes
+              </h2>
+              <p className="text-gray-500 dark:text-gray-400 max-w-sm mx-auto">
+                Create a free account or log in to explore our collection of ice
+                cream recipes. The 4 latest recipes are free for all members!
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-3 justify-center">
+              <Link
+                href="/login"
+                className="h-11 px-8 rounded-full bg-primary text-white font-bold text-sm shadow-lg shadow-primary/20 hover:bg-red-600 transition-all flex items-center gap-2"
+              >
+                <span className="material-symbols-outlined text-base">
+                  login
+                </span>
+                Log In
+              </Link>
+              <Link
+                href="/register"
+                className="h-11 px-8 rounded-full bg-white dark:bg-gray-800 border-2 border-gray-100 dark:border-gray-700 font-bold text-sm hover:border-primary/30 transition-all flex items-center gap-2"
+              >
+                <span className="material-symbols-outlined text-base">
+                  person_add
+                </span>
+                Create Account
+              </Link>
+            </div>
+          </div>
+        )}
+
+        {!error && isLoggedIn && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {loading ? (
               Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)
@@ -192,13 +308,23 @@ export default function RecipesPage() {
                 </p>
               </div>
             ) : (
-              recipes.map((r) => <RecipeCard key={r.id} recipe={r} />)
+              recipes.map((r, i) =>
+                isFree(i) ? (
+                  <RecipeCard key={r.id} recipe={r} />
+                ) : (
+                  <LockedRecipeCard
+                    key={r.id}
+                    recipe={r}
+                    isLoggedIn={isLoggedIn}
+                  />
+                ),
+              )
             )}
           </div>
         )}
 
         {/* Pagination */}
-        {!loading && !error && totalPages > 1 && (
+        {isLoggedIn && !loading && !error && totalPages > 1 && (
           <div className="flex justify-center gap-3 mt-10">
             <button
               disabled={page === 1}

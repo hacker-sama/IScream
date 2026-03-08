@@ -5,7 +5,7 @@
 
 export const siteConfig = {
   name: "ISCREAM",
-  shortName: "ISC",
+  shortName: "ISCREAM",
   description:
     "Discover secret recipes, order IScream's famous books, or share your own frozen creations with our sweet community.",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
