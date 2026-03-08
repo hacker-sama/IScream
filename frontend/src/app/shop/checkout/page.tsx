@@ -57,7 +57,7 @@ function CheckoutContent() {
   useEffect(() => {
     if (!isAuthLoading && !isLoggedIn) {
       router.push(
-        `${routes.login}?returnUrl=${encodeURIComponent(`/order-books/checkout?item=${itemId || ""}`)}`,
+        `${routes.login}?returnUrl=${encodeURIComponent(`/shop/checkout?item=${itemId || ""}`)}`,
       );
     }
   }, [isAuthLoading, isLoggedIn, itemId, router]);

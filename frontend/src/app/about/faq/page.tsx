@@ -27,7 +27,7 @@ export default function FaqPage() {
             </Link>
             <Link
               className="text-sm font-semibold text-gray-700 dark:text-gray-300 hover:text-primary"
-              href="/order-books"
+              href="/shop"
             >
               Shop
             </Link>
@@ -255,7 +255,7 @@ export default function FaqPage() {
                   </div>
 
                   <Link
-                    href="/order-books"
+                    href="/shop"
                     className="inline-flex mt-7 bg-primary text-white px-8 py-3 rounded-full font-bold hover:bg-primary-hover transition-colors"
                   >
                     Order Your Copy
