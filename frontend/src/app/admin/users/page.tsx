@@ -203,6 +203,7 @@ function AddUserModal({
           </div>
           <button
             onClick={onClose}
+            aria-label="Close"
             className="flex size-8 items-center justify-center rounded-full hover:bg-gray-100 text-gray-400"
           >
             <MaterialIcon name="close" className="text-[20px]" />
@@ -316,6 +317,8 @@ const DEMO_SUBS = [
   { plan: "Free Tier", billing: "", amount: "$0.00" },
   { plan: "Staff Access", billing: "", amount: "—" },
   { plan: "Monthly Basic", billing: "Oct 29, 2024", amount: "$15.00" },
+  { plan: "Yearly Pro", billing: "Oct 24, 2024", amount: "$120.00" },
+  { plan: "Monthly Basic", billing: "", amount: "$15.00" },
 ];
 
 export default function AdminUsersPage() {
@@ -425,6 +428,7 @@ export default function AdminUsersPage() {
               <select
                 value={planFilter}
                 onChange={(e) => setPlanFilter(e.target.value)}
+                aria-label="Filter by plan"
                 className="h-9 appearance-none rounded-xl border border-gray-200 bg-white pl-3 pr-8 text-sm font-semibold text-text-muted outline-none focus:border-primary"
               >
                 {[
@@ -448,6 +452,7 @@ export default function AdminUsersPage() {
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
+                aria-label="Filter by status"
                 className="h-9 appearance-none rounded-xl border border-gray-200 bg-white pl-3 pr-8 text-sm font-semibold text-text-muted outline-none focus:border-primary"
               >
                 {[
@@ -540,43 +545,59 @@ export default function AdminUsersPage() {
               /* Demo rows (shown when backend endpoint not yet available) */
               [
                 {
-                  name: "Alex Johnson",
-                  email: "alex.j@example.com",
+                  name: "huyleeeee",
+                  email: "huyle2k5@gmail.com",
                   role: "Member" as UserRole,
                   sub: DEMO_SUBS[0],
-                  status: "Active" as UserStatus,
-                  last: "2 mins ago",
-                },
-                {
-                  name: "Sarah Smith",
-                  email: "sarah.s@example.com",
-                  role: "Contributor" as UserRole,
-                  sub: DEMO_SUBS[1],
-                  status: "Payment Failed" as UserStatus,
-                  last: "5 hours ago",
-                },
-                {
-                  name: "Michael Chen",
-                  email: "m.chen@example.com",
-                  role: "Member" as UserRole,
-                  sub: DEMO_SUBS[2],
-                  status: "Suspended" as UserStatus,
-                  last: "2 months ago",
-                },
-                {
-                  name: "Emily Davis",
-                  email: "emily.d@example.com",
-                  role: "Editor" as UserRole,
-                  sub: DEMO_SUBS[3],
                   status: "Active" as UserStatus,
                   last: "1 day ago",
                 },
                 {
-                  name: "Jessica Wong",
-                  email: "j.wong@example.com",
+                  name: "huyle",
+                  email: "huyle@gmail.com",
+                  role: "Member" as UserRole,
+                  sub: DEMO_SUBS[1],
+                  status: "Payment Failed" as UserStatus,
+                  last: "1 day ago",
+                },
+                {
+                  name: "Hello",
+                  email: "helloh@gmail.com",
+                  role: "Member" as UserRole,
+                  sub: DEMO_SUBS[2],
+                  status: "Suspended" as UserStatus,
+                  last: "1 day ago",
+                },
+                {
+                  name: "dotnet",
+                  email: "dotnet@gmail.com",
+                  role: "Member" as UserRole,
+                  sub: DEMO_SUBS[3],
+                  status: "Active" as UserStatus,
+                  last: "2 days ago",
+                },
+                {
+                  name: "moii",
+                  email: "pc@gmail.com",
                   role: "Member" as UserRole,
                   sub: DEMO_SUBS[4],
                   status: "Expiring Soon" as UserStatus,
+                  last: "3 days ago",
+                },
+                {
+                  name: "nhat huy",
+                  email: "huypro@gmail.com",
+                  role: "Member" as UserRole,
+                  sub: DEMO_SUBS[5],
+                  status: "Active" as UserStatus,
+                  last: "3 days ago",
+                },
+                {
+                  name: "Test User 2",
+                  email: "testuser2@gmail.com",
+                  role: "Member" as UserRole,
+                  sub: DEMO_SUBS[6],
+                  status: "Payment Failed" as UserStatus,
                   last: "3 days ago",
                 },
               ].map((row, i) => (
@@ -709,13 +730,13 @@ export default function AdminUsersPage() {
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-1 opacity-60 group-hover:opacity-100">
-                        <button className="flex size-7 items-center justify-center rounded-lg border border-gray-200 text-gray-400 hover:border-primary/30 hover:bg-primary/5 hover:text-primary transition">
+                        <button aria-label="Edit user" className="flex size-7 items-center justify-center rounded-lg border border-gray-200 text-gray-400 hover:border-primary/30 hover:bg-primary/5 hover:text-primary transition">
                           <MaterialIcon name="edit" className="text-[14px]" />
                         </button>
-                        <button className="flex size-7 items-center justify-center rounded-lg border border-gray-200 text-gray-400 hover:border-yellow-200 hover:bg-yellow-50 hover:text-yellow-600 transition">
+                        <button aria-label="Block user" className="flex size-7 items-center justify-center rounded-lg border border-gray-200 text-gray-400 hover:border-yellow-200 hover:bg-yellow-50 hover:text-yellow-600 transition">
                           <MaterialIcon name="block" className="text-[14px]" />
                         </button>
-                        <button className="flex size-7 items-center justify-center rounded-lg border border-gray-200 text-gray-400 hover:border-red-200 hover:bg-red-50 hover:text-red-500 transition">
+                        <button aria-label="Delete user" className="flex size-7 items-center justify-center rounded-lg border border-gray-200 text-gray-400 hover:border-red-200 hover:bg-red-50 hover:text-red-500 transition">
                           <MaterialIcon name="delete" className="text-[14px]" />
                         </button>
                       </div>
@@ -733,7 +754,7 @@ export default function AdminUsersPage() {
             Showing{" "}
             <span className="font-bold text-text-main">
               {filtered.length === 0
-                ? "1 to 5"
+                ? "1 to 7"
                 : `${(currentPage - 1) * PAGE_SIZE + 1} to ${Math.min(currentPage * PAGE_SIZE, totalCount)}`}
             </span>{" "}
             of{" "}

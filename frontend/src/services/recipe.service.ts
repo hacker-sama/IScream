@@ -4,7 +4,7 @@
  */
 import { apiClient } from "@/lib/api-client";
 import { API_ENDPOINTS } from "@/config";
-import type { ApiResponse, Recipe, PagedResult } from "@/types";
+import type { ApiResponse, Recipe, RecipeDetail, PagedResult } from "@/types";
 
 export const recipeService = {
   getAll: (page = 1, pageSize = 12, isActive = true) =>
@@ -20,5 +20,5 @@ export const recipeService = {
     ),
 
   getById: (id: string) =>
-    apiClient.get<ApiResponse<Recipe>>(API_ENDPOINTS.recipes.byId(id)),
+    apiClient.get<ApiResponse<RecipeDetail>>(API_ENDPOINTS.recipes.byId(id)),
 };

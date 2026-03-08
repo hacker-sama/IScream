@@ -2,18 +2,19 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import { membershipService } from "@/services/membership.service";
 import { recipeService } from "@/services/recipe.service";
-import { MaterialIcon, Button } from "@/components/ui";
+import { MaterialIcon, Badge, Button } from "@/components/ui";
 import type { Recipe } from "@/types";
 
 /* ─── Skeleton Card ─────────────────────────────────── */
 function SkeletonCard() {
     return (
-        <div className="flex flex-col gap-3 bg-white dark:bg-gray-900 p-4 rounded-2xl border border-gray-100 dark:border-gray-800 animate-pulse">
+        <div className="flex flex-col gap-4 rounded-2xl bg-white p-4 shadow-sm border border-transparent animate-pulse dark:bg-surface-dark">
             <div className="w-full aspect-[4/3] rounded-xl bg-gray-200 dark:bg-gray-800" />
-            <div className="px-1 pb-2 flex flex-col gap-2 mt-2">
+            <div className="px-2 pb-2 flex flex-col gap-2">
                 <div className="h-6 bg-gray-200 dark:bg-gray-800 rounded w-3/4" />
                 <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded w-1/2" />
             </div>
@@ -27,33 +28,35 @@ function PremiumRecipeCard({ recipe }: { recipe: Recipe }) {
         "https://lh3.googleusercontent.com/aida-public/AB6AXuAuml-kcfcPWeQBjMtTp9qNy2__FOkkxDJDXMp0QJqHwBlOeWZADpnNTXmemZ9LqvyaimNAdVs1EGRnnOUxNMUVxkrc0G9BGEVgFph5XOdJhYy2DbTEeql1E5LtYvl2Ozk2t1qF1tNfOu5xOilaYGbIWexibTqnCvXEQdONhyYHbLYA2E4Z1DZsnovxi6InrGGTvSbitgbig_XcxY6jjCD031OVC4KSu7-vM88HV18iiqoRA9Y0GU2N_YkcSxDgjCk_I1c9wmUBWrA";
 
     return (
-        <div className="group relative flex flex-col gap-3 bg-white dark:bg-gray-900 p-4 rounded-2xl shadow-lg hover:shadow-2xl hover:shadow-yellow-500/10 hover:-translate-y-2 transition-all duration-300 cursor-pointer border border-yellow-500/20 dark:border-white/5 hover:border-yellow-500/50">
-            <div
-                className="w-full aspect-[4/3] rounded-xl bg-gray-100 dark:bg-gray-800 bg-center bg-cover relative overflow-hidden"
-                style={{ backgroundImage: `url('${recipe.imageUrl || fallbackImg}')` }}
-            >
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent opacity-60 group-hover:opacity-40 transition-opacity" />
-                <div className="absolute top-3 right-3 bg-gradient-to-r from-yellow-500 to-yellow-400 text-white px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest shadow-lg shadow-yellow-500/30 flex items-center gap-1">
-                    <MaterialIcon name="star" filled className="text-[14px]" />
-                    VIP
+        <Link href={`/recipes/${recipe.id}`}>
+            <div className="group flex flex-col gap-4 rounded-2xl border border-transparent bg-white p-4 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:border-primary/10 hover:shadow-2xl hover:shadow-primary/10 dark:bg-surface-dark">
+                <div className="relative w-full overflow-hidden rounded-xl">
+                    <div
+                        className="w-full aspect-[4/3] bg-gray-100 dark:bg-gray-800 bg-center bg-cover transition-transform duration-500 group-hover:scale-105"
+                        style={{ backgroundImage: `url('${recipe.imageUrl || fallbackImg}')` }}
+                    />
+                    <div className="absolute right-3 top-3 flex items-center gap-1 rounded-full bg-amber-50/90 px-3 py-1 backdrop-blur-sm border border-amber-200/50">
+                        <MaterialIcon name="workspace_premium" filled className="text-[14px] text-amber-600" />
+                        <span className="text-xs font-bold text-amber-600">Premium</span>
+                    </div>
                 </div>
-            </div>
 
-            <div className="px-2 pb-2 mt-2 z-10">
-                <h3 className="text-xl font-bold leading-tight mb-2 text-text-main dark:text-white group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transition-colors">
-                    {recipe.flavorName}
-                </h3>
-                {recipe.shortDescription && (
-                    <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2">
-                        {recipe.shortDescription}
-                    </p>
-                )}
-                <div className="mt-4 flex items-center gap-2 text-yellow-600 dark:text-yellow-500/80 text-sm font-semibold uppercase tracking-wider group-hover:text-yellow-500 dark:group-hover:text-yellow-400 transition-colors">
-                    <span>Unlock Recipe</span>
-                    <MaterialIcon name="arrow_forward" className="text-[16px] group-hover:translate-x-1 transition-transform" />
+                <div className="px-2 pb-2">
+                    <h3 className="font-serif-display text-xl font-bold leading-tight text-text-main transition-colors group-hover:text-primary dark:text-white">
+                        {recipe.flavorName}
+                    </h3>
+                    {recipe.shortDescription && (
+                        <p className="mt-2 text-sm text-text-muted dark:text-gray-400 line-clamp-2">
+                            {recipe.shortDescription}
+                        </p>
+                    )}
+                    <div className="mt-3 flex items-center gap-1 text-sm font-semibold text-primary group-hover:gap-2 transition-all">
+                        <span>View Recipe</span>
+                        <MaterialIcon name="arrow_forward" className="text-[16px]" />
+                    </div>
                 </div>
             </div>
-        </div>
+        </Link>
     );
 }
 
@@ -77,18 +80,17 @@ export default function VipRecipesPage() {
             try {
                 const subStatus = await membershipService.getStatus();
                 if (subStatus?.status !== "ACTIVE") {
-                    router.push('/membership'); // Not VIP, redirect to buy
+                    router.push('/membership');
                     return;
                 }
                 setVerifying(false);
 
-                // Fetch recipes
-                const res = await recipeService.getAll(1, 48); // Load more for VIPs
+                const res = await recipeService.getAll(1, 48);
                 setRecipes(res.data?.items ?? []);
             } catch (err) {
                 console.error("Failed to load VIP data:", err);
-                setError("Failed to load your VIP recipes. Please try again.");
-                setVerifying(false); // Make sure to stop verifying so the error or reload UI shows up
+                setError("Failed to load your premium recipes. Please try again.");
+                setVerifying(false);
             } finally {
                 setLoading(false);
             }
@@ -99,78 +101,126 @@ export default function VipRecipesPage() {
 
     if (authLoading || verifying) {
         return (
-            <div className="flex justify-center items-center min-h-[80vh] bg-white dark:bg-gray-950 text-yellow-500 w-full fixed inset-0 z-50">
-                <div className="flex flex-col items-center gap-4">
-                    <MaterialIcon name="diamond" className="animate-pulse text-6xl text-yellow-500 drop-shadow-[0_0_15px_rgba(234,179,8,0.5)]" />
-                    <p className="text-sm font-bold tracking-[0.2em] uppercase">Verifying Premium Access...</p>
-                </div>
+            <div className="flex justify-center items-center min-h-[60vh]">
+                <div className="h-10 w-10 rounded-full border-4 border-primary border-t-transparent animate-spin" />
             </div>
         );
     }
 
     return (
-        <main className="min-h-screen bg-[#faf8f5] dark:bg-gray-950 text-text-main dark:text-white selection:bg-yellow-500/30">
-            {/* VIP Hero Section */}
-            <section className="relative w-full py-20 md:py-32 overflow-hidden flex flex-col items-center text-center px-4">
-                {/* Background effects */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-yellow-500/10 rounded-full blur-[120px] pointer-events-none" />
+        <div className="w-full max-w-[1024px] flex flex-col gap-16 md:gap-24">
+            {/* ── Hero Section ── */}
+            <section className="relative mt-6 md:mt-10 overflow-hidden rounded-[2.5rem] shadow-xl"
+                style={{
+                    background: "linear-gradient(135deg, #fffbe6 0%, #fff5d6 35%, #fff0f0 70%, #fff9f0 100%)",
+                }}
+            >
+                {/* Decorative blobs */}
+                <div className="pointer-events-none absolute -left-20 -top-20 h-72 w-72 rounded-full bg-amber-200/30 blur-3xl" />
+                <div className="pointer-events-none absolute -bottom-20 right-8 h-56 w-56 rounded-full bg-primary/10 blur-3xl" />
+                <div className="pointer-events-none absolute right-1/3 top-0 h-40 w-40 rounded-full bg-rose-200/20 blur-2xl" />
 
-                <div className="relative z-10 flex flex-col items-center">
-                    <div className="mb-8 inline-flex items-center gap-2 px-4 py-2 rounded-full border border-yellow-500/30 bg-yellow-500/10 text-yellow-600 dark:text-yellow-500 text-xs font-black uppercase tracking-[0.2em] shadow-[0_0_30px_rgba(234,179,8,0.2)]">
-                        <MaterialIcon name="workspace_premium" filled className="text-lg" />
+                <div className="relative flex flex-col items-center text-center p-8 md:p-16 gap-6">
+                    <Badge className="border border-amber-200 bg-amber-50 text-amber-600 dark:bg-amber-900/30 dark:text-amber-300">
+                        <MaterialIcon name="workspace_premium" className="text-sm" />
                         Premium Member Access
-                    </div>
+                    </Badge>
 
-                    <h1 className="text-5xl md:text-7xl font-serif-display font-black leading-tight tracking-tight mb-6 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-500 dark:from-white dark:via-white dark:to-white/60 bg-clip-text text-transparent">
-                        The Master<span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 to-yellow-600 dark:from-yellow-300 dark:to-yellow-600">Class</span> Vault
+                    <h1 className="font-serif-display text-5xl md:text-7xl font-black leading-[1.1] tracking-tight text-text-main">
+                        The Master<span className="gradient-text">Class</span> Vault
                     </h1>
 
-                    <p className="max-w-2xl text-lg md:text-xl text-gray-600 dark:text-gray-400 font-medium leading-relaxed">
-                        Welcome to the inner circle. As a premium member, you have full access to our most closely guarded recipes and techniques.
+                    <p className="max-w-2xl text-lg md:text-xl font-medium leading-relaxed text-text-muted">
+                        Welcome to the inner circle. As a premium member, you have full access
+                        to our most closely guarded recipes and techniques.
                     </p>
+
+                    <div className="flex flex-wrap gap-4 pt-2">
+                        <Button
+                            onClick={() => document.getElementById("vip-recipes")?.scrollIntoView({ behavior: "smooth" })}
+                            className="h-12 px-8 text-base shadow-lg shadow-primary/25 transition-all hover:scale-105 hover:shadow-primary/40"
+                        >
+                            Browse Recipes
+                            <MaterialIcon name="arrow_downward" className="ml-1" />
+                        </Button>
+                        <Link href="/recipes">
+                            <Button
+                                variant="outline"
+                                className="h-12 px-8 border-primary/30 text-base hover:border-primary hover:bg-primary/5"
+                            >
+                                All Recipes
+                            </Button>
+                        </Link>
+                    </div>
                 </div>
             </section>
 
-            {/* Recipes Grid Section */}
-            <section className="relative z-10 w-full max-w-[1400px] mx-auto px-6 pb-32">
-                <div className="flex items-center justify-between mb-12 border-b border-gray-200 dark:border-white/10 pb-6">
-                    <h2 className="text-3xl font-black tracking-tight flex items-center gap-3">
-                        <MaterialIcon name="auto_awesome" className="text-yellow-500" />
+            {/* ── Exclusive Recipes Grid ── */}
+            <section id="vip-recipes" className="rounded-[2rem] bg-white px-8 py-10 md:px-12 md:py-12 dark:bg-surface-dark">
+                <div className="flex items-center justify-between mb-8">
+                    <h2 className="font-serif-display text-3xl font-black text-text-main dark:text-white flex items-center gap-3">
+                        <MaterialIcon name="auto_awesome" className="text-primary" />
                         Exclusive Recipes
                     </h2>
                 </div>
 
                 {error ? (
-                    <div className="w-full py-20 flex flex-col items-center gap-6 text-center bg-white dark:bg-white/5 rounded-3xl border border-gray-200 dark:border-white/10 shadow-sm">
-                        <MaterialIcon name="error_outline" className="text-5xl text-red-400" />
-                        <p className="text-gray-600 dark:text-gray-400 max-w-md">{error}</p>
-                        <Button
-                            onClick={() => window.location.reload()}
-                            className="bg-yellow-500 hover:bg-yellow-400 text-white dark:text-black border-none"
-                        >
-                            Retry Connection
+                    <div className="w-full py-16 flex flex-col items-center gap-6 text-center">
+                        <div className="rounded-full bg-red-50 p-4">
+                            <MaterialIcon name="error_outline" className="text-4xl text-red-400" />
+                        </div>
+                        <p className="text-text-muted max-w-md">{error}</p>
+                        <Button onClick={() => window.location.reload()}>
+                            Try Again
                         </Button>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                         {loading ? (
-                            Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)
+                            Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)
                         ) : recipes.length === 0 ? (
-                            <div className="col-span-full py-32 text-center text-gray-400 dark:text-gray-500 flex flex-col items-center">
-                                <MaterialIcon name="inventory_2" className="text-6xl mb-6 opacity-50" />
-                                <p className="text-xl font-medium">The vault is currently empty.</p>
-                                <p className="text-sm mt-2">New exclusive recipes are being crafted right now.</p>
+                            <div className="col-span-full py-20 text-center flex flex-col items-center gap-4">
+                                <div className="rounded-full bg-gray-100 p-4">
+                                    <MaterialIcon name="inventory_2" className="text-4xl text-text-muted" />
+                                </div>
+                                <p className="text-lg font-medium text-text-muted">The vault is currently empty.</p>
+                                <p className="text-sm text-text-muted">New exclusive recipes are being crafted right now.</p>
                             </div>
                         ) : (
-                            recipes.map(r => (
-                                <div key={r.id} onClick={() => router.push(`/recipes/${r.id}`)}>
-                                    <PremiumRecipeCard recipe={r} />
-                                </div>
-                            ))
+                            recipes.map(r => <PremiumRecipeCard key={r.id} recipe={r} />)
                         )}
                     </div>
                 )}
             </section>
-        </main>
+
+            {/* ── Perks Section ── */}
+            <section className="mb-10 overflow-hidden rounded-[2.5rem] bg-white px-8 py-10 md:px-12 md:py-12 dark:bg-surface-dark">
+                <div className="flex flex-col items-center text-center gap-4 mb-10">
+                    <Badge className="border border-amber-200 bg-amber-50 text-amber-600">
+                        <MaterialIcon name="diamond" className="text-sm" />
+                        Member Perks
+                    </Badge>
+                    <h2 className="font-serif-display text-3xl font-black text-text-main dark:text-white">
+                        Your Premium Benefits
+                    </h2>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    {[
+                        { icon: "menu_book", title: "Full Recipe Access", desc: "Ingredients & procedures unlocked" },
+                        { icon: "auto_stories", title: "Early Book Access", desc: "Be the first to order new releases" },
+                        { icon: "storefront", title: "Exclusive Merch", desc: "Members-only gear & collectibles" },
+                        { icon: "icecream", title: "Secret Menu", desc: "Hidden flavors just for you" },
+                    ].map((perk) => (
+                        <div key={perk.title} className="flex flex-col items-center text-center gap-3 rounded-2xl bg-cream/50 p-6 dark:bg-white/5">
+                            <div className="rounded-full bg-primary/10 p-3 text-primary">
+                                <MaterialIcon name={perk.icon} className="text-2xl" />
+                            </div>
+                            <h3 className="font-bold text-text-main dark:text-white">{perk.title}</h3>
+                            <p className="text-sm text-text-muted">{perk.desc}</p>
+                        </div>
+                    ))}
+                </div>
+            </section>
+        </div>
     );
 }

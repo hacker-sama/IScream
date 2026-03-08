@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { recipeService } from "@/services";
-import { RequireAuth } from "@/components/auth/RequireAuth";
 import type { Recipe } from "@/types";
 
 /* ─── Skeleton Card ─────────────────────────────────── */
@@ -24,27 +24,29 @@ function RecipeCard({ recipe }: { recipe: Recipe }) {
     "https://lh3.googleusercontent.com/aida-public/AB6AXuAuml-kcfcPWeQBjMtTp9qNy2__FOkkxDJDXMp0QJqHwBlOeWZADpnNTXmemZ9LqvyaimNAdVs1EGRnnOUxNMUVxkrc0G9BGEVgFph5XOdJhYy2DbTEeql1E5LtYvl2Ozk2t1qF1tNfOu5xOilaYGbIWexibTqnCvXEQdONhyYHbLYA2E4Z1DZsnovxi6InrGGTvSbitgbig_XcxY6jjCD031OVC4KSu7-vM88HV18iiqoRA9Y0GU2N_YkcSxDgjCk_I1c9wmUBWrA";
 
   return (
-    <div className="group flex flex-col gap-3 bg-white dark:bg-gray-900 p-3 rounded-xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer border border-gray-100 dark:border-gray-800">
-      <div
-        className="w-full aspect-[4/3] rounded-lg bg-gray-200 dark:bg-gray-800 bg-center bg-cover relative overflow-hidden"
-        style={{ backgroundImage: `url('${recipe.imageUrl || fallbackImg}')` }}
-      >
-        <div className="absolute top-3 right-3 bg-primary text-white px-2 py-1 rounded text-xs font-bold uppercase tracking-wider shadow-lg">
-          Free
+    <Link href={`/recipes/${recipe.id}`}>
+      <div className="group flex flex-col gap-3 bg-white dark:bg-gray-900 p-3 rounded-xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer border border-gray-100 dark:border-gray-800">
+        <div
+          className="w-full aspect-[4/3] rounded-lg bg-gray-200 dark:bg-gray-800 bg-center bg-cover relative overflow-hidden"
+          style={{ backgroundImage: `url('${recipe.imageUrl || fallbackImg}')` }}
+        >
+          <div className="absolute top-3 right-3 bg-primary text-white px-2 py-1 rounded text-xs font-bold uppercase tracking-wider shadow-lg">
+            Free
+          </div>
+        </div>
+
+        <div className="px-1 pb-2">
+          <h3 className="text-lg font-bold leading-tight mb-1 group-hover:text-primary transition-colors">
+            {recipe.flavorName}
+          </h3>
+          {recipe.shortDescription && (
+            <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2">
+              {recipe.shortDescription}
+            </p>
+          )}
         </div>
       </div>
-
-      <div className="px-1 pb-2">
-        <h3 className="text-lg font-bold leading-tight mb-1 group-hover:text-primary transition-colors">
-          {recipe.flavorName}
-        </h3>
-        {recipe.shortDescription && (
-          <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2">
-            {recipe.shortDescription}
-          </p>
-        )}
-      </div>
-    </div>
+    </Link>
   );
 }
 
@@ -70,7 +72,7 @@ export default function RecipesPage() {
   }, [page]);
 
   return (
-    <RequireAuth featureName="recipes">
+    <div className="flex flex-col items-center w-full">
       {/* Hero Section */}
       <section className="w-full max-w-7xl py-8 md:py-12">
         <div className="bg-white dark:bg-gray-900 rounded-xl p-6 md:p-12 shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden relative">
@@ -221,6 +223,6 @@ export default function RecipesPage() {
           </div>
         )}
       </section>
-    </RequireAuth>
+    </div>
   );
 }

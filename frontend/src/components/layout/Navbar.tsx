@@ -79,7 +79,7 @@ function DesktopNavItem({ link }: { link: NavLink }) {
       <button
         className="flex items-center gap-1 text-sm font-semibold text-text-muted transition-colors hover:text-primary dark:text-gray-300 dark:hover:text-white"
         onClick={() => setOpen((v) => !v)}
-        aria-expanded={open}
+        aria-expanded={open ? "true" : "false"}
         aria-haspopup="true"
       >
         {link.label}
@@ -147,7 +147,7 @@ function MobileNavItem({
       <button
         className="flex items-center gap-3 text-lg font-semibold text-text-main transition-colors hover:text-primary dark:text-white"
         onClick={() => setExpanded((v) => !v)}
-        aria-expanded={expanded}
+        aria-expanded={expanded ? "true" : "false"}
       >
         {link.icon && (
           <MaterialIcon
@@ -199,8 +199,7 @@ export function Navbar() {
         {/* Logo */}
         <Link href={routes.home} className="flex items-center gap-3">
           <div
-            className="flex size-10 items-center justify-center rounded-full text-white"
-            style={{ background: "linear-gradient(135deg, #ee2b52, #ff8fa3)" }}
+            className="flex size-10 items-center justify-center rounded-full bg-logo-gradient text-white"
           >
             <MaterialIcon name="icecream" filled className="text-[22px]" />
           </div>

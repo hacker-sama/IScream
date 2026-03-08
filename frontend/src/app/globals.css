@@ -33,6 +33,11 @@
 /* ===== Dark mode toggle via class ===== */
 /* (Tailwind v4 uses @variant or media by default; we use the "class" strategy via CSS) */
 
+/* ===== Utility classes ===== */
+.bg-logo-gradient {
+  background: linear-gradient(135deg, #ee2b52, #ff8fa3);
+}
+
 /* ===== Base Styles ===== */
 body {
   @apply bg-background-light text-text-main overflow-x-hidden antialiased;
