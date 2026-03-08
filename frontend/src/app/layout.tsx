@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Nunito, Playfair_Display } from "next/font/google";
-import { Navbar } from "@/components/layout/Navbar";
-import { Footer } from "@/components/layout/Footer";
+import LayoutWrapper from "@/components/layout/LayoutWrapper";
 import { AuthProvider } from "@/context/AuthContext";
 import { siteConfig } from "@/config";
 import "./globals.css";
@@ -46,13 +45,7 @@ export default function RootLayout({
         className={`${nunito.variable} ${playfair.variable} font-display bg-background-light dark:bg-background-dark text-text-main dark:text-background-light overflow-x-hidden antialiased selection:bg-primary selection:text-white`}
       >
         <AuthProvider>
-          <div className="relative flex h-auto min-h-screen w-full flex-col">
-            <Navbar />
-            <main className="flex flex-1 flex-col items-center w-full px-4 md:px-10 pb-20">
-              {children}
-            </main>
-            <Footer />
-          </div>
+          <LayoutWrapper>{children}</LayoutWrapper>
         </AuthProvider>
       </body>
     </html>

@@ -5,7 +5,6 @@
  * Sidebar has grouped sections: CONTENT, COMMUNITY, SYSTEM.
  */
 
-import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { MaterialIcon } from "@/components/ui";
@@ -110,7 +109,6 @@ function NavGroup({
 export default function AdminShell({ children, activePage, pageTitle }: Props) {
   const router = useRouter();
   const user = tokenStorage.getUser();
-  const [darkMode, setDarkMode] = useState(false);
 
   function handleLogout() {
     tokenStorage.clear();
@@ -119,7 +117,7 @@ export default function AdminShell({ children, activePage, pageTitle }: Props) {
 
   return (
     <div
-      className="flex min-h-screen bg-[#f5f5f7]"
+      className="flex flex-1 overflow-hidden bg-[#f5f5f7]"
       style={{ fontFamily: "var(--font-display), Nunito, sans-serif" }}
     >
       {/* ── Sidebar ── */}
@@ -194,42 +192,6 @@ export default function AdminShell({ children, activePage, pageTitle }: Props) {
 
       {/* ── Main ── */}
       <div className="flex flex-1 flex-col overflow-hidden">
-        {/* Top bar */}
-        <header className="flex h-14 items-center justify-between border-b border-gray-100 bg-white px-8">
-          <h1 className="text-lg font-bold text-text-main">
-            {pageTitle ?? "Dashboard"}
-          </h1>
-
-          <div className="flex items-center gap-3">
-            {/* Search */}
-            <div className="relative hidden md:block">
-              <MaterialIcon
-                name="search"
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-[18px] text-gray-400"
-              />
-              <input
-                type="text"
-                placeholder="Search..."
-                className="h-9 w-56 rounded-full border border-gray-200 bg-gray-50 pl-9 pr-4 text-sm text-black outline-none focus:border-primary focus:bg-white focus:ring-2 focus:ring-primary/15"
-              />
-            </div>
-            {/* Bell */}
-            <button className="flex size-9 items-center justify-center rounded-full border border-gray-200 text-gray-500 hover:bg-gray-50">
-              <MaterialIcon name="notifications" className="text-[20px]" />
-            </button>
-            {/* Dark mode toggle */}
-            <button
-              onClick={() => setDarkMode((v) => !v)}
-              className="flex size-9 items-center justify-center rounded-full border border-gray-200 text-gray-500 hover:bg-gray-50"
-            >
-              <MaterialIcon
-                name={darkMode ? "light_mode" : "dark_mode"}
-                className="text-[20px]"
-              />
-            </button>
-          </div>
-        </header>
-
         {/* Page content */}
         <main className="flex-1 overflow-y-auto p-8">{children}</main>
 

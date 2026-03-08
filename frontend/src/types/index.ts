@@ -34,6 +34,10 @@ export interface Recipe {
   updatedAt: string;
 }
 
+export interface RecipeDetail extends Recipe {
+  isLocked: boolean;
+}
+
 /* ===== Item (Recipe Book) ===== */
 export interface Item {
   id: string;

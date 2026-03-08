@@ -173,7 +173,7 @@ function RecipeModal({
                             {mode === "create" ? "Add New Recipe" : "Edit Recipe"}
                         </h2>
                     </div>
-                    <button onClick={onClose} className="size-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-400">
+                    <button onClick={onClose} aria-label="Close" className="size-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-400">
                         <MaterialIcon name="close" className="text-[20px]" />
                     </button>
                 </div>
@@ -530,6 +530,7 @@ export default function AdminRecipesPage() {
                             <button
                                 onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                                 disabled={currentPage === 1}
+                                aria-label="Previous page"
                                 className="flex size-8 items-center justify-center rounded-full text-gray-400 transition hover:bg-gray-100 disabled:opacity-30"
                             >
                                 <MaterialIcon name="chevron_left" className="text-[20px]" />
@@ -544,6 +545,7 @@ export default function AdminRecipesPage() {
                             <button
                                 onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
                                 disabled={currentPage === totalPages}
+                                aria-label="Next page"
                                 className="flex size-8 items-center justify-center rounded-full text-gray-400 transition hover:bg-gray-100 disabled:opacity-30"
                             >
                                 <MaterialIcon name="chevron_right" className="text-[20px]" />
