@@ -30,6 +30,7 @@ namespace IScream.Data
         Task<List<Recipe>> ListRecipesAsync(bool? isActive, int page, int pageSize);
         Task<int> CountRecipesAsync(bool? isActive);
         Task<Recipe?> GetRecipeByIdAsync(Guid id);
+        Task<HashSet<Guid>> GetTopNActiveRecipeIdsAsync(int n);
         Task<Guid> CreateRecipeAsync(Recipe recipe);
         Task<bool> UpdateRecipeAsync(Recipe recipe);
         Task<bool> DeleteRecipeAsync(Guid id);

@@ -18,6 +18,7 @@ export default function SubmitRecipePage() {
     { amount: "", name: "" },
   ]);
   const [steps, setSteps] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [submissionId, setSubmissionId] = useState<string | null>(null);
@@ -57,6 +58,7 @@ export default function SubmitRecipePage() {
       description: description.trim() || undefined,
       ingredients: ingredientText || undefined,
       steps: steps.trim() || undefined,
+      imageUrl: imageUrl.trim() || undefined,
     };
 
     try {
@@ -80,6 +82,7 @@ export default function SubmitRecipePage() {
       { amount: "", name: "" },
     ]);
     setSteps("");
+    setImageUrl("");
     setError(null);
   };
 
@@ -256,6 +259,43 @@ export default function SubmitRecipePage() {
                     onChange={(e) => setSteps(e.target.value)}
                     className="form-textarea flex w-full min-w-0 resize-y rounded-2xl text-[#181112] dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/20 border border-[#e6dbdd] dark:border-[#4a2e34] bg-white dark:bg-[#2a151a] focus:border-primary placeholder:text-[#896169] p-6 text-base font-normal leading-normal transition-all"
                   />
+                </div>
+
+                {/* Image URL */}
+                <div className="flex flex-col gap-2">
+                  <label
+                    className="text-[#181112] dark:text-gray-100 text-base font-bold leading-normal"
+                    htmlFor="image-url"
+                  >
+                    Got a photo? Share the link!
+                  </label>
+                  <div className="relative">
+                    <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#896169] text-xl pointer-events-none">
+                      image
+                    </span>
+                    <input
+                      id="image-url"
+                      type="url"
+                      placeholder="https://example.com/my-ice-cream.jpg"
+                      value={imageUrl}
+                      onChange={(e) => setImageUrl(e.target.value)}
+                      className="form-input flex w-full min-w-0 resize-none overflow-hidden rounded-full text-[#181112] dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/20 border border-[#e6dbdd] dark:border-[#4a2e34] bg-white dark:bg-[#2a151a] focus:border-primary h-14 placeholder:text-[#896169] pl-12 pr-6 text-base font-normal leading-normal transition-all"
+                    />
+                  </div>
+                  {imageUrl.trim() && (
+                    <div className="mt-2 rounded-2xl overflow-hidden border border-[#e6dbdd] dark:border-[#4a2e34] w-48 h-36 bg-gray-50 dark:bg-[#2a151a]">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={imageUrl.trim()}
+                        alt="Preview"
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          (e.currentTarget as HTMLImageElement).style.display =
+                            "none";
+                        }}
+                      />
+                    </div>
+                  )}
                 </div>
 
                 {/* Submit Button */}
