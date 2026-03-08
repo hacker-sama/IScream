@@ -6,7 +6,7 @@
 export const routes = {
   home: "/",
   recipes: "/recipes",
-  orderBooks: "/order-books",
+  orderBooks: "/shop",
   addRecipe: "/submit",
   login: "/login",
   register: "/register",
