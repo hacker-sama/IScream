@@ -46,5 +46,15 @@ export const API_ENDPOINTS = Object.freeze({
       list: "/management/submissions",
       review: (id: string) => `/management/submissions/${id}/review`,
     },
+    orders: {
+      list: "/management/orders",
+      byId: (id: string) => `/management/orders/${id}`,
+      updateStatus: (id: string) => `/management/orders/${id}/status`,
+    },
+    feedbacks: {
+      list: "/management/feedbacks",
+      byId: (id: string) => `/management/feedbacks/${id}`,
+      markRead: (id: string) => `/management/feedbacks/${id}/mark-read`,
+    },
   },
 });

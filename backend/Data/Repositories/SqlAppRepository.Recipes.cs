@@ -54,6 +54,14 @@ namespace IScream.Data
                 "SELECT * FROM public_data.RECIPES WHERE Id = @Id",
                 [P("@Id", id)], MapRecipe);
 
+        public async Task<HashSet<Guid>> GetTopNActiveRecipeIdsAsync(int n)
+        {
+            var ids = await QueryAsync(
+                "SELECT TOP (@N) Id FROM public_data.RECIPES WHERE IsActive = 1 ORDER BY CreatedAt DESC",
+                [P("@N", n)], r => ReadGuid(r, "Id"));
+            return new HashSet<Guid>(ids);
+        }
+
         public async Task<Guid> CreateRecipeAsync(Recipe recipe)
         {
             var newId = Guid.NewGuid();
