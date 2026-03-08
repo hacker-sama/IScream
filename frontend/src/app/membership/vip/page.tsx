@@ -5,68 +5,47 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import { membershipService } from "@/services/membership.service";
-import { recipeService } from "@/services/recipe.service";
 import { MaterialIcon, Badge, Button } from "@/components/ui";
-import type { Recipe } from "@/types";
+import { PREMIUM_RECIPES, type PremiumRecipe } from "./recipes/data";
 
-/* ─── Skeleton Card ─────────────────────────────────── */
-function SkeletonCard() {
-    return (
-        <div className="flex flex-col gap-4 rounded-2xl bg-white p-4 shadow-sm border border-transparent animate-pulse dark:bg-surface-dark">
-            <div className="w-full aspect-[4/3] rounded-xl bg-gray-200 dark:bg-gray-800" />
-            <div className="px-2 pb-2 flex flex-col gap-2">
-                <div className="h-6 bg-gray-200 dark:bg-gray-800 rounded w-3/4" />
-                <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded w-1/2" />
-            </div>
+/* ─── Featured Recipe Card ─── */
+function FeaturedRecipeCard({ recipe }: { recipe: PremiumRecipe }) {
+  return (
+    <Link href={`/membership/vip/recipes/${recipe.slug}`}>
+      <div className="group flex flex-col rounded-2xl border border-transparent bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/10 hover:shadow-xl hover:shadow-primary/10 dark:bg-surface-dark overflow-hidden">
+        <div className="relative overflow-hidden">
+          <div
+            className="w-full aspect-[4/3] bg-gray-100 dark:bg-gray-800 bg-center bg-cover transition-transform duration-500 group-hover:scale-105"
+            style={{ backgroundImage: `url('${recipe.imageUrl}')` }}
+          />
+          <div className="absolute right-3 top-3 flex items-center gap-1 rounded-full bg-amber-50/90 px-3 py-1 backdrop-blur-sm border border-amber-200/50">
+            <MaterialIcon name="workspace_premium" filled className="text-[14px] text-amber-600" />
+            <span className="text-xs font-bold text-amber-600">Premium</span>
+          </div>
         </div>
-    );
-}
-
-/* ─── Premium Recipe Card ────────────────────────────────────── */
-function PremiumRecipeCard({ recipe }: { recipe: Recipe }) {
-    const fallbackImg =
-        "https://lh3.googleusercontent.com/aida-public/AB6AXuAuml-kcfcPWeQBjMtTp9qNy2__FOkkxDJDXMp0QJqHwBlOeWZADpnNTXmemZ9LqvyaimNAdVs1EGRnnOUxNMUVxkrc0G9BGEVgFph5XOdJhYy2DbTEeql1E5LtYvl2Ozk2t1qF1tNfOu5xOilaYGbIWexibTqnCvXEQdONhyYHbLYA2E4Z1DZsnovxi6InrGGTvSbitgbig_XcxY6jjCD031OVC4KSu7-vM88HV18iiqoRA9Y0GU2N_YkcSxDgjCk_I1c9wmUBWrA";
-
-    return (
-        <Link href={`/recipes/${recipe.id}`}>
-            <div className="group flex flex-col gap-4 rounded-2xl border border-transparent bg-white p-4 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:border-primary/10 hover:shadow-2xl hover:shadow-primary/10 dark:bg-surface-dark">
-                <div className="relative w-full overflow-hidden rounded-xl">
-                    <div
-                        className="w-full aspect-[4/3] bg-gray-100 dark:bg-gray-800 bg-center bg-cover transition-transform duration-500 group-hover:scale-105"
-                        style={{ backgroundImage: `url('${recipe.imageUrl || fallbackImg}')` }}
-                    />
-                    <div className="absolute right-3 top-3 flex items-center gap-1 rounded-full bg-amber-50/90 px-3 py-1 backdrop-blur-sm border border-amber-200/50">
-                        <MaterialIcon name="workspace_premium" filled className="text-[14px] text-amber-600" />
-                        <span className="text-xs font-bold text-amber-600">Premium</span>
-                    </div>
-                </div>
-
-                <div className="px-2 pb-2">
-                    <h3 className="font-serif-display text-xl font-bold leading-tight text-text-main transition-colors group-hover:text-primary dark:text-white">
-                        {recipe.flavorName}
-                    </h3>
-                    {recipe.shortDescription && (
-                        <p className="mt-2 text-sm text-text-muted dark:text-gray-400 line-clamp-2">
-                            {recipe.shortDescription}
-                        </p>
-                    )}
-                    <div className="mt-3 flex items-center gap-1 text-sm font-semibold text-primary group-hover:gap-2 transition-all">
-                        <span>View Recipe</span>
-                        <MaterialIcon name="arrow_forward" className="text-[16px]" />
-                    </div>
-                </div>
-            </div>
-        </Link>
-    );
+        <div className="flex flex-col gap-2 p-5">
+          <h3 className="font-serif-display text-lg font-bold leading-tight text-text-main transition-colors group-hover:text-primary dark:text-white">
+            {recipe.flavorName}
+          </h3>
+          {recipe.shortDescription && (
+            <p className="text-sm text-text-muted dark:text-gray-400 line-clamp-2">
+              {recipe.shortDescription}
+            </p>
+          )}
+          <div className="mt-1 flex items-center gap-1 text-sm font-semibold text-primary group-hover:gap-2 transition-all">
+            <span>View Recipe</span>
+            <MaterialIcon name="arrow_forward" className="text-[16px]" />
+          </div>
+        </div>
+      </div>
+    </Link>
+  );
 }
 
 export default function VipRecipesPage() {
     const router = useRouter();
     const { isLoggedIn, loading: authLoading } = useAuth();
     const [verifying, setVerifying] = useState(true);
-    const [loading, setLoading] = useState(true);
-    const [recipes, setRecipes] = useState<Recipe[]>([]);
-    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         if (authLoading) return;
@@ -76,27 +55,21 @@ export default function VipRecipesPage() {
             return;
         }
 
-        const verifyMembershipAndLoad = async () => {
+        const verifyMembership = async () => {
             try {
                 const subStatus = await membershipService.getStatus();
                 if (subStatus?.status !== "ACTIVE") {
                     router.push('/membership');
                     return;
                 }
-                setVerifying(false);
-
-                const res = await recipeService.getAll(1, 48);
-                setRecipes(res.data?.items ?? []);
             } catch (err) {
-                console.error("Failed to load VIP data:", err);
-                setError("Failed to load your premium recipes. Please try again.");
-                setVerifying(false);
+                console.error("Failed to verify membership:", err);
             } finally {
-                setLoading(false);
+                setVerifying(false);
             }
         };
 
-        verifyMembershipAndLoad();
+        verifyMembership();
     }, [isLoggedIn, authLoading, router]);
 
     if (authLoading || verifying) {
@@ -136,62 +109,30 @@ export default function VipRecipesPage() {
                     </p>
 
                     <div className="flex flex-wrap gap-4 pt-2">
-                        <Button
-                            onClick={() => document.getElementById("vip-recipes")?.scrollIntoView({ behavior: "smooth" })}
-                            className="h-12 px-8 text-base shadow-lg shadow-primary/25 transition-all hover:scale-105 hover:shadow-primary/40"
-                        >
-                            Browse Recipes
-                            <MaterialIcon name="arrow_downward" className="ml-1" />
-                        </Button>
                         <Link href="/recipes">
                             <Button
-                                variant="outline"
-                                className="h-12 px-8 border-primary/30 text-base hover:border-primary hover:bg-primary/5"
+                                className="h-12 px-8 text-base shadow-lg shadow-primary/25 transition-all hover:scale-105 hover:shadow-primary/40"
                             >
-                                All Recipes
+                                Browse Recipes
+                                <MaterialIcon name="arrow_forward" className="ml-1" />
                             </Button>
                         </Link>
                     </div>
                 </div>
             </section>
 
-            {/* ── Exclusive Recipes Grid ── */}
-            <section id="vip-recipes" className="rounded-[2rem] bg-white px-8 py-10 md:px-12 md:py-12 dark:bg-surface-dark">
-                <div className="flex items-center justify-between mb-8">
-                    <h2 className="font-serif-display text-3xl font-black text-text-main dark:text-white flex items-center gap-3">
-                        <MaterialIcon name="auto_awesome" className="text-primary" />
-                        Exclusive Recipes
-                    </h2>
+            {/* ── Featured Recipes ── */}
+            <section className="rounded-[2rem] bg-white px-8 py-10 md:px-12 md:py-12 dark:bg-surface-dark">
+                <div className="mb-8">
+                  <h2 className="font-serif-display text-3xl font-black text-text-main dark:text-white flex items-center gap-3">
+                    <MaterialIcon name="auto_awesome" className="text-primary" />
+                    Featured Recipes
+                  </h2>
                 </div>
-
-                {error ? (
-                    <div className="w-full py-16 flex flex-col items-center gap-6 text-center">
-                        <div className="rounded-full bg-red-50 p-4">
-                            <MaterialIcon name="error_outline" className="text-4xl text-red-400" />
-                        </div>
-                        <p className="text-text-muted max-w-md">{error}</p>
-                        <Button onClick={() => window.location.reload()}>
-                            Try Again
-                        </Button>
-                    </div>
-                ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {loading ? (
-                            Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)
-                        ) : recipes.length === 0 ? (
-                            <div className="col-span-full py-20 text-center flex flex-col items-center gap-4">
-                                <div className="rounded-full bg-gray-100 p-4">
-                                    <MaterialIcon name="inventory_2" className="text-4xl text-text-muted" />
-                                </div>
-                                <p className="text-lg font-medium text-text-muted">The vault is currently empty.</p>
-                                <p className="text-sm text-text-muted">New exclusive recipes are being crafted right now.</p>
-                            </div>
-                        ) : (
-                            recipes.map(r => <PremiumRecipeCard key={r.id} recipe={r} />)
-                        )}
-                    </div>
-                )}
-            </section>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                  {PREMIUM_RECIPES.map(r => <FeaturedRecipeCard key={r.slug} recipe={r} />)}
+                </div>
+              </section>
 
             {/* ── Perks Section ── */}
             <section className="mb-10 overflow-hidden rounded-[2.5rem] bg-white px-8 py-10 md:px-12 md:py-12 dark:bg-surface-dark">
