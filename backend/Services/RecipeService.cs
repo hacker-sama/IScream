@@ -44,11 +44,14 @@ namespace IScream.Services
             var recipe = await _repo.GetRecipeByIdAsync(id);
             if (recipe == null) return (null, "Recipe not found.");
 
-            bool hasActiveMembership = false;
-            if (userId.HasValue)
+            // Top 4 newest active recipes are free for any logged-in user
+            var top4Ids = await _repo.GetTopNActiveRecipeIdsAsync(4);
+            bool hasAccess = userId.HasValue && top4Ids.Contains(id);
+
+            if (!hasAccess && userId.HasValue)
             {
                 var sub = await _repo.GetActiveSubscriptionAsync(userId.Value);
-                hasActiveMembership = sub != null;
+                hasAccess = sub != null;
             }
 
             var response = new RecipeDetailResponse
@@ -59,9 +62,9 @@ namespace IScream.Services
                 ImageUrl = recipe.ImageUrl,
                 IsActive = recipe.IsActive,
                 CreatedAt = recipe.CreatedAt,
-                IsLocked = !hasActiveMembership,
-                Ingredients = hasActiveMembership ? recipe.Ingredients : null,
-                Procedure = hasActiveMembership ? recipe.Procedure : null
+                IsLocked = !hasAccess,
+                Ingredients = hasAccess ? recipe.Ingredients : null,
+                Procedure = hasAccess ? recipe.Procedure : null
             };
             return (response, string.Empty);
         }
