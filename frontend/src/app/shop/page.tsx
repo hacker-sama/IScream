@@ -192,31 +192,7 @@ export default function OrderBooksPage() {
         )}
       </section>
 
-      {/* CTA */}
-      <section className="w-full py-20 bg-gray-100 dark:bg-card-dark/50">
-        <div className="max-w-4xl mx-auto">
-          <div className="flex flex-col items-center text-center gap-6 rounded-3xl bg-white dark:bg-card-dark p-10 md:p-16 shadow-xl border border-gray-100 dark:border-white/5">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary mb-2">
-              <span className="material-symbols-outlined text-4xl">
-                lightbulb
-              </span>
-            </div>
-            <h2 className="text-3xl font-black tracking-tight text-gray-900 dark:text-white md:text-4xl">
-              Have a flavor idea?
-            </h2>
-            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-xl">
-              Our community is built on creativity. Submit your wildest recipe
-              ideas and if IScream picks it, it goes in our next book!
-            </p>
-            <Link
-              href={routes.addRecipe}
-              className="mt-4 flex min-w-[200px] items-center justify-center rounded-full bg-primary px-8 py-4 text-base font-bold text-white shadow-lg shadow-primary/30 transition-all hover:bg-red-600 hover:scale-105 hover:-translate-y-1"
-            >
-              Submit Recipe
-            </Link>
-          </div>
-        </div>
-      </section>
+
     </RequireAuth>
   );
 }

@@ -92,6 +92,13 @@ html {
 .material-symbols-outlined.filled {
   font-variation-settings: "FILL" 1;
 }
+.material-symbols-outlined.bold {
+  font-variation-settings: "wght" 700;
+}
+/* Dynamic rating bar width — set --bar-pct via inline style */
+.rating-bar-fill {
+  width: var(--bar-pct, 0%);
+}
 
 /* ===== Force input text color ===== */
 /* Ensure user-typed text is always black, not overridden by body color */
