@@ -14,9 +14,10 @@ import { routes } from "@/config";
 export type ActivePage =
   | "dashboard"
   | "recipes"
-  | "books"
+  | "orders"
   | "users"
   | "contributions"
+  | "feedback"
   | "settings";
 
 interface NavItem {
@@ -37,7 +38,12 @@ const NAV_STANDALONE: NavItem[] = [
 
 const NAV_CONTENT: NavItem[] = [
   { id: "recipes", label: "Recipes", icon: "icecream", href: "/admin/recipes" },
-  { id: "books", label: "Books", icon: "menu_book", href: "#" },
+  {
+    id: "orders",
+    label: "Orders",
+    icon: "shopping_cart",
+    href: "/admin/orders",
+  },
 ];
 
 const NAV_COMMUNITY: NavItem[] = [
@@ -52,6 +58,12 @@ const NAV_COMMUNITY: NavItem[] = [
     label: "Contributions",
     icon: "post_add",
     href: "/admin/contributions",
+  },
+  {
+    id: "feedback",
+    label: "Feedback",
+    icon: "chat_bubble",
+    href: "/admin/feedback",
   },
 ];
 

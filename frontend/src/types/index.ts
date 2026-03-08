@@ -52,18 +52,30 @@ export interface Item {
 }
 
 /* ===== Order ===== */
+export type OrderStatus =
+  | "PENDING"
+  | "PAID"
+  | "SHIPPED"
+  | "DELIVERED"
+  | "CANCELLED";
+
 export interface ItemOrder {
   id: string;
+  orderNo: string;
   customerName: string;
   email?: string;
   phone?: string;
   address?: string;
   itemId: string;
   quantity: number;
-  status: "PENDING" | "PAID" | "SHIPPED" | "DELIVERED" | "CANCELLED";
-  totalAmount: number;
+  unitPrice: number;
+  totalCost: number;
+  paymentId?: string;
+  status: OrderStatus;
   createdAt: string;
   updatedAt: string;
+  itemTitle?: string;
+  itemImageUrl?: string;
 }
 
 export interface CreateOrderRequest {
@@ -82,6 +94,8 @@ export interface Feedback {
   name?: string;
   email?: string;
   message: string;
+  isRead: boolean;
+  isRegisteredUser: boolean;
   createdAt: string;
 }
 
