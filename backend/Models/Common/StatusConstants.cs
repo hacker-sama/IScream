@@ -28,7 +28,7 @@ namespace IScream.Models
     {
         public const string Pending = "PENDING";
         public const string Paid = "PAID";
-        public const string Shipped = "SHIPPED";
+        public const string Shipped = "DELIVERED";
         public const string Delivered = "DELIVERED";
         public const string Completed = "COMPLETED";
         public const string Cancelled = "CANCELLED";

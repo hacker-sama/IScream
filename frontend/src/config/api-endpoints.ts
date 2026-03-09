@@ -24,6 +24,10 @@ export const API_ENDPOINTS = Object.freeze({
     create: "/orders",
     byId: (id: string) => `/orders/${id}`,
   },
+  payments: {
+    create: "/payments",
+    confirm: (id: string) => `/payments/${id}/confirm`,
+  },
   membership: {
     plans: "/membership/plans",
     me: "/membership/me",
@@ -31,6 +35,10 @@ export const API_ENDPOINTS = Object.freeze({
   },
   feedback: {
     create: "/feedback",
+  },
+  checkout: {
+    create: "/checkout",
+    pay: (id: string) => `/checkout/${id}/pay`,
   },
   submissions: {
     create: "/submissions",

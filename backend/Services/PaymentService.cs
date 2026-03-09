@@ -31,11 +31,11 @@ namespace IScream.Services
             if (req.Amount <= 0)
                 return (Guid.Empty, "Amount must be greater than 0.");
             if (string.IsNullOrWhiteSpace(req.Type))
-                return (Guid.Empty, "Type is required (ORDER | MEMBERSHIP).");
+                return (Guid.Empty, "Type is required (BOOK | MEMBERSHIP).");
 
-            var validTypes = new[] { "ORDER", "MEMBERSHIP" };
+            var validTypes = new[] { "BOOK", "MEMBERSHIP" };
             if (!validTypes.Contains(req.Type.ToUpper()))
-                return (Guid.Empty, "Type must be ORDER or MEMBERSHIP.");
+                return (Guid.Empty, "Type must be BOOK or MEMBERSHIP.");
 
             var payment = new Payment
             {
@@ -43,7 +43,7 @@ namespace IScream.Services
                 Amount = req.Amount,
                 Currency = string.IsNullOrWhiteSpace(req.Currency) ? "VND" : req.Currency.ToUpper(),
                 Type = req.Type.ToUpper(),
-                Status = "INIT"
+                Status = "PENDING"
             };
 
             var id = await _repo.CreatePaymentAsync(payment);
@@ -55,7 +55,7 @@ namespace IScream.Services
             var payment = await _repo.GetPaymentByIdAsync(paymentId);
             if (payment == null)
                 return (false, "Payment not found.");
-            if (payment.Status != "INIT")
+            if (payment.Status != "PENDING")
                 return (false, $"Payment is in {payment.Status} state and cannot be confirmed.");
 
             // --- Card validation ---
@@ -86,7 +86,7 @@ namespace IScream.Services
             // Side-effects based on Type
             if (req.LinkedEntityId.HasValue)
             {
-                if (payment.Type == "ORDER")
+                if (payment.Type == "BOOK")
                     await _repo.UpdateOrderStatusAsync(req.LinkedEntityId.Value, "PAID", paymentId);
                 else if (payment.Type == "MEMBERSHIP")
                     await _repo.UpdateSubscriptionStatusAsync(req.LinkedEntityId.Value, "ACTIVE", paymentId);
@@ -100,7 +100,7 @@ namespace IScream.Services
             var payment = await _repo.GetPaymentByIdAsync(paymentId);
             if (payment == null)
                 return (false, "Payment not found.");
-            if (payment.Status != "INIT")
+            if (payment.Status != "PENDING")
                 return (false, $"Payment is in {payment.Status} state and cannot be marked as failed.");
 
             var ok = await _repo.FailPaymentAsync(paymentId);
@@ -133,9 +133,6 @@ namespace IScream.Services
             var cardNum = (req.CardNumber ?? "").Replace(" ", "").Replace("-", "");
             if (string.IsNullOrEmpty(cardNum) || !System.Text.RegularExpressions.Regex.IsMatch(cardNum, @"^\d{13,19}$"))
                 return (false, "Invalid card number format.", string.Empty);
-
-            if (!LuhnCheck(cardNum))
-                return (false, "Card number failed Luhn check.", string.Empty);
 
             var expiry = (req.Expiry ?? "").Trim();
             if (!System.Text.RegularExpressions.Regex.IsMatch(expiry, @"^\d{2}/\d{2}$"))

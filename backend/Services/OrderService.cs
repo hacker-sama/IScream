@@ -20,7 +20,8 @@ namespace IScream.Services
     public class OrderService : IOrderService
     {
         private readonly IAppRepository _repo;
-        private static readonly string[] AllowedStatuses = ["SHIPPED", "DELIVERED", "CANCELLED", "PAID"];
+        // PROCESSING is set by the checkout payment flow. Only admin transitions are listed here.
+        private static readonly string[] AllowedStatuses = ["PROCESSING", "COMPLETED", "DELIVERED", "CANCELLED"];
 
         public OrderService(IAppRepository repo) => _repo = repo;
 

@@ -16,7 +16,7 @@ namespace IScream.Models
         public decimal UnitPrice { get; set; }
         public decimal TotalCost { get; set; }   // read-only (computed in DB)
         public Guid? PaymentId { get; set; }
-        public string Status { get; set; } = "PENDING"; // PENDING | PAID | SHIPPED | DELIVERED | CANCELLED
+        public string Status { get; set; } = "PENDING"; // PENDING | PROCESSING | COMPLETED | DELIVERED | CANCELLED
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
 
