@@ -21,7 +21,6 @@ namespace IScream.Data
             Currency = r["Currency"].ToString()!,
             Type = r["Type"].ToString()!,
             Status = r["Status"].ToString()!,
-            MetaJson = ReadNullString(r, "MetaJson"),
             CreatedAt = ReadDateTime(r, "CreatedAt")
         };
 
@@ -32,11 +31,11 @@ namespace IScream.Data
         {
             var newId = Guid.NewGuid();
             await ExecuteAsync("""
-                INSERT INTO public_data.PAYMENTS (Id, UserId, Amount, Currency, Type, Status, MetaJson, CreatedAt)
-                VALUES (@Id, @UserId, @Amount, @Currency, @Type, 'PENDING', @MetaJson, @CreatedAt)
+                INSERT INTO public_data.PAYMENTS (Id, UserId, Amount, Currency, Type, Status, CreatedAt)
+                VALUES (@Id, @UserId, @Amount, @Currency, @Type, 'PENDING', @CreatedAt)
                 """,
                 [P("@Id", newId), P("@UserId", payment.UserId), P("@Amount", payment.Amount),
-                 P("@Currency", payment.Currency), P("@Type", payment.Type), P("@MetaJson", payment.MetaJson),
+                 P("@Currency", payment.Currency), P("@Type", payment.Type),
                  P("@CreatedAt", DateTime.UtcNow)]);
             return newId;
         }
@@ -62,12 +61,10 @@ namespace IScream.Data
             return rows > 0;
         }
 
-        public async Task<bool> UpdatePaymentMetaAsync(Guid id, string metaJson)
+        public Task<bool> UpdatePaymentMetaAsync(Guid id, string metaJson)
         {
-            var rows = await ExecuteAsync(
-                "UPDATE public_data.PAYMENTS SET MetaJson = @MetaJson WHERE Id = @Id",
-                [P("@Id", id), P("@MetaJson", metaJson)]);
-            return rows > 0;
+            // MetaJson column does not exist in DB — no-op
+            return Task.FromResult(true);
         }
 
         public Task<List<Payment>> ListPaymentsAsync(Guid? userId, string? status, int page, int pageSize)

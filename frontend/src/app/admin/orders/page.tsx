@@ -10,24 +10,24 @@ import type { ItemOrder, OrderStatus } from "@/types";
 const STATUSES = [
   "All",
   "PENDING",
-  "PAID",
-  "SHIPPED",
+  "PROCESSING",
+  "COMPLETED",
   "DELIVERED",
   "CANCELLED",
 ] as const;
 
 const STATUS_STYLES: Record<OrderStatus, string> = {
   PENDING: "bg-yellow-100 text-yellow-700",
-  PAID: "bg-blue-100 text-blue-700",
-  SHIPPED: "bg-purple-100 text-purple-700",
+  PROCESSING: "bg-blue-100 text-blue-700",
+  COMPLETED: "bg-indigo-100 text-indigo-700",
   DELIVERED: "bg-green-100 text-green-700",
   CANCELLED: "bg-red-100 text-red-700",
 };
 
 const STATUS_DOT: Record<OrderStatus, string> = {
   PENDING: "bg-yellow-500",
-  PAID: "bg-blue-500",
-  SHIPPED: "bg-purple-500",
+  PROCESSING: "bg-blue-500",
+  COMPLETED: "bg-indigo-500",
   DELIVERED: "bg-green-500",
   CANCELLED: "bg-red-500",
 };
@@ -57,9 +57,9 @@ function OrderDetailModal({
   const [error, setError] = useState("");
 
   const allowedTransitions: Record<OrderStatus, OrderStatus[]> = {
-    PENDING: ["PAID", "CANCELLED"],
-    PAID: ["SHIPPED", "CANCELLED"],
-    SHIPPED: ["DELIVERED"],
+    PENDING: ["PROCESSING", "CANCELLED"],
+    PROCESSING: ["COMPLETED", "DELIVERED", "CANCELLED"],
+    COMPLETED: ["DELIVERED"],
     DELIVERED: [],
     CANCELLED: [],
   };
@@ -527,13 +527,13 @@ export default function AdminOrdersPage() {
                               />
                             </button>
 
-                            {/* Quick: Mark Shipped (from PAID) */}
-                            {order.status === "PAID" && (
+                            {/* Quick: Mark Delivered (from PROCESSING) */}
+                            {order.status === "PROCESSING" && (
                               <button
                                 onClick={() =>
-                                  quickStatusUpdate(order, "SHIPPED")
+                                  quickStatusUpdate(order, "DELIVERED")
                                 }
-                                title="Mark Shipped"
+                                title="Mark Delivered"
                                 className="flex size-8 items-center justify-center rounded-lg border border-gray-200 text-gray-400 transition hover:border-purple-300 hover:bg-purple-50 hover:text-purple-600"
                               >
                                 <MaterialIcon
@@ -543,8 +543,8 @@ export default function AdminOrdersPage() {
                               </button>
                             )}
 
-                            {/* Quick: Mark Delivered (from SHIPPED) */}
-                            {order.status === "SHIPPED" && (
+                            {/* Quick: Mark Delivered (from DELIVERED) */}
+                            {order.status === "DELIVERED" && (
                               <button
                                 onClick={() =>
                                   quickStatusUpdate(order, "DELIVERED")
@@ -559,9 +559,9 @@ export default function AdminOrdersPage() {
                               </button>
                             )}
 
-                            {/* Quick: Cancel (from PENDING or PAID) */}
+                            {/* Quick: Cancel (from PENDING or PROCESSING) */}
                             {(order.status === "PENDING" ||
-                              order.status === "PAID") && (
+                              order.status === "PROCESSING") && (
                               <button
                                 onClick={() =>
                                   quickStatusUpdate(order, "CANCELLED")

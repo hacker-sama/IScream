@@ -104,6 +104,17 @@ namespace IScream.Data
             decimal? prizeMoney, string? certUrl, string? reviewNote);
     }
 
+    public interface ICheckoutRepository
+    {
+        // Checkout uses ITEM_ORDERS for the order record and PAYMENTS for payment tracking.
+        // These helpers wrap both in one place so CheckoutService stays clean.
+        Task<(Guid orderId, string orderNo)> CreateCheckoutOrderAsync(Guid? userId, IScream.Models.CreateCheckoutRequest req, decimal unitPrice);
+        Task<Guid> CreateCheckoutPaymentAsync(Guid? userId, decimal amount, string currency);
+        Task<bool> SetOrderProcessingAsync(Guid orderId, Guid paymentId);
+        Task<bool> SetPaymentSuccessAsync(Guid paymentId);
+        Task<bool> SetPaymentFailedAsync(Guid paymentId);
+    }
+
     // =========================================================================
     // COMPOSITE INTERFACE
     // =========================================================================
@@ -115,7 +126,8 @@ namespace IScream.Data
         IPaymentRepository,
         IMembershipRepository,
         IFeedbackRepository,
-        ISubmissionRepository
+        ISubmissionRepository,
+        ICheckoutRepository
     {
     }
 }

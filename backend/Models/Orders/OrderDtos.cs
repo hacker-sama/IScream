@@ -15,7 +15,7 @@ namespace IScream.Models
 
     public class UpdateOrderStatusRequest
     {
-        public string Status { get; set; } = null!; // SHIPPED | DELIVERED | CANCELLED
+        public string Status { get; set; } = null!; // DELIVERED | DELIVERED | CANCELLED
     }
 
     public class OrderTrackRequest
