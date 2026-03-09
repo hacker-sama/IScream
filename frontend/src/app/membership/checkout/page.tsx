@@ -6,6 +6,7 @@ import { MaterialIcon, Badge } from "@/components/ui";
 import { routes } from "@/config";
 import { useAuth } from "@/context/AuthContext";
 import { membershipService } from "@/services";
+import { extractApiError } from "@/services";
 import type { MembershipPlan } from "@/types";
 
 import { Suspense } from "react";
@@ -17,6 +18,7 @@ function CheckoutContent() {
 
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
+    const [paymentError, setPaymentError] = useState<string | null>(null);
     const [plans, setPlans] = useState<MembershipPlan[]>([]);
     const [fetchingPlans, setFetchingPlans] = useState(true);
 
@@ -53,12 +55,13 @@ function CheckoutContent() {
         if (!planId) return;
 
         setLoading(true);
+        setPaymentError(null);
         try {
             // No real payment gateway — subscribe without a fakePaymentId; backend will create and confirm it.
             await membershipService.subscribe({ planId });
             setSuccess(true);
         } catch (error) {
-            alert(error instanceof Error ? error.message : "Failed to process payment");
+            setPaymentError(extractApiError(error, "Failed to process your payment. Please try again."));
         } finally {
             setLoading(false);
         }
@@ -240,6 +243,14 @@ function CheckoutContent() {
                         </label>
 
                         <div className="border-t border-gray-100 dark:border-white/10 my-2"></div>
+
+                        {/* Payment error */}
+                        {paymentError && (
+                            <div className="flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                                <MaterialIcon name="error" filled className="text-[16px] shrink-0" />
+                                <span>{paymentError}</span>
+                            </div>
+                        )}
 
                         {/* Submit */}
                         <button

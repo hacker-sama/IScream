@@ -120,13 +120,13 @@ namespace IScream.Services
             };
 
             var id = await _repo.CreatePlanAsync(plan);
-            return id > 0 ? (id, string.Empty) : (0, "Failed to create plan.");
+            return id > 0 ? (id, string.Empty) : (0, "Failed to create the membership plan. Please try again.");
         }
 
         public async Task<(bool ok, string error)> UpdatePlanAsync(int planId, UpdatePlanRequest req)
         {
             var existing = await _repo.GetPlanByIdAdminAsync(planId);
-            if (existing == null) return (false, "Plan not found.");
+            if (existing == null) return (false, "Membership plan not found or is no longer available.");
 
             existing.Code = req.Code?.Trim().ToUpper() ?? existing.Code;
             existing.Price = req.Price ?? existing.Price;
@@ -135,7 +135,7 @@ namespace IScream.Services
             existing.IsActive = req.IsActive ?? existing.IsActive;
 
             var ok = await _repo.UpdatePlanAsync(existing);
-            return (ok, ok ? string.Empty : "Update failed.");
+            return (ok, ok ? string.Empty : "Failed to update the membership plan. Please try again.");
         }
 
         public async Task<PagedResult<AppUser>> ListActiveMembersAsync(int page, int pageSize)

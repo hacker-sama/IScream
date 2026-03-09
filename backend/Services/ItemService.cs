@@ -45,7 +45,7 @@ namespace IScream.Services
         {
             var item = await _repo.GetItemByIdAsync(id);
             return item == null
-                ? (null, "Item not found.")
+                ? (null, "The requested item could not be found.")
                 : (item, string.Empty);
         }
 
@@ -76,7 +76,7 @@ namespace IScream.Services
         {
             var existing = await _repo.GetItemByIdAsync(id);
             if (existing == null)
-                return (false, "Item not found.");
+                return (false, "The requested item could not be found.");
 
             // Patch only provided fields
             existing.Title = req.Title?.Trim() ?? existing.Title;
@@ -87,15 +87,15 @@ namespace IScream.Services
             existing.Stock = req.Stock ?? existing.Stock;
 
             var ok = await _repo.UpdateItemAsync(existing);
-            return (ok, ok ? string.Empty : "Update failed.");
+            return (ok, ok ? string.Empty : "Failed to update the item. Please try again.");
         }
 
         public async Task<(bool ok, string error)> SoftDeleteAsync(Guid id)
         {
             var existing = await _repo.GetItemByIdAsync(id);
-            if (existing == null) return (false, "Item not found.");
+            if (existing == null) return (false, "The requested item could not be found.");
             var ok = await _repo.SoftDeleteItemAsync(id);
-            return (ok, ok ? string.Empty : "Deletion failed.");
+            return (ok, ok ? string.Empty : "Failed to delete the item. Please try again.");
         }
     }
 }

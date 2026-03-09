@@ -31,7 +31,7 @@ namespace IScream.Services
                 return (null, "Quantity must be at least 1.");
 
             var item = await _repo.GetItemByIdAsync(req.ItemId);
-            if (item == null) return (null, "Item not found.");
+            if (item == null) return (null, "The requested item is no longer available.");
             if (item.Stock < req.Quantity) return (null, $"Insufficient stock. Available: {item.Stock}.");
 
             var stockOk = await _repo.AdjustStockAsync(req.ItemId, -req.Quantity);
@@ -58,8 +58,8 @@ namespace IScream.Services
         {
             // Load the order to get amount + currency
             var order = await _repo.GetOrderByIdAsync(orderId);
-            if (order == null) return (null, "Checkout not found.");
-            if (order.Status != "PENDING") return (null, $"Checkout is already in '{order.Status}' state.");
+            if (order == null) return (null, "Checkout session not found. Please start a new order.");
+            if (order.Status != "PENDING") return (null, "This order has already been processed and cannot be paid again.");
 
             // Card format validation (mock — no real Luhn needed)
             var cardNum = (req.CardNumber ?? "").Replace(" ", "").Replace("-", "");

@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import AdminShell from "../_components/AdminShell";
 import { MaterialIcon } from "@/components/ui";
 import { adminFeedbackService } from "@/services/admin.feedback.service";
+import { extractApiError } from "@/services";
 import type { Feedback } from "@/types";
 
 // ── Read/Unread badge ─────────────────────────────────────────────────────────
@@ -42,7 +43,7 @@ function FeedbackDetailModal({
       await adminFeedbackService.markRead(feedback.id);
       onMarkedRead();
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Failed to mark as read.");
+      setError(extractApiError(err, "Failed to mark as read. Please try again."));
     } finally {
       setLoading(false);
     }
@@ -199,9 +200,7 @@ export default function AdminFeedbackPage() {
         setTotalPages(res.data.totalPages);
       }
     } catch (err: unknown) {
-      setError(
-        err instanceof Error ? err.message : "Failed to load feedbacks.",
-      );
+      setError(extractApiError(err, "Failed to load feedbacks. Please try again."));
     } finally {
       setLoading(false);
     }

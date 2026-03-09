@@ -5,6 +5,7 @@ import AdminShell from "../_components/AdminShell";
 import { adminSubmissionService, RecipeSubmission } from "@/services/admin.submission.service";
 import { adminRecipeService } from "@/services/admin.recipe.service";
 import { Button, MaterialIcon } from "@/components/ui";
+import { extractApiError } from "@/services";
 
 export default function AdminContributionsPage() {
     const [submissions, setSubmissions] = useState<RecipeSubmission[]>([]);
@@ -14,6 +15,7 @@ export default function AdminContributionsPage() {
     const [totalCount, setTotalCount] = useState(0);
     const [filterStatus, setFilterStatus] = useState<"ALL" | "PENDING" | "APPROVED" | "REJECTED">("ALL");
     const [actionLoading, setActionLoading] = useState<string | null>(null);
+    const [actionError, setActionError] = useState<string | null>(null);
 
     const pageSize = 10;
 
@@ -40,6 +42,7 @@ export default function AdminContributionsPage() {
     async function handleApproveAndPublish(sub: RecipeSubmission) {
         if (!confirm(`Are you sure you want to APPROVE this submission and PUBLISH it as a new recipe?`)) return;
         setActionLoading(sub.id);
+        setActionError(null);
         try {
             await adminSubmissionService.review(sub.id, true);
             // Also publish it to the recipes table!
@@ -53,7 +56,7 @@ export default function AdminContributionsPage() {
 
             await loadData();
         } catch (error) {
-            alert("Failed to approve and publish. The system may have been partially updated.");
+            setActionError(extractApiError(error, "Failed to approve and publish. The submission may have been partially updated."));
             console.error(error);
         } finally {
             setActionLoading(null);
@@ -63,11 +66,12 @@ export default function AdminContributionsPage() {
     async function handleReject(id: string) {
         if (!confirm(`Are you sure you want to REJECT this submission?`)) return;
         setActionLoading(id);
+        setActionError(null);
         try {
             await adminSubmissionService.review(id, false);
             await loadData();
         } catch (error) {
-            alert("Failed to reject submission");
+            setActionError(extractApiError(error, "Failed to reject the submission. Please try again."));
         } finally {
             setActionLoading(null);
         }
@@ -104,6 +108,17 @@ export default function AdminContributionsPage() {
                     ))}
                 </div>
             </div>
+
+            {/* Action error banner */}
+            {actionError && (
+                <div className="mb-4 flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                    <MaterialIcon name="error" filled className="text-[16px] shrink-0" />
+                    <span>{actionError}</span>
+                    <button onClick={() => setActionError(null)} className="ml-auto text-red-400 hover:text-red-600">
+                        <MaterialIcon name="close" className="text-[16px]" />
+                    </button>
+                </div>
+            )}
 
             {/* Table */}
             <div className="rounded-2xl bg-white p-5 shadow-sm border border-black/5">

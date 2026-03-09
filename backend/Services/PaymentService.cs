@@ -54,9 +54,9 @@ namespace IScream.Services
         {
             var payment = await _repo.GetPaymentByIdAsync(paymentId);
             if (payment == null)
-                return (false, "Payment not found.");
+                return (false, "Payment not found. Please contact support if this issue persists.");
             if (payment.Status != "PENDING")
-                return (false, $"Payment is in {payment.Status} state and cannot be confirmed.");
+                return (false, "This payment has already been processed and cannot be confirmed again.");
 
             // --- Card validation ---
             var (cardValid, cardError, last4) = ValidateCard(req, payment.Amount);
@@ -81,7 +81,7 @@ namespace IScream.Services
             // Update payment status → SUCCESS
             var confirmed = await _repo.ConfirmPaymentAsync(paymentId);
             if (!confirmed)
-                return (false, "Payment confirmation failed.");
+                return (false, "Payment confirmation failed. Please try again or contact support.");
 
             // Side-effects based on Type
             if (req.LinkedEntityId.HasValue)
@@ -99,18 +99,18 @@ namespace IScream.Services
         {
             var payment = await _repo.GetPaymentByIdAsync(paymentId);
             if (payment == null)
-                return (false, "Payment not found.");
+                return (false, "Payment not found. Please contact support if this issue persists.");
             if (payment.Status != "PENDING")
-                return (false, $"Payment is in {payment.Status} state and cannot be marked as failed.");
+                return (false, "This payment cannot be modified as it is no longer pending.");
 
             var ok = await _repo.FailPaymentAsync(paymentId);
-            return (ok, ok ? string.Empty : "Failed to update payment status.");
+            return (ok, ok ? string.Empty : "Failed to update payment status. Please try again.");
         }
 
         public async Task<(Payment? payment, string error)> GetByIdAsync(Guid id)
         {
             var payment = await _repo.GetPaymentByIdAsync(id);
-            return payment == null ? (null, "Payment not found.") : (payment, string.Empty);
+            return payment == null ? (null, "Payment not found. Please contact support if this issue persists.") : (payment, string.Empty);
         }
 
         public async Task<PagedResult<Payment>> ListAsync(Guid? userId, string? status, int page, int pageSize)
