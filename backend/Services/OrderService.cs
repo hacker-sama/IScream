@@ -15,6 +15,7 @@ namespace IScream.Services
         Task<PagedResult<ItemOrder>> ListAsync(string? status, int page, int pageSize);
         Task<(bool ok, string error)> UpdateStatusAsync(Guid id, string status, Guid? paymentId = null);
         Task<(ItemOrder? order, string error)> TrackOrderAsync(string orderNo, string email);
+        Task<List<ItemOrder>> ListMyOrdersAsync(Guid userId);
     }
 
     public class OrderService : IOrderService
@@ -110,6 +111,13 @@ namespace IScream.Services
 
             var order = await _repo.GetOrderByNoAndEmailAsync(orderNo.Trim(), email.Trim().ToLower());
             return order == null ? (null, "Order not found. Please check your order number and email.") : (order, string.Empty);
+        }
+
+        public async Task<List<ItemOrder>> ListMyOrdersAsync(Guid userId)
+        {
+            var user = await _repo.GetUserByIdAsync(userId);
+            if (user == null || string.IsNullOrWhiteSpace(user.Email)) return [];
+            return await _repo.ListOrdersByEmailAsync(user.Email.Trim().ToLower());
         }
     }
 }

@@ -86,6 +86,16 @@ namespace IScream.Data
                 """, parms, MapOrder);
         }
 
+        public Task<List<ItemOrder>> ListOrdersByEmailAsync(string email)
+            => QueryAsync("""
+                SELECT o.*, i.Title AS ItemTitle, i.ImageUrl AS ItemImageUrl
+                FROM public_data.ITEM_ORDERS o
+                JOIN public_data.ITEMS i ON i.Id = o.ItemId
+                WHERE o.Email = @Email
+                ORDER BY o.CreatedAt DESC
+                """,
+                [P("@Email", email)], MapOrder);
+
         public async Task<int> CountOrdersAsync(string? status)
         {
             var where = string.IsNullOrEmpty(status) ? "" : "WHERE Status = @Status";

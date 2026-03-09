@@ -14,4 +14,7 @@ export const orderService = {
 
   getById: (id: string) =>
     apiClient.get<ApiResponse<ItemOrder>>(API_ENDPOINTS.orders.byId(id)),
+
+  getMine: () =>
+    apiClient.get<ApiResponse<ItemOrder[]>>(API_ENDPOINTS.orders.mine),
 };

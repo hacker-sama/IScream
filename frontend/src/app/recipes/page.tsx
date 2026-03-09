@@ -229,13 +229,11 @@ export default function RecipesPage() {
       <section id="recipes-grid" className="w-full max-w-7xl pb-16">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-black">
-            {!isLoggedIn
-              ? "Recipes"
-              : loading
-                ? "Loading..."
-                : error
-                  ? "Error"
-                  : `${recipes.length > 0 ? "All Recipes" : "No Recipes Yet"}`}
+            {loading
+              ? "Loading..."
+              : error
+                ? "Error"
+                : `${recipes.length > 0 ? "All Recipes" : "No Recipes Yet"}`}
           </h2>
         </div>
 
@@ -254,47 +252,7 @@ export default function RecipesPage() {
           </div>
         )}
 
-        {/* Auth gate */}
-        {!authLoading && !isLoggedIn && (
-          <div className="w-full py-20 flex flex-col items-center gap-6 text-center">
-            <div className="bg-primary/10 p-5 rounded-full">
-              <span className="material-symbols-outlined text-5xl text-primary">
-                lock_person
-              </span>
-            </div>
-            <div>
-              <h2 className="text-2xl font-black mb-2">
-                Sign In to Browse Recipes
-              </h2>
-              <p className="text-gray-500 dark:text-gray-400 max-w-sm mx-auto">
-                Create a free account or log in to explore our collection of ice
-                cream recipes. The 4 latest recipes are free for all members!
-              </p>
-            </div>
-            <div className="flex flex-wrap gap-3 justify-center">
-              <Link
-                href="/login"
-                className="h-11 px-8 rounded-full bg-primary text-white font-bold text-sm shadow-lg shadow-primary/20 hover:bg-red-600 transition-all flex items-center gap-2"
-              >
-                <span className="material-symbols-outlined text-base">
-                  login
-                </span>
-                Log In
-              </Link>
-              <Link
-                href="/register"
-                className="h-11 px-8 rounded-full bg-white dark:bg-gray-800 border-2 border-gray-100 dark:border-gray-700 font-bold text-sm hover:border-primary/30 transition-all flex items-center gap-2"
-              >
-                <span className="material-symbols-outlined text-base">
-                  person_add
-                </span>
-                Create Account
-              </Link>
-            </div>
-          </div>
-        )}
-
-        {!error && isLoggedIn && (
+        {!error && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {loading ? (
               Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)
@@ -324,7 +282,7 @@ export default function RecipesPage() {
         )}
 
         {/* Pagination */}
-        {isLoggedIn && !loading && !error && totalPages > 1 && (
+        {!loading && !error && totalPages > 1 && (
           <div className="flex justify-center gap-3 mt-10">
             <button
               disabled={page === 1}
