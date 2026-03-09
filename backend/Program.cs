@@ -49,10 +49,10 @@ var connectionString = Environment.GetEnvironmentVariable("SqlConnectionString")
 
 // Validate JWT secret is configured (not using the insecure default)
 var jwtSecret = Environment.GetEnvironmentVariable("JwtSecretKey");
-if (string.IsNullOrWhiteSpace(jwtSecret) || jwtSecret.StartsWith("CHANGE_ME"))
-{
-    Console.WriteLine("WARNING: JwtSecretKey is not configured or using the default value. Set it in local.settings.json or App Settings.");
-}
+if (string.IsNullOrWhiteSpace(jwtSecret))
+    throw new InvalidOperationException("JwtSecretKey environment variable is required. Set it in local.settings.json or App Settings.");
+if (jwtSecret.Length < 32)
+    throw new InvalidOperationException("JwtSecretKey must be at least 32 characters long.");
 
 builder.Services.AddAppRepository(connectionString);
 

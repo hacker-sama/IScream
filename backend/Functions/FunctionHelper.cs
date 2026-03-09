@@ -15,12 +15,20 @@ namespace IScream.Functions
 {
     internal static class FunctionHelper
     {
-        private static readonly string JwtSecret =
-            Environment.GetEnvironmentVariable("JwtSecretKey") ?? "CHANGE_ME_32_CHARS_MIN_SECRET!!";
+        private static readonly string JwtSecret;
         private static readonly string JwtIssuer =
             Environment.GetEnvironmentVariable("JwtIssuer") ?? "iscream-api";
         private static readonly string JwtAudience =
             Environment.GetEnvironmentVariable("JwtAudience") ?? "iscream-client";
+
+        static FunctionHelper()
+        {
+            var secret = Environment.GetEnvironmentVariable("JwtSecretKey")
+                ?? throw new InvalidOperationException("JwtSecretKey environment variable is required.");
+            if (secret.Length < 32)
+                throw new InvalidOperationException("JwtSecretKey must be at least 32 characters long.");
+            JwtSecret = secret;
+        }
 
         /// <summary>
         /// Validates Bearer token and returns (userId, role), or null if invalid/missing.

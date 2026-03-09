@@ -36,7 +36,10 @@ namespace IScream.Services
         public AuthService(IAppRepository repo)
         {
             _repo = repo;
-            _jwtSecret = Environment.GetEnvironmentVariable("JwtSecretKey") ?? "CHANGE_ME_32_CHARS_MIN_SECRET!!";
+            _jwtSecret = Environment.GetEnvironmentVariable("JwtSecretKey")
+                ?? throw new InvalidOperationException("JwtSecretKey environment variable is required.");
+            if (_jwtSecret.Length < 32)
+                throw new InvalidOperationException("JwtSecretKey must be at least 32 characters long.");
             _jwtIssuer = Environment.GetEnvironmentVariable("JwtIssuer") ?? "iscream-api";
             _jwtAudience = Environment.GetEnvironmentVariable("JwtAudience") ?? "iscream-client";
         }

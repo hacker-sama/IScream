@@ -1,10 +1,10 @@
 import { tokenStorage } from "@/services/auth.service";
 
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL ??
-  "https://iscream-d2bcdxh5aqhsd5fd.southeastasia-01.azurewebsites.net/api"
-  // "http://localhost:7071/api"
-  ;
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+
+if (!API_BASE_URL) {
+  throw new Error("NEXT_PUBLIC_API_URL environment variable is required.");
+}
 
 type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
