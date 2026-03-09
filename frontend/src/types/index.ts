@@ -54,8 +54,8 @@ export interface Item {
 /* ===== Order ===== */
 export type OrderStatus =
   | "PENDING"
-  | "PAID"
-  | "SHIPPED"
+  | "PROCESSING"
+  | "COMPLETED"
   | "DELIVERED"
   | "CANCELLED";
 

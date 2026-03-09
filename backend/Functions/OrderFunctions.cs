@@ -117,7 +117,7 @@ namespace IScream.Functions
 
         [Function("Admin_Orders_List")]
         [OpenApiOperation(operationId: "Admin_Orders_List", tags: new[] { "Admin — Orders" }, Summary = "List orders (Admin)", Description = "Returns a paginated list of orders with optional status filter. Requires ADMIN role.")]
-        [OpenApiParameter(name: "status", In = ParameterLocation.Query, Required = false, Type = typeof(string), Description = "Filter by status (PENDING, PAID, SHIPPED, DELIVERED, CANCELLED)")]
+        [OpenApiParameter(name: "status", In = ParameterLocation.Query, Required = false, Type = typeof(string), Description = "Filter by status (PENDING, PAID, DELIVERED, DELIVERED, CANCELLED)")]
         [OpenApiParameter(name: "page", In = ParameterLocation.Query, Required = false, Type = typeof(int), Description = "Page number (default: 1)")]
         [OpenApiParameter(name: "pageSize", In = ParameterLocation.Query, Required = false, Type = typeof(int), Description = "Page size (default: 20)")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ApiResponse<PagedResult<ItemOrder>>), Description = "Paginated order list")]

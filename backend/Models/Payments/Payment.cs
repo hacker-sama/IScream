@@ -2,7 +2,7 @@
 
 namespace IScream.Models
 {
-    /// <summary>public_data.PAYMENTS — Type: MEMBERSHIP | ORDER</summary>
+    /// <summary>public_data.PAYMENTS — Type: MEMBERSHIP | BOOK</summary>
     public class Payment
     {
         public Guid Id { get; set; }
@@ -10,7 +10,7 @@ namespace IScream.Models
         public decimal Amount { get; set; }
         public string Currency { get; set; } = "VND";
         public string Type { get; set; } = null!;
-        public string Status { get; set; } = "INIT";  // INIT | SUCCESS | FAILED
+        public string Status { get; set; } = "PENDING";  // PENDING | SUCCESS | FAILED
         public string? MetaJson { get; set; }
         public DateTime CreatedAt { get; set; }
     }

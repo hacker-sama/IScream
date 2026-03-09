@@ -8,7 +8,7 @@ namespace IScream.Models
         public Guid? UserId { get; set; }
         public decimal Amount { get; set; }
         public string Currency { get; set; } = "VND";
-        public string Type { get; set; } = null!; // MEMBERSHIP | ORDER
+        public string Type { get; set; } = null!; // BOOK | MEMBERSHIP
     }
 
     public class ConfirmPaymentRequest

@@ -95,12 +95,22 @@ namespace IScream.Data
 
         public async Task<bool> UpdateOrderStatusAsync(Guid id, string status, Guid? paymentId = null)
         {
-            var rows = await ExecuteAsync("""
-                UPDATE public_data.ITEM_ORDERS
-                SET Status = @Status, PaymentId = COALESCE(@PaymentId, PaymentId)
-                WHERE Id = @Id
-                """,
-                [P("@Id", id), P("@Status", status), P("@PaymentId", paymentId)]);
+            int rows;
+            if (paymentId.HasValue)
+            {
+                rows = await ExecuteAsync("""
+                    UPDATE public_data.ITEM_ORDERS
+                    SET Status = @Status, PaymentId = @PaymentId
+                    WHERE Id = @Id
+                    """,
+                    [P("@Id", id), P("@Status", status), P("@PaymentId", paymentId.Value)]);
+            }
+            else
+            {
+                rows = await ExecuteAsync(
+                    "UPDATE public_data.ITEM_ORDERS SET Status = @Status WHERE Id = @Id",
+                    [P("@Id", id), P("@Status", status)]);
+            }
             return rows > 0;
         }
 

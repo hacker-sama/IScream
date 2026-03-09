@@ -6,7 +6,7 @@ import Link from "next/link";
 import { MaterialIcon } from "@/components/ui";
 import { routes } from "@/config";
 import { useAuth } from "@/context/AuthContext";
-import { itemService, orderService } from "@/services";
+import { itemService, checkoutService } from "@/services";
 import type { Item } from "@/types";
 
 function CheckoutContent() {
@@ -19,9 +19,16 @@ function CheckoutContent() {
   const [item, setItem] = useState<Item | null>(null);
   const [fetchingItem, setFetchingItem] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [orderId, setOrderId] = useState<string | null>(null);
+  const [step, setStep] = useState<"order" | "payment" | "done">("order");
+  const [checkoutId, setCheckoutId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [cardForm, setCardForm] = useState({
+    cardNumber: "",
+    expiry: "",
+    cvv: "",
+  });
+  const [paying, setPaying] = useState(false);
+  const [payError, setPayError] = useState<string | null>(null);
 
   const [form, setForm] = useState({
     customerName: "",
@@ -79,15 +86,38 @@ function CheckoutContent() {
     setSubmitting(true);
     setError(null);
     try {
-      const res = await orderService.placeOrder({ ...form, itemId: item.id });
-      setOrderId(res.data?.orderId ?? "N/A");
-      setSuccess(true);
+      const res = await checkoutService.create({ ...form, itemId: item.id });
+      setCheckoutId(res.data?.checkoutId ?? null);
+      setStep("payment");
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Order failed. Please try again.",
       );
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const handlePayment = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!item || !checkoutId) return;
+    setPaying(true);
+    setPayError(null);
+    try {
+      await checkoutService.pay(checkoutId, {
+        cardNumber: cardForm.cardNumber,
+        expiry: cardForm.expiry,
+        cvv: cardForm.cvv,
+      });
+      setStep("done");
+    } catch (err) {
+      setPayError(
+        err instanceof Error
+          ? err.message
+          : "Payment failed. Please try again.",
+      );
+    } finally {
+      setPaying(false);
     }
   };
 
@@ -109,7 +139,129 @@ function CheckoutContent() {
       ? item.price.toLocaleString("vi-VN") + " " + (item.currency || "VND")
       : String(item.price);
 
-  if (success) {
+  if (step === "payment") {
+    const totalLabel =
+      typeof item.price === "number"
+        ? (item.price * form.quantity).toLocaleString("vi-VN") +
+          " " +
+          (item.currency || "VND")
+        : String(item.price);
+    return (
+      <div className="flex w-full min-h-[80vh] flex-col items-center justify-center py-20 bg-gradient-to-br from-[#ffe5ec] to-[#f8edeb] dark:from-surface-dark dark:to-[#2a1a1e]">
+        <div className="w-full max-w-md mx-4 rounded-[2.5rem] bg-white p-10 shadow-2xl shadow-primary/10 dark:bg-surface-dark border border-gray-100 dark:border-white/5">
+          <div className="flex items-center gap-3 mb-8">
+            <div className="flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary">
+              <MaterialIcon name="credit_card" filled className="text-2xl" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold text-text-main dark:text-white">
+                Payment
+              </h2>
+              <p className="text-sm text-text-muted">
+                Order #{checkoutId?.slice(-8)}
+              </p>
+            </div>
+          </div>
+
+          <div className="mb-6 rounded-2xl bg-gray-50 dark:bg-black/20 px-5 py-4 flex justify-between items-center">
+            <span className="text-sm text-text-muted font-medium">
+              Total due
+            </span>
+            <span className="font-black text-lg text-text-main dark:text-white">
+              {totalLabel}
+            </span>
+          </div>
+
+          {payError && (
+            <div className="mb-6 rounded-2xl bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 px-5 py-4 text-sm font-medium border border-red-200 dark:border-red-800">
+              {payError}
+            </div>
+          )}
+
+          <form onSubmit={handlePayment} className="flex flex-col gap-5">
+            <div className="flex flex-col gap-2">
+              <label className="text-sm font-bold text-text-main dark:text-white">
+                Card Number
+              </label>
+              <div className="relative">
+                <MaterialIcon
+                  name="credit_card"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+                />
+                <input
+                  type="text"
+                  required
+                  placeholder="1234 5678 9012 3456"
+                  maxLength={19}
+                  value={cardForm.cardNumber}
+                  onChange={(e) =>
+                    setCardForm((f) => ({ ...f, cardNumber: e.target.value }))
+                  }
+                  className="w-full rounded-full border border-gray-200 bg-gray-50/50 py-3.5 pl-12 pr-4 text-text-main outline-none focus:border-primary focus:ring-1 focus:ring-primary dark:border-white/10 dark:bg-black/20 dark:text-white"
+                />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="flex flex-col gap-2">
+                <label className="text-sm font-bold text-text-main dark:text-white">
+                  Expiry
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="MM/YY"
+                  maxLength={5}
+                  value={cardForm.expiry}
+                  onChange={(e) =>
+                    setCardForm((f) => ({ ...f, expiry: e.target.value }))
+                  }
+                  className="w-full rounded-full border border-gray-200 bg-gray-50/50 py-3.5 px-4 text-text-main outline-none focus:border-primary focus:ring-1 focus:ring-primary dark:border-white/10 dark:bg-black/20 dark:text-white"
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <label className="text-sm font-bold text-text-main dark:text-white">
+                  CVV
+                </label>
+                <input
+                  type="password"
+                  required
+                  placeholder="•••"
+                  maxLength={4}
+                  value={cardForm.cvv}
+                  onChange={(e) =>
+                    setCardForm((f) => ({ ...f, cvv: e.target.value }))
+                  }
+                  className="w-full rounded-full border border-gray-200 bg-gray-50/50 py-3.5 px-4 text-text-main outline-none focus:border-primary focus:ring-1 focus:ring-primary dark:border-white/10 dark:bg-black/20 dark:text-white"
+                />
+              </div>
+            </div>
+            <button
+              type="submit"
+              disabled={paying}
+              className="mt-2 rounded-full bg-primary py-4 font-bold text-white text-base shadow-lg shadow-primary/20 hover:bg-red-600 hover:scale-[1.02] transition-all disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center gap-2"
+            >
+              {paying ? (
+                <>
+                  <MaterialIcon name="sync" className="animate-spin text-lg" />
+                  Processing...
+                </>
+              ) : (
+                <>
+                  <MaterialIcon name="lock" className="text-lg" />
+                  Pay {totalLabel}
+                </>
+              )}
+            </button>
+          </form>
+          <p className="mt-5 text-center text-xs text-text-muted">
+            This is a mock payment — no real card is charged.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (step === "done") {
     return (
       <div className="flex w-full min-h-[80vh] flex-col items-center justify-center py-20 bg-gradient-to-br from-[#ffe5ec] to-[#f8edeb] dark:from-surface-dark dark:to-[#2a1a1e]">
         <div className="flex flex-col items-center gap-6 rounded-[2.5rem] bg-white px-12 py-16 text-center shadow-2xl shadow-primary/10 max-w-xl w-full mx-4 dark:bg-surface-dark border sm:border-transparent border-gray-100">
@@ -118,35 +270,32 @@ function CheckoutContent() {
           </div>
           <div>
             <h2 className="text-4xl font-black text-text-main dark:text-white mb-2">
-              Order Placed! 🎉
+              Payment Confirmed! 🎉
             </h2>
             <p className="mt-2 text-lg text-text-muted">
               Your order for{" "}
               <span className="font-bold text-text-main dark:text-white">
                 {item.title}
               </span>{" "}
-              has been received.
+              has been paid and is being processed.
             </p>
           </div>
-          {orderId && (
+          {checkoutId && (
             <div className="w-full rounded-2xl bg-gray-50 dark:bg-black/20 px-6 py-4 text-left">
               <p className="text-xs font-bold uppercase tracking-wide text-text-muted mb-1">
                 Order ID
               </p>
               <code className="text-sm font-mono text-text-main dark:text-white break-all">
-                {orderId}
+                {checkoutId}
               </code>
             </div>
           )}
-          <p className="text-sm text-text-muted">
-            We will contact you as soon as possible!
-          </p>
           <div className="flex flex-col gap-3 w-full mt-2">
             <button
               onClick={() => router.push(routes.orderBooks)}
               className="rounded-full bg-primary px-10 py-4 font-bold text-white shadow-lg shadow-primary/20 hover:bg-red-600 hover:scale-105 transition-all"
             >
-              Browse More Books
+              Browse More
             </button>
             <button
               onClick={() => router.push(routes.profile)}
