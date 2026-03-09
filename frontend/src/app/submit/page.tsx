@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { submissionService } from "@/services";
+import { extractApiError } from "@/services";
 import { RequireAuth } from "@/components/auth/RequireAuth";
 import type { CreateSubmissionRequest } from "@/types";
 
@@ -65,8 +66,8 @@ export default function SubmitRecipePage() {
       const res = await submissionService.submit(payload);
       setSubmissionId(res.data?.submissionId ?? null);
       setSuccess(true);
-    } catch {
-      setError("Failed to submit recipe. Please try again.");
+    } catch (err) {
+      setError(extractApiError(err, "Failed to submit recipe. Please try again."));
     } finally {
       setSubmitting(false);
     }

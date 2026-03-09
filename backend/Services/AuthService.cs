@@ -111,7 +111,7 @@ namespace IScream.Services
         {
             var user = await _repo.GetUserByIdAsync(userId);
             if (user == null)
-                return (null, "User not found.");
+                return (null, "Your account could not be found. Please log in again.");
 
             return (new UserInfo
             {
@@ -127,7 +127,7 @@ namespace IScream.Services
         {
             var user = await _repo.GetUserByIdAsync(userId);
             if (user == null)
-                return (false, "User not found.");
+                return (false, "Your account could not be found. Please log in again.");
 
             // If email is being changed, check uniqueness
             if (!string.IsNullOrWhiteSpace(req.Email))
@@ -146,7 +146,7 @@ namespace IScream.Services
                 req.FullName?.Trim() ?? user.FullName,
                 !string.IsNullOrWhiteSpace(req.Email) ? req.Email.Trim().ToLower() : user.Email);
 
-            return (ok, ok ? string.Empty : "Update failed.");
+            return (ok, ok ? string.Empty : "Failed to update your profile. Please try again.");
         }
 
         public async Task<(bool ok, string error)> ChangePasswordAsync(Guid userId, ChangePasswordRequest req)
@@ -156,14 +156,14 @@ namespace IScream.Services
 
             var user = await _repo.GetUserByIdAsync(userId);
             if (user == null)
-                return (false, "User not found.");
+                return (false, "Your account could not be found. Please log in again.");
 
             if (!BC.Verify(req.OldPassword, user.PasswordHash!))
                 return (false, "Old password is incorrect.");
 
             var newHash = BC.HashPassword(req.NewPassword);
             var ok = await _repo.UpdatePasswordHashAsync(userId, newHash);
-            return (ok, ok ? string.Empty : "Password change failed.");
+            return (ok, ok ? string.Empty : "Failed to change your password. Please try again.");
         }
 
         public async Task<PagedResult<UserSummary>> ListUsersAsync(int page, int pageSize)
@@ -194,7 +194,7 @@ namespace IScream.Services
             var user = await _repo.GetUserByIdAsync(userId);
             if (user == null) return (false, "User not found.");
             var ok = await _repo.SetUserActiveAsync(userId, isActive);
-            return (ok, ok ? string.Empty : "Failed to update user status.");
+            return (ok, ok ? string.Empty : "Failed to update user status. Please try again.");
         }
 
         private string GenerateJwt(AppUser user)

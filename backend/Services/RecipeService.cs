@@ -36,13 +36,13 @@ namespace IScream.Services
         public async Task<(Recipe? recipe, string error)> GetByIdAsync(Guid id)
         {
             var r = await _repo.GetRecipeByIdAsync(id);
-            return r == null ? (null, "Recipe not found.") : (r, string.Empty);
+            return r == null ? (null, "Recipe not found or is no longer available.") : (r, string.Empty);
         }
 
         public async Task<(RecipeDetailResponse? detail, string error)> GetDetailAsync(Guid id, Guid? userId)
         {
             var recipe = await _repo.GetRecipeByIdAsync(id);
-            if (recipe == null) return (null, "Recipe not found.");
+            if (recipe == null) return (null, "Recipe not found or is no longer available.");
 
             // Top 4 newest active recipes are free for any logged-in user
             var top4Ids = await _repo.GetTopNActiveRecipeIdsAsync(4);
@@ -91,7 +91,7 @@ namespace IScream.Services
         public async Task<(bool ok, string error)> UpdateAsync(Guid id, UpdateRecipeRequest req)
         {
             var existing = await _repo.GetRecipeByIdAsync(id);
-            if (existing == null) return (false, "Recipe not found.");
+            if (existing == null) return (false, "Recipe not found or is no longer available.");
 
             existing.FlavorName = req.FlavorName?.Trim() ?? existing.FlavorName;
             existing.ShortDescription = req.ShortDescription?.Trim() ?? existing.ShortDescription;
@@ -101,16 +101,16 @@ namespace IScream.Services
             existing.IsActive = req.IsActive ?? existing.IsActive;
 
             var ok = await _repo.UpdateRecipeAsync(existing);
-            return (ok, ok ? string.Empty : "Update failed.");
+            return (ok, ok ? string.Empty : "Failed to update the recipe. Please try again.");
         }
 
         public async Task<(bool ok, string error)> SoftDeleteAsync(Guid id)
         {
             var existing = await _repo.GetRecipeByIdAsync(id);
-            if (existing == null) return (false, "Recipe not found.");
+            if (existing == null) return (false, "Recipe not found or is no longer available.");
 
             var ok = await _repo.DeleteRecipeAsync(id);
-            return (ok, ok ? string.Empty : "Deletion failed.");
+            return (ok, ok ? string.Empty : "Failed to delete the recipe. Please try again.");
         }
     }
 }

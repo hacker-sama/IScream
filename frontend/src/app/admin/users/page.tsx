@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import AdminShell from "../_components/AdminShell";
 import { MaterialIcon } from "@/components/ui";
 import { apiClient } from "@/lib/api-client";
+import { extractApiError } from "@/services";
 import type { ApiResponse, PagedResult } from "@/types";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -177,7 +178,7 @@ function AddUserModal({
       });
       onSaved();
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Failed to create user.");
+      setError(extractApiError(err, "Failed to create user. Please try again."));
     } finally {
       setLoading(false);
     }

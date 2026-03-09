@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import { authService, type UserInfo } from "@/services/auth.service";
 import { membershipService } from "@/services/membership.service";
+import { extractApiError } from "@/services";
 import type { MembershipSubscription } from "@/types";
 import { MaterialIcon, Button, Badge } from "@/components/ui";
 
@@ -49,7 +50,7 @@ export default function ProfilePage() {
       setSubscription(subData);
     } catch (err) {
       setMessage({
-        text: err instanceof Error ? err.message : "Failed to load profile",
+        text: extractApiError(err, "Failed to load profile. Please try again."),
         type: "error",
       });
     } finally {
@@ -69,7 +70,7 @@ export default function ProfilePage() {
       await loadData();
     } catch (err) {
       setMessage({
-        text: err instanceof Error ? err.message : "Failed to update profile",
+        text: extractApiError(err, "Failed to update profile. Please try again."),
         type: "error",
       });
     } finally {

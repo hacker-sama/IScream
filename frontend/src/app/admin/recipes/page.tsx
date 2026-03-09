@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import AdminShell from "../_components/AdminShell";
 import { MaterialIcon } from "@/components/ui";
 import { adminRecipeService, type CreateRecipeRequest, type UpdateRecipeRequest } from "@/services/admin.recipe.service";
+import { extractApiError } from "@/services";
 import type { Recipe } from "@/types";
 
 // ── Category helpers (derived from flavorName — backend has no category field) ──
@@ -151,7 +152,7 @@ function RecipeModal({
             }
             onSaved();
         } catch (err: unknown) {
-            setError(err instanceof Error ? err.message : "An error occurred.");
+            setError(extractApiError(err, "An error occurred. Please try again."));
         } finally {
             setLoading(false);
         }
@@ -269,7 +270,7 @@ export default function AdminRecipesPage() {
                 setTotalPages(res.data.totalPages);
             }
         } catch (err: unknown) {
-            setError(err instanceof Error ? err.message : "Failed to load recipes.");
+            setError(extractApiError(err, "Failed to load recipes. Please try again."));
         } finally {
             setLoading(false);
         }
@@ -295,7 +296,7 @@ export default function AdminRecipesPage() {
             setDeleteTarget(null);
             fetchRecipes(currentPage);
         } catch (err: unknown) {
-            alert(err instanceof Error ? err.message : "Delete failed.");
+            setError(extractApiError(err, "Failed to delete the recipe. Please try again."));
         } finally {
             setActionLoading(null);
         }
