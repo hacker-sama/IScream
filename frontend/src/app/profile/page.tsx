@@ -5,7 +5,8 @@ import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import { authService, type UserInfo } from "@/services/auth.service";
 import { membershipService } from "@/services/membership.service";
-import type { MembershipSubscription } from "@/types";
+import { orderService } from "@/services/order.service";
+import type { MembershipSubscription, ItemOrder } from "@/types";
 import { MaterialIcon, Button, Badge } from "@/components/ui";
 
 export default function ProfilePage() {
@@ -15,6 +16,7 @@ export default function ProfilePage() {
   const [profile, setProfile] = useState<UserInfo | null>(null);
   const [subscription, setSubscription] =
     useState<MembershipSubscription | null>(null);
+  const [orders, setOrders] = useState<ItemOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
@@ -37,9 +39,10 @@ export default function ProfilePage() {
   const loadData = async () => {
     setLoading(true);
     try {
-      const [profileData, subData] = await Promise.all([
+      const [profileData, subData, ordersRes] = await Promise.all([
         authService.getMe(),
         membershipService.getStatus(),
+        orderService.getMine(),
       ]);
 
       setProfile(profileData);
@@ -47,6 +50,7 @@ export default function ProfilePage() {
       setEmail(profileData.email || "");
 
       setSubscription(subData);
+      setOrders(ordersRes.data || []);
     } catch (err) {
       setMessage({
         text: err instanceof Error ? err.message : "Failed to load profile",
@@ -88,6 +92,20 @@ export default function ProfilePage() {
     );
   }
 
+  if (!profile && !loading) {
+    return (
+      <div className="flex flex-col justify-center items-center min-h-[60vh] px-4 text-center">
+        <MaterialIcon name="error_outline" className="text-6xl text-red-400 mb-4" />
+        <h2 className="text-2xl font-bold mb-2">Oops! Something went wrong</h2>
+        <p className="text-gray-500 mb-6 max-w-md">{message.text || "We couldn't load your profile data."}</p>
+        <Button onClick={loadData} variant="outline" className="flex items-center gap-2">
+          <MaterialIcon name="refresh" />
+          Try Again
+        </Button>
+      </div>
+    );
+  }
+
   if (!profile) return null;
 
   return (
@@ -117,11 +135,10 @@ export default function ProfilePage() {
 
             {message.text && (
               <div
-                className={`mb-6 flex items-center gap-3 p-4 rounded-xl text-sm font-medium ${
-                  message.type === "success"
-                    ? "bg-green-50 text-green-700 border border-green-200 dark:bg-green-500/10 dark:text-green-400 dark:border-green-500/20"
-                    : "bg-red-50 text-red-700 border border-red-200 dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/20"
-                }`}
+                className={`mb-6 flex items-center gap-3 p-4 rounded-xl text-sm font-medium ${message.type === "success"
+                  ? "bg-green-50 text-green-700 border border-green-200 dark:bg-green-500/10 dark:text-green-400 dark:border-green-500/20"
+                  : "bg-red-50 text-red-700 border border-red-200 dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/20"
+                  }`}
               >
                 <MaterialIcon
                   name={message.type === "success" ? "check_circle" : "error"}
@@ -199,11 +216,10 @@ export default function ProfilePage() {
         {/* Right Column: Membership Status */}
         <div className="lg:col-span-5 space-y-6">
           <div
-            className={`rounded-[2rem] shadow-xl shadow-primary/5 border p-8 relative overflow-hidden ${
-              subscription?.status === "ACTIVE"
-                ? "bg-linear-to-br from-gray-900 to-black text-white border-black"
-                : "bg-white dark:bg-surface-dark border-gray-50 dark:border-white/5"
-            }`}
+            className={`rounded-[2rem] shadow-xl shadow-primary/5 border p-8 relative overflow-hidden ${subscription?.status === "ACTIVE"
+              ? "bg-linear-to-br from-gray-900 to-black text-white border-black"
+              : "bg-white dark:bg-surface-dark border-gray-50 dark:border-white/5"
+              }`}
           >
             {subscription?.status === "ACTIVE" && (
               <div className="absolute -top-10 -right-10 text-white/5 pointer-events-none">
@@ -212,11 +228,10 @@ export default function ProfilePage() {
             )}
 
             <h2
-              className={`text-lg font-bold mb-2 flex items-center gap-2 ${
-                subscription?.status === "ACTIVE"
-                  ? "text-yellow-400"
-                  : "text-gray-500"
-              }`}
+              className={`text-lg font-bold mb-2 flex items-center gap-2 ${subscription?.status === "ACTIVE"
+                ? "text-yellow-400"
+                : "text-gray-500"
+                }`}
             >
               <MaterialIcon
                 name={
@@ -248,7 +263,7 @@ export default function ProfilePage() {
             ) : (
               <div>
                 <p className="text-gray-500 dark:text-gray-400 text-sm mb-6">
-                  You don't have an active premium membership. Upgrade to unlock
+                  You don&apos;t have an active premium membership. Upgrade to unlock
                   all recipes!
                 </p>
                 <Link href="/membership" className="block">
@@ -260,6 +275,67 @@ export default function ProfilePage() {
               </div>
             )}
           </div>
+        </div>
+      </div>
+
+      {/* Full Width Bottom Column: Order History */}
+      <div className="w-full mt-8">
+        <div className="rounded-[2rem] bg-white dark:bg-surface-dark p-8 shadow-xl shadow-primary/5 border border-gray-50 dark:border-white/5">
+          <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
+            <MaterialIcon name="receipt_long" className="text-primary" />
+            Order History
+          </h2>
+
+          {orders.length === 0 ? (
+            <div className="text-center py-10 bg-gray-50 dark:bg-white/5 rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
+              <MaterialIcon name="shopping_bag" className="text-4xl text-gray-300 dark:text-gray-600 mb-2" />
+              <p className="text-gray-500 dark:text-gray-400 font-medium">You haven&apos;t placed any orders yet.</p>
+              <Link href="/shop" className="mt-4 inline-block">
+                <Button variant="outline" className="text-sm">Browse Shop</Button>
+              </Link>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="border-b border-gray-100 dark:border-white/10 text-sm text-gray-400 dark:text-gray-500">
+                    <th className="font-semibold pb-4 pl-2">Order No</th>
+                    <th className="font-semibold pb-4">Date</th>
+                    <th className="font-semibold pb-4">Total</th>
+                    <th className="font-semibold pb-4">Status</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-50 dark:divide-white/5">
+                  {orders.map((o) => (
+                    <tr key={o.id} className="hover:bg-gray-50/50 dark:hover:bg-white/[0.02] transition-colors">
+                      <td className="py-4 pl-2">
+                        <span className="font-mono text-sm font-medium text-gray-900 dark:text-gray-200">
+                          {o.orderNo}
+                        </span>
+                        {o.itemTitle && <div className="text-xs text-gray-500 mt-1 truncate max-w-[200px]">{o.itemTitle} x{o.quantity}</div>}
+                      </td>
+                      <td className="py-4 text-sm text-gray-600 dark:text-gray-400">
+                        {new Date(o.createdAt).toLocaleDateString()}
+                      </td>
+                      <td className="py-4 text-sm font-semibold text-gray-900 dark:text-gray-200">
+                        ${o.totalCost.toFixed(2)}
+                      </td>
+                      <td className="py-4">
+                        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${o.status === "DELIVERED" || o.status === "COMPLETED" ? "bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-400"
+                          : o.status === "CANCELLED" ? "bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400"
+                            : o.status === "PROCESSING" ? "bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400"
+                              : "bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400"
+                          }`}
+                        >
+                          {o.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       </div>
     </div>

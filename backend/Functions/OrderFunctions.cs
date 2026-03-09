@@ -51,6 +51,25 @@ namespace IScream.Functions
             catch (Exception ex) { return await FunctionHelper.ServerError(req, ex, _log, nameof(PlaceOrder)); }
         }
 
+        [Function("Orders_GetMine")]
+        [OpenApiOperation(operationId: "Orders_GetMine", tags: new[] { "Orders" }, Summary = "Get my orders", Description = "Returns all orders belonging to my account email.")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ApiResponse<List<ItemOrder>>), Description = "My orders list")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.Unauthorized, contentType: "application/json", bodyType: typeof(ApiResponse), Description = "Missing or invalid token")]
+        [OpenApiSecurity("bearer_auth", SecuritySchemeType.Http, Scheme = OpenApiSecuritySchemeType.Bearer, BearerFormat = "JWT")]
+        public async Task<HttpResponseData> GetMine(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "orders/me")] HttpRequestData req)
+        {
+            try
+            {
+                var claims = FunctionHelper.ExtractAuthClaims(req);
+                if (claims == null) return await FunctionHelper.Unauthorized(req);
+
+                var list = await _svc.ListMyOrdersAsync(claims.Value.userId);
+                return await FunctionHelper.Ok(req, list);
+            }
+            catch (Exception ex) { return await FunctionHelper.ServerError(req, ex, _log, nameof(GetMine)); }
+        }
+
         [Function("Orders_GetById")]
         [OpenApiOperation(operationId: "Orders_GetById", tags: new[] { "Orders" }, Summary = "Get order by ID", Description = "Returns a single order by its GUID.")]
         [OpenApiParameter(name: "id", In = ParameterLocation.Path, Required = true, Type = typeof(Guid), Description = "Order ID")]

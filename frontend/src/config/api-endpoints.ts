@@ -23,6 +23,7 @@ export const API_ENDPOINTS = Object.freeze({
   orders: {
     create: "/orders",
     byId: (id: string) => `/orders/${id}`,
+    mine: "/orders/me",
   },
   payments: {
     create: "/payments",
