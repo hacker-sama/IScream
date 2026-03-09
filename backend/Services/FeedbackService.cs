@@ -52,15 +52,15 @@ namespace IScream.Services
         public async Task<(Feedback? feedback, string error)> GetByIdAsync(Guid id)
         {
             var fb = await _repo.GetFeedbackByIdAsync(id);
-            return fb == null ? (null, "Feedback not found.") : (fb, string.Empty);
+            return fb == null ? (null, "Feedback not found or has been removed.") : (fb, string.Empty);
         }
 
         public async Task<(bool ok, string error)> MarkReadAsync(Guid id)
         {
             var fb = await _repo.GetFeedbackByIdAsync(id);
-            if (fb == null) return (false, "Feedback not found.");
+            if (fb == null) return (false, "Feedback not found or has been removed.");
             var ok = await _repo.MarkFeedbackReadAsync(id);
-            return (ok, ok ? string.Empty : "Failed to mark feedback as read.");
+            return (ok, ok ? string.Empty : "Failed to mark feedback as read. Please try again.");
         }
     }
 }

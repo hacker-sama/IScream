@@ -51,7 +51,7 @@ namespace IScream.Services
         public async Task<(RecipeSubmission? sub, string error)> GetByIdAsync(Guid id)
         {
             var sub = await _repo.GetSubmissionByIdAsync(id);
-            return sub == null ? (null, "Submission not found.") : (sub, string.Empty);
+            return sub == null ? (null, "Recipe submission not found or has been removed.") : (sub, string.Empty);
         }
 
         public async Task<PagedResult<RecipeSubmission>> ListAsync(string? status, int page, int pageSize)
@@ -69,7 +69,7 @@ namespace IScream.Services
                 return (false, "Invalid AdminUserId.");
 
             var sub = await _repo.GetSubmissionByIdAsync(id);
-            if (sub == null) return (false, "Submission not found.");
+            if (sub == null) return (false, "Recipe submission not found or has been removed.");
             if (sub.Status != "PENDING") return (false, $"Submission has already been processed ({sub.Status}).");
 
             // If approving with prize money, certUrl should be provided
@@ -79,7 +79,7 @@ namespace IScream.Services
             var ok = await _repo.ReviewSubmissionAsync(
                 id, req.Approve, req.AdminUserId, req.PrizeMoney, req.CertificateUrl, req.ReviewNote);
 
-            return (ok, ok ? string.Empty : "Review failed. Submission may have already been processed.");
+            return (ok, ok ? string.Empty : "Failed to process the review. The submission may have already been reviewed.");
         }
     }
 }

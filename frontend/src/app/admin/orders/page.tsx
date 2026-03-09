@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import AdminShell from "../_components/AdminShell";
 import { MaterialIcon } from "@/components/ui";
 import { adminOrderService } from "@/services/admin.order.service";
+import { extractApiError } from "@/services";
 import type { ItemOrder, OrderStatus } from "@/types";
 
 // ── Status helpers ────────────────────────────────────────────────────────────
@@ -73,7 +74,7 @@ function OrderDetailModal({
       await adminOrderService.updateStatus(order.id, newStatus);
       onStatusUpdated();
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Failed to update status.");
+      setError(extractApiError(err, "Failed to update order status. Please try again."));
     } finally {
       setLoading(false);
     }
@@ -265,7 +266,7 @@ export default function AdminOrdersPage() {
         setTotalPages(res.data.totalPages);
       }
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Failed to load orders.");
+      setError(extractApiError(err, "Failed to load orders. Please try again."));
     } finally {
       setLoading(false);
     }

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { feedbackService } from "@/services";
+import { extractApiError } from "@/services";
 import type { CreateFeedbackRequest } from "@/types";
 
 export default function FeedbackPage() {
@@ -25,8 +26,8 @@ export default function FeedbackPage() {
     try {
       await feedbackService.submit(form);
       setSuccess(true);
-    } catch {
-      setError("Failed to send feedback. Please try again.");
+    } catch (err) {
+      setError(extractApiError(err, "Failed to send feedback. Please try again."));
     } finally {
       setSubmitting(false);
     }

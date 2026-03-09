@@ -6,7 +6,7 @@ import Link from "next/link";
 import { MaterialIcon } from "@/components/ui";
 import { routes } from "@/config";
 import { useAuth } from "@/context/AuthContext";
-import { itemService, checkoutService } from "@/services";
+import { itemService, checkoutService, extractApiError } from "@/services";
 import type { Item } from "@/types";
 
 function CheckoutContent() {
@@ -90,9 +90,7 @@ function CheckoutContent() {
       setCheckoutId(res.data?.checkoutId ?? null);
       setStep("payment");
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Order failed. Please try again.",
-      );
+      setError(extractApiError(err, "Order failed. Please try again."));
     } finally {
       setSubmitting(false);
     }
@@ -111,11 +109,7 @@ function CheckoutContent() {
       });
       setStep("done");
     } catch (err) {
-      setPayError(
-        err instanceof Error
-          ? err.message
-          : "Payment failed. Please try again.",
-      );
+      setPayError(extractApiError(err, "Payment failed. Please try again."));
     } finally {
       setPaying(false);
     }

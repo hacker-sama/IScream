@@ -35,7 +35,7 @@ namespace IScream.Services
             // Check item exists and has enough stock
             var item = await _repo.GetItemByIdAsync(req.ItemId);
             if (item == null)
-                return (Guid.Empty, "Item not found.");
+                return (Guid.Empty, "The requested item is no longer available.");
             if (item.Stock < req.Quantity)
                 return (Guid.Empty, $"Insufficient stock. Remaining: {item.Stock}.");
 
@@ -75,7 +75,7 @@ namespace IScream.Services
         public async Task<(ItemOrder? order, string error)> GetByIdAsync(Guid id)
         {
             var order = await _repo.GetOrderByIdAsync(id);
-            return order == null ? (null, "Order not found.") : (order, string.Empty);
+            return order == null ? (null, "Order not found. Please verify your order details.") : (order, string.Empty);
         }
 
         public async Task<PagedResult<ItemOrder>> ListAsync(string? status, int page, int pageSize)
@@ -93,14 +93,14 @@ namespace IScream.Services
                 return (false, $"Invalid status. Allowed: {string.Join(", ", AllowedStatuses)}");
 
             var order = await _repo.GetOrderByIdAsync(id);
-            if (order == null) return (false, "Order not found.");
+            if (order == null) return (false, "Order not found. Please verify your order details.");
 
             // Restore stock if CANCELLED
             if (status.ToUpper() == "CANCELLED" && order.Status == "PENDING")
                 await _repo.AdjustStockAsync(order.ItemId, order.Quantity);
 
             var ok = await _repo.UpdateOrderStatusAsync(id, status.ToUpper(), paymentId);
-            return (ok, ok ? string.Empty : "Status update failed.");
+            return (ok, ok ? string.Empty : "Failed to update order status. Please try again.");
         }
 
         public async Task<(ItemOrder? order, string error)> TrackOrderAsync(string orderNo, string email)
