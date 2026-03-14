@@ -42,6 +42,7 @@ export default function RootLayout({
         />
       </head>
       <body
+        suppressHydrationWarning
         className={`${nunito.variable} ${playfair.variable} font-display bg-background-light dark:bg-background-dark text-text-main dark:text-background-light overflow-x-hidden antialiased selection:bg-primary selection:text-white`}
       >
         <AuthProvider>
