@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { recipeService, membershipService } from "@/services";
+import { sanitizeImageUrl } from "@/lib/utils";
 import { useAuth } from "@/context/AuthContext";
 import type { Recipe } from "@/types";
 import { routes } from "@/config";
@@ -31,7 +32,7 @@ function RecipeCard({ recipe }: { recipe: Recipe }) {
         <div
           className="w-full aspect-[4/3] rounded-lg bg-gray-200 dark:bg-gray-800 bg-center bg-cover relative overflow-hidden"
           style={{
-            backgroundImage: `url('${recipe.imageUrl || fallbackImg}')`,
+            backgroundImage: `url("${encodeURI(sanitizeImageUrl(recipe.imageUrl) ?? fallbackImg)}")`,
           }}
         >
           <div className="absolute top-3 right-3 bg-primary text-white px-2 py-1 rounded text-xs font-bold uppercase tracking-wider shadow-lg">
@@ -70,7 +71,7 @@ function LockedRecipeCard({
       {/* Blurred image */}
       <div
         className="w-full aspect-[4/3] rounded-lg bg-gray-200 dark:bg-gray-800 bg-center bg-cover relative overflow-hidden"
-        style={{ backgroundImage: `url('${recipe.imageUrl || fallbackImg}')` }}
+        style={{ backgroundImage: `url("${encodeURI(sanitizeImageUrl(recipe.imageUrl) ?? fallbackImg)}")` }}
       >
         <div className="absolute inset-0 backdrop-blur-sm bg-black/40" />
         <div className="absolute top-3 right-3 bg-amber-500 text-white px-2 py-1 rounded text-xs font-bold uppercase tracking-wider shadow-lg flex items-center gap-1">
@@ -119,7 +120,6 @@ export default function RecipesPage() {
   const [isSubscribed, setIsSubscribed] = useState(false);
 
   useEffect(() => {
-    if (!isLoggedIn) return;
     setLoading(true);
     setError(null);
     recipeService
@@ -128,9 +128,9 @@ export default function RecipesPage() {
         setRecipes(res.data?.items ?? []);
         setTotalPages(res.data?.totalPages ?? 1);
       })
-      .catch(() => setError("Could not load  recipes. Please try again."))
+      .catch(() => setError("Could not load recipes. Please try again."))
       .finally(() => setLoading(false));
-  }, [page, isLoggedIn]);
+  }, [page]);
 
   useEffect(() => {
     if (!isLoggedIn) {

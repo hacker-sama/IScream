@@ -94,6 +94,7 @@ export default function ProfilePage() {
     );
   }
 
+
   if (!profile && !loading) {
     return (
       <div className="flex flex-col justify-center items-center min-h-[60vh] px-4 text-center">
