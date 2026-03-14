@@ -139,6 +139,8 @@ namespace IScream.Functions
         [OpenApiParameter(name: "status", In = ParameterLocation.Query, Required = false, Type = typeof(string), Description = "Filter by status (PENDING, PAID, DELIVERED, DELIVERED, CANCELLED)")]
         [OpenApiParameter(name: "page", In = ParameterLocation.Query, Required = false, Type = typeof(int), Description = "Page number (default: 1)")]
         [OpenApiParameter(name: "pageSize", In = ParameterLocation.Query, Required = false, Type = typeof(int), Description = "Page size (default: 20)")]
+        [OpenApiParameter(name: "startDate", In = ParameterLocation.Query, Required = false, Type = typeof(DateTime), Description = "Start date (optional)")]
+        [OpenApiParameter(name: "endDate", In = ParameterLocation.Query, Required = false, Type = typeof(DateTime), Description = "End date (optional)")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ApiResponse<PagedResult<ItemOrder>>), Description = "Paginated order list")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.Unauthorized, contentType: "application/json", bodyType: typeof(ApiResponse), Description = "Missing or invalid token")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.Forbidden, contentType: "application/json", bodyType: typeof(ApiResponse), Description = "Not an admin")]
@@ -156,8 +158,10 @@ namespace IScream.Functions
                 int page = int.TryParse(qs["page"], out var p) ? p : 1;
                 int size = int.TryParse(qs["pageSize"], out var s) ? s : 20;
                 string? stat = qs["status"];
+                DateTime? startDate = DateTime.TryParse(qs["startDate"], out var sDate) ? sDate : null;
+                DateTime? endDate = DateTime.TryParse(qs["endDate"], out var eDate) ? eDate : null;
 
-                var result = await _svc.ListAsync(stat, page, size);
+                var result = await _svc.ListAsync(stat, page, size, startDate, endDate);
                 return await FunctionHelper.Ok(req, result);
             }
             catch (Exception ex) { return await FunctionHelper.ServerError(req, ex, _log, nameof(AdminList)); }
