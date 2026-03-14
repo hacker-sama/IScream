@@ -16,5 +16,5 @@ export const routes = {
   faq: "/faq",
   privacyPolicy: "/privacy-Policy",
   careers: "/careers",
-  membership: "/membership",
+  membership: "/membership/vip",
 } as const;
