@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import AdminShell from "../_components/AdminShell";
 import { MaterialIcon } from "@/components/ui";
 import { adminRecipeService, type CreateRecipeRequest, type UpdateRecipeRequest } from "@/services/admin.recipe.service";
+import { sanitizeImageUrl } from "@/lib/utils";
 import { extractApiError } from "@/services";
 import type { Recipe } from "@/types";
 
@@ -42,9 +43,10 @@ function StatusBadge({ isActive }: { isActive: boolean }) {
 
 // ── Empty avatar for recipe ───────────────────────────────────────────────────
 function RecipeAvatar({ url, name }: { url?: string; name: string }) {
-    if (url) {
+    const safe = sanitizeImageUrl(url ?? "");
+    if (url && safe) {
         return (
-            <img src={url} alt={name} className="size-11 rounded-xl object-cover shadow-sm" />
+            <img src={safe} alt={name} className="size-11 rounded-xl object-cover shadow-sm" />
         );
     }
     return (

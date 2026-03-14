@@ -3,9 +3,11 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { recipeService } from "@/services";
+import { recipeService, membershipService } from "@/services";
+import { sanitizeImageUrl } from "@/lib/utils";
 import { MaterialIcon } from "@/components/ui/MaterialIcon";
 import type { RecipeDetail } from "@/types";
+import { useAuth } from "@/context/AuthContext";
 
 const FALLBACK_IMG =
   "https://lh3.googleusercontent.com/aida-public/AB6AXuAuml-kcfcPWeQBjMtTp9qNy2__FOkkxDJDXMp0QJqHwBlOeWZADpnNTXmemZ9LqvyaimNAdVs1EGRnnOUxNMUVxkrc0G9BGEVgFph5XOdJhYy2DbTEeql1E5LtYvl2Ozk2t1qF1tNfOu5xOilaYGbIWexibTqnCvXEQdONhyYHbLYA2E4Z1DZsnovxi6InrGGTvSbitgbig_XcxY6jjCD031OVC4KSu7-vM88HV18iiqoRA9Y0GU2N_YkcSxDgjCk_I1c9wmUBWrA";
@@ -19,6 +21,8 @@ export default function RecipeDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [checked, setChecked] = useState<Set<number>>(new Set());
+  const { isLoggedIn } = useAuth();
+  const [isSubscribed, setIsSubscribed] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -30,6 +34,16 @@ export default function RecipeDetailPage() {
       .catch(() => setError("Could not load this recipe."))
       .finally(() => setLoading(false));
   }, [id]);
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      setIsSubscribed(false);
+      return;
+    }
+    membershipService.getStatus().then((sub) => {
+      setIsSubscribed(sub != null && sub.status === "ACTIVE");
+    }).catch(() => setIsSubscribed(false));
+  }, [isLoggedIn]);
 
   function toggleCheck(i: number) {
     setChecked((prev) => {
@@ -68,6 +82,9 @@ export default function RecipeDetailPage() {
 
   const ingredientLines = recipe.ingredients?.split("\n").filter(Boolean) ?? [];
   const procedureLines = recipe.procedure?.split("\n").filter(Boolean) ?? [];
+  // For free users or non-logged-in users, we lock the content
+  const isLocked = !isSubscribed;
+  const previewCount = 1;
 
   return (
     <div className="flex flex-col items-center w-full min-h-screen pb-20 bg-[#f9f9f9] dark:bg-gray-950">
@@ -160,7 +177,7 @@ export default function RecipeDetailPage() {
           <div className="relative">
             <div
               className="w-full aspect-[4/3] rounded-2xl bg-gray-200 dark:bg-gray-800 bg-center bg-cover shadow-xl"
-              style={{ backgroundImage: `url('${recipe.imageUrl || FALLBACK_IMG}')` }}
+              style={{ backgroundImage: `url("${encodeURI(sanitizeImageUrl(recipe.imageUrl) ?? FALLBACK_IMG)}")` }}
             />
             <div className="absolute bottom-4 right-4 flex items-center gap-2 rounded-xl bg-white dark:bg-gray-900 px-4 py-3 shadow-lg">
               <MaterialIcon name="local_fire_department" filled className="text-xl text-primary" />
@@ -242,30 +259,31 @@ export default function RecipeDetailPage() {
             </div>
 
             {/* Steps */}
-            <div className="rounded-2xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-sm">
+            <div className={`relative overflow-hidden rounded-2xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-sm ${isLocked ? 'min-h-[400px]' : ''}`}>
               <h2 className="mb-6 flex items-center gap-2 text-base font-black text-gray-800 dark:text-white">
                 <span className="material-symbols-outlined text-primary text-[18px]">receipt_long</span>
                 Instructions
               </h2>
 
               {procedureLines.length > 0 ? (
-                <ol className="space-y-7">
+                <ol className="space-y-7 pb-10">
                   {procedureLines.map((step, i) => {
                     const clean = step.replace(/^\d+[.)]\s*/, "").trim();
                     const words = clean.split(" ");
                     const title = words.slice(0, 4).join(" ");
                     const body = words.slice(4).join(" ");
+                    const locked = isLocked && i >= previewCount;
                     return (
                       <li key={i} className="flex gap-5">
-                        <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary text-white text-sm font-black shadow-md shadow-primary/20">
+                        <span className={`flex size-8 shrink-0 items-center justify-center rounded-full bg-primary text-white text-sm font-black shadow-md shadow-primary/20 ${locked ? "opacity-50" : ""}`}>
                           {i + 1}
                         </span>
                         <div className="pt-0.5">
                           {title && (
-                            <h3 className="font-bold text-gray-800 dark:text-gray-100 mb-1">{title}</h3>
+                            <h3 className={`font-bold text-gray-800 dark:text-gray-100 mb-1 ${locked ? "filter blur-sm" : ""}`}>{title}</h3>
                           )}
                           {body && (
-                            <p className="text-sm leading-relaxed text-gray-500 dark:text-gray-400">{body}</p>
+                            <p className={`text-sm leading-relaxed text-gray-500 dark:text-gray-400 ${locked ? "filter blur-sm" : ""}`}>{body}</p>
                           )}
                         </div>
                       </li>
@@ -273,7 +291,55 @@ export default function RecipeDetailPage() {
                   })}
                 </ol>
               ) : (
-                <p className="text-sm italic text-gray-400">No instructions listed.</p>
+                <p className="text-sm italic text-gray-400 pb-10">No instructions listed.</p>
+              )}
+
+              {isLocked && (
+                <div className="absolute bottom-0 left-0 right-0 h-[450px] flex flex-col items-center justify-end z-10 pointer-events-auto pb-8 bg-gradient-to-t from-white via-white/95 via-40% to-transparent dark:from-gray-900 dark:via-gray-900/95">
+                  <div className="w-[85%] max-w-sm rounded-[32px] bg-white dark:bg-gray-800 p-8 text-center shadow-[0_10px_40px_-10px_rgba(0,0,0,0.15)] ring-1 ring-gray-100 dark:ring-gray-700 relative top-12">
+                    <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-primary mb-5 shadow-sm">
+                      <span className="material-symbols-outlined text-white text-[24px]">lock</span>
+                    </div>
+                    <h3 className="text-[22px] font-black leading-tight text-gray-900 dark:text-white mb-3">
+                      Want to see the full recipe?
+                    </h3>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-6 leading-relaxed">
+                      Join the IScream community to unlock 500+ premium ice cream recipes and secret chef tips!
+                    </p>
+                    
+                    <div className="flex flex-col gap-4 w-full">
+                      {isLoggedIn ? (
+                        <Link
+                          href="/membership"
+                          className="w-full rounded-full bg-primary py-3.5 text-sm font-bold text-white shadow-md hover:bg-primary/90 transition-colors"
+                        >
+                          Subscribe to Unlock
+                        </Link>
+                      ) : (
+                        <>
+                          <Link
+                            href="/register"
+                            className="w-full rounded-full bg-primary py-3.5 text-sm font-bold text-white shadow-md hover:bg-primary/90 transition-colors"
+                          >
+                            Register Now
+                          </Link>
+                          <p className="text-xs text-gray-500 font-medium">
+                            Already a member?{" "}
+                            <Link href="/login" className="text-primary font-bold hover:underline">
+                              Login
+                            </Link>
+                          </p>
+                        </>
+                      )}
+                    </div>
+
+                    <div className="mt-6 pt-5 border-t border-gray-100 dark:border-gray-700">
+                      <button className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-primary hover:text-primary/80 transition-colors">
+                        UNLOCK EVERYTHING FOR FREE
+                      </button>
+                    </div>
+                  </div>
+                </div>
               )}
             </div>
           </div>
