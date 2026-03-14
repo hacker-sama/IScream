@@ -13,12 +13,14 @@ import type { ApiResponse, ItemOrder, PagedResult } from "@/types";
 
 export const adminOrderService = {
   /** Paginated list with optional status filter */
-  getAll: (page = 1, pageSize = 10, status?: string) => {
+  getAll: (page = 1, pageSize = 10, status?: string, startDate?: string, endDate?: string) => {
     const params: Record<string, string> = {
       page: String(page),
       pageSize: String(pageSize),
     };
     if (status) params.status = status;
+    if (startDate) params.startDate = startDate;
+    if (endDate) params.endDate = endDate;
     return apiClient.get<ApiResponse<PagedResult<ItemOrder>>>(
       API_ENDPOINTS.management.orders.list,
       { params },

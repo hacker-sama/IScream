@@ -24,6 +24,7 @@ export const API_ENDPOINTS = Object.freeze({
     create: "/orders",
     byId: (id: string) => `/orders/${id}`,
     mine: "/orders/me",
+    track: "/orders/track",
   },
   payments: {
     create: "/payments",
