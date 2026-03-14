@@ -71,19 +71,36 @@ namespace IScream.Data
                 """,
                 [P("@OrderNo", orderNo), P("@Email", email)], MapOrder);
 
-        public Task<List<ItemOrder>> ListOrdersAsync(string? status, int page, int pageSize)
+        public Task<List<ItemOrder>> ListOrdersAsync(string? status, int page, int pageSize, DateTime? startDate = null, DateTime? endDate = null)
         {
-            var where = string.IsNullOrEmpty(status) ? "" : "WHERE o.Status = @Status";
-            var parms = string.IsNullOrEmpty(status)
-                ? new[] { P("@Skip", (page - 1) * pageSize), P("@Take", pageSize) }
-                : new[] { P("@Status", status), P("@Skip", (page - 1) * pageSize), P("@Take", pageSize) };
+            var filters = new List<string>();
+            var parms = new List<SqlParameter> { P("@Skip", (page - 1) * pageSize), P("@Take", pageSize) };
+
+            if (!string.IsNullOrEmpty(status))
+            {
+                filters.Add("o.Status = @Status");
+                parms.Add(P("@Status", status));
+            }
+            if (startDate.HasValue)
+            {
+                filters.Add("o.CreatedAt >= @StartDate");
+                parms.Add(P("@StartDate", startDate.Value));
+            }
+            if (endDate.HasValue)
+            {
+                filters.Add("o.CreatedAt <= @EndDate");
+                parms.Add(P("@EndDate", endDate.Value));
+            }
+
+            var where = filters.Count > 0 ? "WHERE " + string.Join(" AND ", filters) : "";
+
             return QueryAsync($"""
                 SELECT o.*, i.Title AS ItemTitle, i.ImageUrl AS ItemImageUrl
                 FROM public_data.ITEM_ORDERS o
                 JOIN public_data.ITEMS i ON i.Id = o.ItemId {where}
                 ORDER BY o.CreatedAt DESC
                 OFFSET @Skip ROWS FETCH NEXT @Take ROWS ONLY
-                """, parms, MapOrder);
+                """, parms.ToArray(), MapOrder);
         }
 
         public Task<List<ItemOrder>> ListOrdersByEmailAsync(string email)
@@ -96,11 +113,31 @@ namespace IScream.Data
                 """,
                 [P("@Email", email)], MapOrder);
 
-        public async Task<int> CountOrdersAsync(string? status)
+        public async Task<int> CountOrdersAsync(string? status, DateTime? startDate = null, DateTime? endDate = null)
         {
-            var where = string.IsNullOrEmpty(status) ? "" : "WHERE Status = @Status";
-            var parms = string.IsNullOrEmpty(status) ? null : new[] { P("@Status", status) };
-            return await ExecuteScalarAsync<int?>($"SELECT COUNT(1) FROM public_data.ITEM_ORDERS {where}", parms) ?? 0;
+            var filters = new List<string>();
+            var parms = new List<SqlParameter>();
+
+            if (!string.IsNullOrEmpty(status))
+            {
+                filters.Add("Status = @Status");
+                parms.Add(P("@Status", status));
+            }
+            if (startDate.HasValue)
+            {
+                filters.Add("CreatedAt >= @StartDate");
+                parms.Add(P("@StartDate", startDate.Value));
+            }
+            if (endDate.HasValue)
+            {
+                filters.Add("CreatedAt <= @EndDate");
+                parms.Add(P("@EndDate", endDate.Value));
+            }
+
+            var where = filters.Count > 0 ? "WHERE " + string.Join(" AND ", filters) : "";
+            var parmArray = parms.Count > 0 ? parms.ToArray() : null;
+
+            return await ExecuteScalarAsync<int?>($"SELECT COUNT(1) FROM public_data.ITEM_ORDERS {where}", parmArray) ?? 0;
         }
 
         public async Task<bool> UpdateOrderStatusAsync(Guid id, string status, Guid? paymentId = null)

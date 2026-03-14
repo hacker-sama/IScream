@@ -12,7 +12,7 @@ namespace IScream.Services
     {
         Task<(Guid orderId, string error)> PlaceOrderAsync(CreateOrderRequest req);
         Task<(ItemOrder? order, string error)> GetByIdAsync(Guid id);
-        Task<PagedResult<ItemOrder>> ListAsync(string? status, int page, int pageSize);
+        Task<PagedResult<ItemOrder>> ListAsync(string? status, int page, int pageSize, DateTime? startDate = null, DateTime? endDate = null);
         Task<(bool ok, string error)> UpdateStatusAsync(Guid id, string status, Guid? paymentId = null);
         Task<(ItemOrder? order, string error)> TrackOrderAsync(string orderNo, string email);
         Task<List<ItemOrder>> ListMyOrdersAsync(Guid userId);
@@ -79,12 +79,12 @@ namespace IScream.Services
             return order == null ? (null, "Order not found. Please verify your order details.") : (order, string.Empty);
         }
 
-        public async Task<PagedResult<ItemOrder>> ListAsync(string? status, int page, int pageSize)
+        public async Task<PagedResult<ItemOrder>> ListAsync(string? status, int page, int pageSize, DateTime? startDate = null, DateTime? endDate = null)
         {
             page = Math.Max(1, page);
             pageSize = Math.Clamp(pageSize, 1, 100);
-            var items = await _repo.ListOrdersAsync(status, page, pageSize);
-            var total = await _repo.CountOrdersAsync(status);
+            var items = await _repo.ListOrdersAsync(status, page, pageSize, startDate, endDate);
+            var total = await _repo.CountOrdersAsync(status, startDate, endDate);
             return new PagedResult<ItemOrder> { Items = items, Page = page, PageSize = pageSize, TotalCount = total };
         }
 

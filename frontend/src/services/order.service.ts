@@ -17,4 +17,10 @@ export const orderService = {
 
   getMine: () =>
     apiClient.get<ApiResponse<ItemOrder[]>>(API_ENDPOINTS.orders.mine),
+
+  track: (orderNo: string, email: string) =>
+    apiClient.post<ApiResponse<ItemOrder>>(API_ENDPOINTS.orders.track, {
+      orderNo,
+      email,
+    }),
 };
