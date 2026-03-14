@@ -264,6 +264,237 @@ export const PREMIUM_RECIPES: PremiumRecipe[] = [
       { stars: 1, pct: 1 },
     ],
   },
+  // ── NEW MEMBERSHIP RECIPES ──────────────────────────────────────────────
+  {
+    slug: "salted-caramel-swirl",
+    flavorName: "Salted Caramel Swirl",
+    category: "Caramel Flavors",
+    shortDescription:
+      "Velvety homemade caramel rippled through a buttery vanilla cream base, finished with flaky Maldon sea salt. A masterclass in sweet-and-savory balance.",
+    imageUrl: "/images/recipes/salted-caramel-swirl.png",
+    rating: 4.9,
+    reviewCount: 178,
+    prep: "30m",
+    cook: "20m",
+    yield: "1.2 Qts",
+    difficulty: "Medium",
+    specialBadge: "Chef's Pick",
+    calories: 390,
+    caloriesLabel: "Calories per scoop",
+    ingredients: [
+      "2 cups <strong>heavy cream</strong>",
+      "1 cup <strong>whole milk</strong>",
+      "1 cup <strong>granulated sugar</strong> (for caramel)",
+      "1/4 cup <strong>unsalted butter</strong>",
+      "1/2 cup <strong>heavy cream</strong> (for caramel sauce)",
+      "1 tsp <strong>pure vanilla extract</strong>",
+      "1 tsp <strong>Maldon flaky sea salt</strong>",
+      "4 large <strong>egg yolks</strong>",
+    ],
+    proTipLabel: "Chef's Secret",
+    proTipText: "Make the caramel sauce a day ahead — it deepens in flavour overnight!",
+    proTipProductImage: PRODUCT_IMAGE,
+    chefTip:
+      "Don't stir the sugar while it caramelises. Swirl the pan gently instead. Stirring encourages crystallisation and you'll end up with a grainy sauce instead of silky smooth caramel.",
+    steps: [
+      {
+        title: "Make the Caramel",
+        body: "In a heavy saucepan, heat the sugar over medium-high heat without stirring until it melts and turns a deep amber colour. Carefully whisk in the butter, then slowly pour in the 1/2 cup cream. Stir in 1/2 tsp sea salt. Set aside to cool.",
+      },
+      {
+        title: "Prepare the Custard Base",
+        body: "In a separate saucepan, heat 2 cups heavy cream and milk until barely simmering. In a bowl, whisk egg yolks with 1/4 cup sugar until pale. Slowly stream the hot cream into the yolks while whisking, then return to the pan. Cook over medium-low heat, stirring constantly, until thick enough to coat a spoon.",
+        imageUrl: STEP_IMAGE,
+      },
+      {
+        title: "Combine & Chill",
+        body: "Stir vanilla extract into the custard. Strain through a fine-mesh sieve into a clean bowl. Cover with plastic wrap pressed directly onto the surface and chill in the refrigerator for at least 6 hours or overnight.",
+      },
+      {
+        title: "Churn",
+        body: "Pour the chilled custard into your ice cream maker and churn for 20–25 minutes until soft-serve consistency.",
+      },
+      {
+        title: "Swirl and Freeze",
+        body: "Spoon 1/3 of the ice cream into a container, drizzle with caramel sauce, and repeat layers. Use a skewer or knife to create gentle swirls. Sprinkle remaining flaky sea salt on top. Freeze for at least 4 hours.",
+      },
+    ],
+    reviews: [
+      {
+        name: "Emily Carter",
+        date: "3 days ago",
+        stars: 5,
+        text: "That deep amber caramel with flaky salt on top — absolute perfection. I could eat this every day.",
+        avatarUrl: REVIEW_AVATAR_1,
+      },
+      {
+        name: "James Nguyen",
+        date: "1 week ago",
+        stars: 5,
+        text: "The chef tip about swirling the pan was a game-changer. My caramel came out silky smooth on the first try!",
+        avatarUrl: REVIEW_AVATAR_2,
+      },
+    ],
+    ratingBars: [
+      { stars: 5, pct: 92 },
+      { stars: 4, pct: 6 },
+      { stars: 3, pct: 2 },
+    ],
+  },
+  {
+    slug: "matcha-green-tea-dream",
+    flavorName: "Matcha Green Tea Dream",
+    category: "Asian Flavors",
+    shortDescription:
+      "Ceremonial-grade Japanese matcha folded into a silky cream base with a hint of honey and white chocolate — a premium member exclusive inspired by Kyoto tea houses.",
+    imageUrl: "/images/recipes/matcha-green-tea-dream.png",
+    rating: 4.8,
+    reviewCount: 142,
+    prep: "20m",
+    cook: "15m",
+    yield: "1 Quart",
+    difficulty: "Medium",
+    specialBadge: "Member Exclusive",
+    calories: 280,
+    caloriesLabel: "Calories per scoop",
+    ingredients: [
+      "2 cups <strong>heavy cream</strong>",
+      "1 cup <strong>whole milk</strong>",
+      "3 tbsp <strong>ceremonial-grade matcha powder</strong>",
+      "3/4 cup <strong>granulated sugar</strong>",
+      "2 tbsp <strong>raw honey</strong>",
+      "1 tsp <strong>vanilla extract</strong>",
+      "60 g <strong>white chocolate</strong>, finely chopped",
+      "Pinch of <strong>sea salt</strong>",
+    ],
+    proTipLabel: "Quality Matters",
+    proTipText: "Always use ceremonial-grade matcha for a vibrant green colour and smooth, non-bitter taste.",
+    proTipProductImage: PRODUCT_IMAGE,
+    chefTip:
+      "Sift the matcha powder before whisking it in — clumps will leave bitter green spots in your ice cream. A fine-mesh sieve and a drop of warm milk make a smooth paste instantly.",
+    steps: [
+      {
+        title: "Make the Matcha Paste",
+        body: "Sift the matcha into a small bowl. Add 2 tablespoons of warm (not boiling) milk and whisk vigorously until a smooth, lump-free paste forms. Set aside.",
+      },
+      {
+        title: "Heat the Base",
+        body: "In a saucepan, combine the remaining milk, sugar, honey, and sea salt. Heat over medium heat, stirring until sugar dissolves. Remove from heat and add the chopped white chocolate, stirring until fully melted.",
+        imageUrl: STEP_IMAGE,
+      },
+      {
+        title: "Blend & Chill",
+        body: "Whisk the matcha paste into the warm milk mixture until fully incorporated. Stir in the heavy cream and vanilla extract. Strain through a fine sieve, then refrigerate for at least 4 hours until thoroughly chilled.",
+      },
+      {
+        title: "Churn",
+        body: "Pour the chilled base into your ice cream maker. Churn for 20–25 minutes until thick and creamy.",
+      },
+      {
+        title: "Freeze & Serve",
+        body: "Transfer to an airtight container and freeze for at least 3 hours. Serve with a light dusting of matcha powder and a drizzle of honey for an elegant presentation.",
+      },
+    ],
+    reviews: [
+      {
+        name: "Yuki Tanaka",
+        date: "5 days ago",
+        stars: 5,
+        text: "As someone from Kyoto, this really captures the authentic matcha flavour. Not too sweet, not too bitter — just perfect.",
+        avatarUrl: REVIEW_AVATAR_1,
+      },
+      {
+        name: "Olivia Park",
+        date: "2 weeks ago",
+        stars: 5,
+        text: "The white chocolate adds a beautiful sweetness that balances the matcha. Stunning colour too. Made it for a dinner party and everyone was blown away!",
+        avatarUrl: REVIEW_AVATAR_2,
+      },
+    ],
+    ratingBars: [
+      { stars: 5, pct: 85 },
+      { stars: 4, pct: 10 },
+      { stars: 3, pct: 3 },
+      { stars: 2, pct: 2 },
+    ],
+  },
+  {
+    slug: "blueberry-lavender-bliss",
+    flavorName: "Blueberry Lavender Bliss",
+    category: "Floral Flavors",
+    shortDescription:
+      "Wild blueberry compote swirled through a delicate lavender-infused cream. A hauntingly beautiful, aromatic treat exclusive to IScream premium members.",
+    imageUrl: "/images/recipes/blueberry-lavender-bliss.png",
+    rating: 4.7,
+    reviewCount: 98,
+    prep: "25m",
+    cook: "10m",
+    yield: "1 Quart",
+    difficulty: "Easy",
+    specialBadge: "Seasonal",
+    calories: 210,
+    caloriesLabel: "Calories per scoop",
+    ingredients: [
+      "2 cups <strong>wild blueberries</strong> (fresh or frozen)",
+      "2 cups <strong>heavy cream</strong>",
+      "1 cup <strong>whole milk</strong>",
+      "3/4 cup <strong>granulated sugar</strong>",
+      "2 tsp <strong>dried culinary lavender buds</strong>",
+      "1 tbsp <strong>fresh lemon juice</strong>",
+      "1 tsp <strong>vanilla extract</strong>",
+      "Pinch of <strong>sea salt</strong>",
+    ],
+    proTipLabel: "Chef's Note",
+    proTipText: "Use only food-grade culinary lavender. Ornamental lavender can be bitter and may contain pesticides.",
+    proTipProductImage: PRODUCT_IMAGE,
+    chefTip:
+      "Don't over-steep the lavender — 10 minutes is the sweet spot. Too long and the cream will taste soapy rather than floral. Strain every last bud out before churning.",
+    steps: [
+      {
+        title: "Infuse the Lavender",
+        body: "In a saucepan, combine the milk, cream, and lavender buds. Heat over medium heat until just simmering. Remove from heat, cover, and let steep for exactly 10 minutes. Strain through a fine sieve, discarding all lavender buds.",
+      },
+      {
+        title: "Make the Blueberry Compote",
+        body: "In a separate pan, combine blueberries, 1/4 cup sugar, and lemon juice. Cook over medium heat for 8–10 minutes, stirring occasionally, until the berries burst and the sauce thickens. Let cool completely.",
+        imageUrl: STEP_IMAGE,
+      },
+      {
+        title: "Finish the Base",
+        body: "Stir the remaining sugar, vanilla extract, and sea salt into the strained lavender cream. Mix until sugar fully dissolves. Refrigerate for at least 4 hours until thoroughly chilled.",
+      },
+      {
+        title: "Churn",
+        body: "Pour the chilled lavender cream into your ice cream maker and churn for 20–25 minutes until creamy and thick.",
+      },
+      {
+        title: "Swirl & Freeze",
+        body: "Layer the churned ice cream and blueberry compote alternately in a freezer container. Use a knife to gently swirl. Press parchment paper to the surface and freeze for at least 4 hours.",
+      },
+    ],
+    reviews: [
+      {
+        name: "Claire Dupont",
+        date: "4 days ago",
+        stars: 5,
+        text: "I was nervous about lavender in ice cream but this is extraordinary. The floral note is subtle and the blueberry swirl is so vibrant. Premium recipe worthy!",
+        avatarUrl: REVIEW_AVATAR_1,
+      },
+      {
+        name: "Tom Weston",
+        date: "10 days ago",
+        stars: 4,
+        text: "Really unique flavour. Followed the 10-minute steep tip and it came out perfect — floral without being overwhelming.",
+        avatarUrl: REVIEW_AVATAR_2,
+      },
+    ],
+    ratingBars: [
+      { stars: 5, pct: 78 },
+      { stars: 4, pct: 15 },
+      { stars: 3, pct: 5 },
+      { stars: 2, pct: 2 },
+    ],
+  },
 ];
 
 export function getRecipeBySlug(slug: string): PremiumRecipe | undefined {
