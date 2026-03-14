@@ -1,12 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { itemService } from "@/services";
+import { itemService, orderService } from "@/services";
+import { extractApiError } from "@/services";
 import { RequireAuth } from "@/components/auth/RequireAuth";
-import type { Item } from "@/types";
+import type { Item, ItemOrder } from "@/types";
 import { routes } from "@/config";
+import { MaterialIcon } from "@/components/ui";
 
 /* ─── Skeleton ────────────────────────────────────────── */
 function SkeletonCard() {
@@ -29,15 +31,54 @@ export default function OrderBooksPage() {
   const [items, setItems] = useState<Item[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
 
-  useEffect(() => {
+  // Track Order States
+  const [trackOrderNo, setTrackOrderNo] = useState("");
+  const [trackEmail, setTrackEmail] = useState("");
+  const [trackResult, setTrackResult] = useState<ItemOrder | null>(null);
+  const [trackError, setTrackError] = useState<string | null>(null);
+  const [isTracking, setIsTracking] = useState(false);
+
+  const handleTrackOrder = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!trackOrderNo.trim() || !trackEmail.trim()) {
+      setTrackError("Please enter both Order No and Email.");
+      return;
+    }
+
+    setIsTracking(true);
+    setTrackError(null);
+    setTrackResult(null);
+
+    try {
+      const res = await orderService.track(trackOrderNo, trackEmail);
+      if (res.success && res.data) {
+        setTrackResult(res.data);
+      } else {
+        setTrackError(res.message || "Order not found.");
+      }
+    } catch (err) {
+      setTrackError(extractApiError(err, "Failed to track order. Please check your details."));
+    } finally {
+      setIsTracking(false);
+    }
+  };
+
+  const fetchItems = useCallback((q: string) => {
     setLoading(true);
+    setError(null);
     itemService
-      .getAll(1, 12)
+      .getAll(1, 24, q || undefined)
       .then((res) => setItems(res.data?.items ?? []))
       .catch(() => setError("Could not load the books. Please try again."))
       .finally(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    const t = setTimeout(() => fetchItems(search), 350);
+    return () => clearTimeout(t);
+  }, [search, fetchItems]);
 
   const fallbackImg =
     "https://lh3.googleusercontent.com/aida-public/AB6AXuC4vXTKgm_jzDVZ1LBV-Al_QCtiJsxWH4jj1Sx_8p0Poht4fOOPU7wSZq83uaR6AvWYqaogDtlNy8E1f7Qm5NZGPWOJK9-Zu6jiC18XxaKhE9g-iKbkTtj06zueGlVjCOZ6napZsIPAtYf2KUqHJKXYndvaL7jsxqnXxTWXWXNLG3vm5e2xUZp8mja3g8xq3_ZpkvsshqrVFlojEjrpwj0WfTpj0rWYbVa_TS8I9NhOq5kvKyEk7D2QcQgKR5HoDRUjhoYp9Ud6Sd0";
@@ -99,13 +140,33 @@ export default function OrderBooksPage() {
 
       {/* Product Grid */}
       <section id="books-grid" className="w-full max-w-7xl pb-20">
-        <h2 className="text-2xl font-black mb-8">
-          {loading
-            ? "Loading..."
-            : error
-              ? "Error"
-              : `Recipe Books (${items.length})`}
-        </h2>
+        {/* Search Bar */}
+        <div className="mb-8 flex items-center gap-4">
+          <div className="relative flex-1 max-w-md">
+            <MaterialIcon
+              name="search"
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-[20px]"
+            />
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search ice cream books..."
+              className="w-full h-11 rounded-2xl border border-gray-200 bg-white dark:bg-card-dark dark:border-white/10 pl-11 pr-4 text-sm text-gray-900 dark:text-white shadow-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+            />
+            {search && (
+              <button
+                onClick={() => setSearch("")}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              >
+                <MaterialIcon name="close" className="text-[18px]" />
+              </button>
+            )}
+          </div>
+          <h2 className="text-xl font-black text-gray-900 dark:text-white">
+            {loading ? "Loading..." : error ? "Error" : `${items.length} result${items.length !== 1 ? "s" : ""}`}
+          </h2>
+        </div>
 
         {error && (
           <div className="py-12 text-center">

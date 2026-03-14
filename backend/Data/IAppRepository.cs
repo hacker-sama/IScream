@@ -52,9 +52,9 @@ namespace IScream.Data
         Task<Guid> CreateItemOrderAsync(ItemOrder order);
         Task<ItemOrder?> GetOrderByIdAsync(Guid id);
         Task<ItemOrder?> GetOrderByNoAndEmailAsync(string orderNo, string email);
-        Task<List<ItemOrder>> ListOrdersAsync(string? status, int page, int pageSize);
+        Task<List<ItemOrder>> ListOrdersAsync(string? status, int page, int pageSize, DateTime? startDate = null, DateTime? endDate = null);
         Task<List<ItemOrder>> ListOrdersByEmailAsync(string email);
-        Task<int> CountOrdersAsync(string? status);
+        Task<int> CountOrdersAsync(string? status, DateTime? startDate = null, DateTime? endDate = null);
         Task<bool> UpdateOrderStatusAsync(Guid id, string status, Guid? paymentId = null);
         Task<bool> OrderNoExistsAsync(string orderNo);
     }

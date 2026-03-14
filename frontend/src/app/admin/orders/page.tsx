@@ -244,6 +244,8 @@ export default function AdminOrdersPage() {
   const [search, setSearch] = useState("");
   const [activeStatus, setActiveStatus] =
     useState<(typeof STATUSES)[number]>("All");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -254,12 +256,12 @@ export default function AdminOrdersPage() {
   const PAGE_SIZE = 10;
 
   // ── Fetch ──────────────────────────────────────────────────────────────────
-  const fetchOrders = useCallback(async (page: number, status?: string) => {
+  const fetchOrders = useCallback(async (page: number, status?: string, start?: string, end?: string) => {
     setLoading(true);
     setError("");
     try {
       const filterStatus = status && status !== "All" ? status : undefined;
-      const res = await adminOrderService.getAll(page, PAGE_SIZE, filterStatus);
+      const res = await adminOrderService.getAll(page, PAGE_SIZE, filterStatus, start, end);
       if (res.success && res.data) {
         setOrders(res.data.items);
         setTotalCount(res.data.totalCount);
@@ -273,8 +275,8 @@ export default function AdminOrdersPage() {
   }, []);
 
   useEffect(() => {
-    fetchOrders(currentPage, activeStatus);
-  }, [currentPage, activeStatus, fetchOrders]);
+    fetchOrders(currentPage, activeStatus, startDate, endDate);
+  }, [currentPage, activeStatus, startDate, endDate, fetchOrders]);
 
   // Reset page when filter changes
   function handleStatusFilter(s: (typeof STATUSES)[number]) {
@@ -299,7 +301,7 @@ export default function AdminOrdersPage() {
     setActionLoading(order.id);
     try {
       await adminOrderService.updateStatus(order.id, newStatus);
-      fetchOrders(currentPage, activeStatus);
+      fetchOrders(currentPage, activeStatus, startDate, endDate);
     } catch {
       // silent
     } finally {
@@ -373,6 +375,36 @@ export default function AdminOrdersPage() {
           />
         </div>
 
+        {/* Date Filters */}
+        <div className="flex items-center gap-2">
+          <input
+            type="date"
+            value={startDate}
+            onChange={(e) => { setStartDate(e.target.value); setCurrentPage(1); }}
+            className="h-10 rounded-xl border border-gray-200 bg-gray-50 px-3 text-sm text-text-muted outline-none transition focus:border-primary focus:bg-white focus:ring-2 focus:ring-primary/15"
+          />
+          <span className="text-sm font-medium text-gray-400">to</span>
+          <input
+            type="date"
+            value={endDate}
+            min={startDate}
+            onChange={(e) => { setEndDate(e.target.value); setCurrentPage(1); }}
+            className="h-10 rounded-xl border border-gray-200 bg-gray-50 px-3 text-sm text-text-muted outline-none transition focus:border-primary focus:bg-white focus:ring-2 focus:ring-primary/15"
+          />
+          {(startDate || endDate) && (
+            <button
+              onClick={() => {
+                setStartDate("");
+                setEndDate("");
+                setCurrentPage(1);
+              }}
+              className="ml-1 text-xs font-semibold text-primary underline hover:text-primary-hover"
+            >
+              Clear
+            </button>
+          )}
+        </div>
+
         {/* Status filters */}
         <div className="flex flex-wrap gap-2">
           {STATUSES.map((s) => (
@@ -398,7 +430,7 @@ export default function AdminOrdersPage() {
             <MaterialIcon name="error" filled className="text-[16px]" />
             {error}
             <button
-              onClick={() => fetchOrders(currentPage, activeStatus)}
+              onClick={() => fetchOrders(currentPage, activeStatus, startDate, endDate)}
               className="ml-auto text-xs font-semibold underline"
             >
               Retry
@@ -646,7 +678,7 @@ export default function AdminOrdersPage() {
           onClose={() => setDetailOrder(null)}
           onStatusUpdated={() => {
             setDetailOrder(null);
-            fetchOrders(currentPage, activeStatus);
+            fetchOrders(currentPage, activeStatus, startDate, endDate);
           }}
         />
       )}
