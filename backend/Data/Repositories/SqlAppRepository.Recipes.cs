@@ -29,24 +29,46 @@ namespace IScream.Data
         // -----------------------------------------------------------------
         // Queries
         // -----------------------------------------------------------------
-        public Task<List<Recipe>> ListRecipesAsync(bool? isActive, int page, int pageSize)
+        public Task<List<Recipe>> ListRecipesAsync(bool? isActive, string? search, int page, int pageSize)
         {
-            var where = isActive.HasValue ? "WHERE IsActive = @IsActive" : "";
-            var parms = isActive.HasValue
-                ? new[] { P("@IsActive", isActive.Value), P("@Skip", (page - 1) * pageSize), P("@Take", pageSize) }
-                : new[] { P("@Skip", (page - 1) * pageSize), P("@Take", pageSize) };
+            var whereParts = new List<string>();
+            if (isActive.HasValue) whereParts.Add("IsActive = @IsActive");
+            if (!string.IsNullOrWhiteSpace(search)) whereParts.Add("FlavorName LIKE @Search");
+
+            var where = whereParts.Count > 0
+                ? $"WHERE {string.Join(" AND ", whereParts)}"
+                : string.Empty;
+
+            var parms = new List<SqlParameter>
+            {
+                P("@Skip", (page - 1) * pageSize),
+                P("@Take", pageSize)
+            };
+            if (isActive.HasValue) parms.Add(P("@IsActive", isActive.Value));
+            if (!string.IsNullOrWhiteSpace(search)) parms.Add(P("@Search", $"%{search.Trim()}%"));
+
             return QueryAsync($"""
                 SELECT * FROM public_data.RECIPES {where}
                 ORDER BY CreatedAt DESC
                 OFFSET @Skip ROWS FETCH NEXT @Take ROWS ONLY
-                """, parms, MapRecipe);
+                """, parms.ToArray(), MapRecipe);
         }
 
-        public async Task<int> CountRecipesAsync(bool? isActive)
+        public async Task<int> CountRecipesAsync(bool? isActive, string? search)
         {
-            var where = isActive.HasValue ? "WHERE IsActive = @IsActive" : "";
-            var parms = isActive.HasValue ? new[] { P("@IsActive", isActive.Value) } : null;
-            return await ExecuteScalarAsync<int?>($"SELECT COUNT(1) FROM public_data.RECIPES {where}", parms) ?? 0;
+            var whereParts = new List<string>();
+            if (isActive.HasValue) whereParts.Add("IsActive = @IsActive");
+            if (!string.IsNullOrWhiteSpace(search)) whereParts.Add("FlavorName LIKE @Search");
+
+            var where = whereParts.Count > 0
+                ? $"WHERE {string.Join(" AND ", whereParts)}"
+                : string.Empty;
+
+            var parms = new List<SqlParameter>();
+            if (isActive.HasValue) parms.Add(P("@IsActive", isActive.Value));
+            if (!string.IsNullOrWhiteSpace(search)) parms.Add(P("@Search", $"%{search.Trim()}%"));
+
+            return await ExecuteScalarAsync<int?>($"SELECT COUNT(1) FROM public_data.RECIPES {where}", parms.ToArray()) ?? 0;
         }
 
         public Task<Recipe?> GetRecipeByIdAsync(Guid id)

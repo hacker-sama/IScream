@@ -32,8 +32,9 @@ namespace IScream.Functions
         }
 
         [Function("Recipes_List")]
-        [OpenApiOperation(operationId: "Recipes_List", tags: new[] { "Recipes" }, Summary = "List recipes", Description = "Returns a paginated list of recipes with optional isActive filter.")]
+        [OpenApiOperation(operationId: "Recipes_List", tags: new[] { "Recipes" }, Summary = "List recipes", Description = "Returns a paginated list of recipes with optional isActive and search filters.")]
         [OpenApiParameter(name: "isActive", In = ParameterLocation.Query, Required = false, Type = typeof(bool), Description = "Filter by active status (default: true)")]
+        [OpenApiParameter(name: "search", In = ParameterLocation.Query, Required = false, Type = typeof(string), Description = "Search recipes by title (FlavorName)")]
         [OpenApiParameter(name: "page", In = ParameterLocation.Query, Required = false, Type = typeof(int), Description = "Page number (default: 1)")]
         [OpenApiParameter(name: "pageSize", In = ParameterLocation.Query, Required = false, Type = typeof(int), Description = "Page size (default: 12)")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ApiResponse<PagedResult<Recipe>>), Description = "Paginated recipe list")]
@@ -46,8 +47,9 @@ namespace IScream.Functions
                 int page = int.TryParse(qs["page"], out var p) ? p : 1;
                 int size = int.TryParse(qs["pageSize"], out var s) ? s : 12;
                 bool? ia = qs["isActive"] == null ? true : (bool?)bool.Parse(qs["isActive"]!);
+                string? search = string.IsNullOrWhiteSpace(qs["search"]) ? null : qs["search"];
 
-                var result = await _svc.ListAsync(ia, page, size);
+                var result = await _svc.ListAsync(ia, search, page, size);
                 return await FunctionHelper.Ok(req, result);
             }
             catch (Exception ex) { return await FunctionHelper.ServerError(req, ex, _log, nameof(List)); }

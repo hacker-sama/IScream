@@ -27,11 +27,14 @@ function SkeletonCard() {
 
 /* ─── Page ───────────────────────────────────────────── */
 export default function OrderBooksPage() {
+  const PAGE_SIZE = 8;
   const router = useRouter();
   const [items, setItems] = useState<Item[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   // Track Order States
   const [trackOrderNo, setTrackOrderNo] = useState("");
@@ -59,26 +62,34 @@ export default function OrderBooksPage() {
         setTrackError(res.message || "Order not found.");
       }
     } catch (err) {
-      setTrackError(extractApiError(err, "Failed to track order. Please check your details."));
+      setTrackError(
+        extractApiError(
+          err,
+          "Failed to track order. Please check your details.",
+        ),
+      );
     } finally {
       setIsTracking(false);
     }
   };
 
-  const fetchItems = useCallback((q: string) => {
+  const fetchItems = useCallback((q: string, currentPage: number) => {
     setLoading(true);
     setError(null);
     itemService
-      .getAll(1, 24, q || undefined)
-      .then((res) => setItems(res.data?.items ?? []))
+      .getAll(currentPage, PAGE_SIZE, q || undefined)
+      .then((res) => {
+        setItems(res.data?.items ?? []);
+        setTotalPages(res.data?.totalPages ?? 1);
+      })
       .catch(() => setError("Could not load the books. Please try again."))
       .finally(() => setLoading(false));
   }, []);
 
   useEffect(() => {
-    const t = setTimeout(() => fetchItems(search), 350);
+    const t = setTimeout(() => fetchItems(search, page), 350);
     return () => clearTimeout(t);
-  }, [search, fetchItems]);
+  }, [search, page, fetchItems]);
 
   const fallbackImg =
     "https://lh3.googleusercontent.com/aida-public/AB6AXuC4vXTKgm_jzDVZ1LBV-Al_QCtiJsxWH4jj1Sx_8p0Poht4fOOPU7wSZq83uaR6AvWYqaogDtlNy8E1f7Qm5NZGPWOJK9-Zu6jiC18XxaKhE9g-iKbkTtj06zueGlVjCOZ6napZsIPAtYf2KUqHJKXYndvaL7jsxqnXxTWXWXNLG3vm5e2xUZp8mja3g8xq3_ZpkvsshqrVFlojEjrpwj0WfTpj0rWYbVa_TS8I9NhOq5kvKyEk7D2QcQgKR5HoDRUjhoYp9Ud6Sd0";
@@ -150,13 +161,19 @@ export default function OrderBooksPage() {
             <input
               type="text"
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPage(1);
+              }}
               placeholder="Search ice cream books..."
               className="w-full h-11 rounded-2xl border border-gray-200 bg-white dark:bg-card-dark dark:border-white/10 pl-11 pr-4 text-sm text-gray-900 dark:text-white shadow-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
             />
             {search && (
               <button
-                onClick={() => setSearch("")}
+                onClick={() => {
+                  setSearch("");
+                  setPage(1);
+                }}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
               >
                 <MaterialIcon name="close" className="text-[18px]" />
@@ -164,7 +181,11 @@ export default function OrderBooksPage() {
             )}
           </div>
           <h2 className="text-xl font-black text-gray-900 dark:text-white">
-            {loading ? "Loading..." : error ? "Error" : `${items.length} result${items.length !== 1 ? "s" : ""}`}
+            {loading
+              ? "Loading..."
+              : error
+                ? "Error"
+                : `Page ${page}/${totalPages} - ${items.length} result${items.length !== 1 ? "s" : ""}`}
           </h2>
         </div>
 
@@ -180,14 +201,18 @@ export default function OrderBooksPage() {
         {!error && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             {loading ? (
-              Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)
+              Array.from({ length: PAGE_SIZE }).map((_, i) => (
+                <SkeletonCard key={i} />
+              ))
             ) : items.length === 0 ? (
               <div className="col-span-4 py-20 text-center text-gray-400">
                 <span className="material-symbols-outlined text-5xl mb-4 block">
                   auto_stories
                 </span>
                 <p className="text-lg font-medium">
-                  No books yet. Check back later!
+                  {search.trim()
+                    ? "No matching books found."
+                    : "No books yet. Check back later!"}
                 </p>
               </div>
             ) : (
@@ -251,9 +276,33 @@ export default function OrderBooksPage() {
             )}
           </div>
         )}
+
+        {!loading && !error && totalPages > 1 && (
+          <div className="flex justify-center gap-3 mt-10">
+            <button
+              disabled={page === 1}
+              onClick={() => setPage((p) => p - 1)}
+              className="h-10 w-10 rounded-full border border-gray-200 dark:border-gray-700 flex items-center justify-center disabled:opacity-40 hover:border-primary transition-colors"
+            >
+              <span className="material-symbols-outlined text-sm">
+                chevron_left
+              </span>
+            </button>
+            <span className="flex items-center text-sm font-semibold text-gray-600 dark:text-gray-300">
+              {page} / {totalPages}
+            </span>
+            <button
+              disabled={page === totalPages}
+              onClick={() => setPage((p) => p + 1)}
+              className="h-10 w-10 rounded-full border border-gray-200 dark:border-gray-700 flex items-center justify-center disabled:opacity-40 hover:border-primary transition-colors"
+            >
+              <span className="material-symbols-outlined text-sm">
+                chevron_right
+              </span>
+            </button>
+          </div>
+        )}
       </section>
-
-
     </RequireAuth>
   );
 }

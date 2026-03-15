@@ -13,6 +13,7 @@ import { routes } from "@/config";
 
 export type ActivePage =
   | "dashboard"
+  | "items"
   | "recipes"
   | "orders"
   | "users"
@@ -37,6 +38,12 @@ const NAV_STANDALONE: NavItem[] = [
 ];
 
 const NAV_CONTENT: NavItem[] = [
+  {
+    id: "items",
+    label: "Shop Items",
+    icon: "menu_book",
+    href: "/admin/items",
+  },
   { id: "recipes", label: "Recipes", icon: "icecream", href: "/admin/recipes" },
   {
     id: "orders",

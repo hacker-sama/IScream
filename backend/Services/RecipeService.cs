@@ -10,7 +10,7 @@ namespace IScream.Services
 {
     public interface IRecipeService
     {
-        Task<PagedResult<Recipe>> ListAsync(bool? isActive, int page, int pageSize);
+        Task<PagedResult<Recipe>> ListAsync(bool? isActive, string? search, int page, int pageSize);
         Task<(Recipe? recipe, string error)> GetByIdAsync(Guid id);
         Task<(RecipeDetailResponse? detail, string error)> GetDetailAsync(Guid id, Guid? userId);
         Task<(Guid id, string error)> CreateAsync(CreateRecipeRequest req);
@@ -24,12 +24,13 @@ namespace IScream.Services
 
         public RecipeService(IAppRepository repo) => _repo = repo;
 
-        public async Task<PagedResult<Recipe>> ListAsync(bool? isActive, int page, int pageSize)
+        public async Task<PagedResult<Recipe>> ListAsync(bool? isActive, string? search, int page, int pageSize)
         {
             page = Math.Max(1, page);
             pageSize = Math.Clamp(pageSize, 1, 100);
-            var items = await _repo.ListRecipesAsync(isActive, page, pageSize);
-            var total = await _repo.CountRecipesAsync(isActive);
+            var normalizedSearch = string.IsNullOrWhiteSpace(search) ? null : search.Trim();
+            var items = await _repo.ListRecipesAsync(isActive, normalizedSearch, page, pageSize);
+            var total = await _repo.CountRecipesAsync(isActive, normalizedSearch);
             return new PagedResult<Recipe> { Items = items, Page = page, PageSize = pageSize, TotalCount = total };
         }
 

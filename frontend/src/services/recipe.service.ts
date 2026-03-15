@@ -7,7 +7,7 @@ import { API_ENDPOINTS } from "@/config";
 import type { ApiResponse, Recipe, RecipeDetail, PagedResult } from "@/types";
 
 export const recipeService = {
-  getAll: (page = 1, pageSize = 12, isActive = true) =>
+  getAll: (page = 1, pageSize = 12, isActive = true, search?: string) =>
     apiClient.get<ApiResponse<PagedResult<Recipe>>>(
       API_ENDPOINTS.recipes.list,
       {
@@ -15,6 +15,7 @@ export const recipeService = {
           page: String(page),
           pageSize: String(pageSize),
           isActive: String(isActive),
+          ...(search?.trim() ? { search: search.trim() } : {}),
         },
       },
     ),

@@ -47,6 +47,11 @@ export const API_ENDPOINTS = Object.freeze({
     byId: (id: string) => `/submissions/${id}`,
   },
   management: {
+    items: {
+      create: "/management/items",
+      update: (id: string) => `/management/items/${id}`,
+      delete: (id: string) => `/management/items/${id}`,
+    },
     recipes: {
       create: "/management/recipes",
       update: (id: string) => `/management/recipes/${id}`,
