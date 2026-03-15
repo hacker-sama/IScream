@@ -2,10 +2,8 @@ import { tokenStorage } from "@/services/auth.service";
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL ??
-  "https://iscream-d2bcdxh5aqhsd5fd.southeastasia-01.azurewebsites.net/api"
-  // "http://localhost:7071/api"
-  ;
-
+  "https://iscream-d2bcdxh5aqhsd5fd.southeastasia-01.azurewebsites.net/api";
+// "http://localhost:7071/api"
 type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
 interface FetchOptions extends Omit<RequestInit, "method" | "body"> {

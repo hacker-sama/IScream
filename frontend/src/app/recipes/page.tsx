@@ -71,7 +71,9 @@ function LockedRecipeCard({
       {/* Blurred image */}
       <div
         className="w-full aspect-[4/3] rounded-lg bg-gray-200 dark:bg-gray-800 bg-center bg-cover relative overflow-hidden"
-        style={{ backgroundImage: `url("${encodeURI(sanitizeImageUrl(recipe.imageUrl) ?? fallbackImg)}")` }}
+        style={{
+          backgroundImage: `url("${encodeURI(sanitizeImageUrl(recipe.imageUrl) ?? fallbackImg)}")`,
+        }}
       >
         <div className="absolute inset-0 backdrop-blur-sm bg-black/40" />
         <div className="absolute top-3 right-3 bg-amber-500 text-white px-2 py-1 rounded text-xs font-bold uppercase tracking-wider shadow-lg flex items-center gap-1">
@@ -111,6 +113,7 @@ function LockedRecipeCard({
 
 /* ─── Page ───────────────────────────────────────────── */
 export default function RecipesPage() {
+  const PAGE_SIZE = 8;
   const { isLoggedIn, loading: authLoading } = useAuth();
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [loading, setLoading] = useState(true);
@@ -118,19 +121,29 @@ export default function RecipesPage() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [isSubscribed, setIsSubscribed] = useState(false);
+  const [searchInput, setSearchInput] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setSearchQuery(searchInput.trim());
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [searchInput]);
 
   useEffect(() => {
     setLoading(true);
     setError(null);
     recipeService
-      .getAll(page, 12)
+      .getAll(page, PAGE_SIZE, true, searchQuery || undefined)
       .then((res) => {
         setRecipes(res.data?.items ?? []);
         setTotalPages(res.data?.totalPages ?? 1);
       })
       .catch(() => setError("Could not load recipes. Please try again."))
       .finally(() => setLoading(false));
-  }, [page]);
+  }, [page, searchQuery]);
 
   useEffect(() => {
     if (!isLoggedIn) {
@@ -145,6 +158,8 @@ export default function RecipesPage() {
   const FREE_SLOTS = 4;
   const isFree = (index: number) =>
     isSubscribed || (page === 1 && index < FREE_SLOTS);
+
+  const hasSearch = searchQuery.length > 0;
 
   return (
     <div className="flex flex-col items-center w-full">
@@ -227,14 +242,55 @@ export default function RecipesPage() {
 
       {/* Recipe Grid */}
       <section id="recipes-grid" className="w-full max-w-7xl pb-16">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-black">
-            {loading
-              ? "Loading..."
-              : error
-                ? "Error"
-                : `${recipes.length > 0 ? "All Recipes" : "No Recipes Yet"}`}
-          </h2>
+        <div className="flex flex-col gap-4 mb-6">
+          <div className="flex items-center justify-between gap-4 flex-wrap">
+            <h2 className="text-2xl font-black">
+              {loading
+                ? "Loading..."
+                : error
+                  ? "Error"
+                  : hasSearch
+                    ? `Results for \"${searchQuery}\"`
+                    : `${recipes.length > 0 ? "All Recipes" : "No Recipes Yet"}`}
+            </h2>
+
+            {!loading && !error && (
+              <span className="text-sm text-gray-500 dark:text-gray-400">
+                Page {page} of {totalPages}
+              </span>
+            )}
+          </div>
+
+          <div className="relative max-w-md w-full">
+            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-[20px]">
+              search
+            </span>
+            <input
+              type="text"
+              value={searchInput}
+              onChange={(e) => {
+                setSearchInput(e.target.value);
+                setPage(1);
+              }}
+              placeholder="Search recipes by title..."
+              className="w-full h-11 rounded-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 pl-11 pr-10 text-sm outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors"
+            />
+            {searchInput && (
+              <button
+                type="button"
+                onClick={() => {
+                  setSearchInput("");
+                  setPage(1);
+                }}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+                aria-label="Clear search"
+              >
+                <span className="material-symbols-outlined text-[20px]">
+                  close
+                </span>
+              </button>
+            )}
+          </div>
         </div>
 
         {error && (
@@ -255,14 +311,18 @@ export default function RecipesPage() {
         {!error && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {loading ? (
-              Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)
+              Array.from({ length: PAGE_SIZE }).map((_, i) => (
+                <SkeletonCard key={i} />
+              ))
             ) : recipes.length === 0 ? (
               <div className="col-span-4 py-20 text-center text-gray-400">
                 <span className="material-symbols-outlined text-5xl mb-4 block">
                   icecream
                 </span>
                 <p className="text-lg font-medium">
-                  No recipes yet. Check back later!
+                  {hasSearch
+                    ? "No matching recipes found."
+                    : "No recipes yet. Check back later!"}
                 </p>
               </div>
             ) : (

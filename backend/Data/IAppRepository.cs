@@ -27,8 +27,8 @@ namespace IScream.Data
 
     public interface IRecipeRepository
     {
-        Task<List<Recipe>> ListRecipesAsync(bool? isActive, int page, int pageSize);
-        Task<int> CountRecipesAsync(bool? isActive);
+        Task<List<Recipe>> ListRecipesAsync(bool? isActive, string? search, int page, int pageSize);
+        Task<int> CountRecipesAsync(bool? isActive, string? search);
         Task<Recipe?> GetRecipeByIdAsync(Guid id);
         Task<HashSet<Guid>> GetTopNActiveRecipeIdsAsync(int n);
         Task<Guid> CreateRecipeAsync(Recipe recipe);

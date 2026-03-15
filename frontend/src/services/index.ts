@@ -11,6 +11,11 @@ export type {
 } from "./checkout.service";
 export { feedbackService } from "./feedback.service";
 export { submissionService } from "./submission.service";
+export { adminItemService } from "./admin.item.service";
+export type {
+  CreateItemRequest,
+  UpdateItemRequest,
+} from "./admin.item.service";
 export { authService, extractApiError, tokenStorage } from "./auth.service";
 export type {
   RegisterRequest,
