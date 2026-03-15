@@ -25,6 +25,9 @@ export const metadata: Metadata = {
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,
+  icons: {
+    icon: "/images/iscream_icon.png",
+  },
 };
 
 export default function RootLayout({
@@ -33,7 +36,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="light" suppressHydrationWarning data-scroll-behavior="smooth">
+    <html
+      lang="en"
+      className="light"
+      suppressHydrationWarning
+      data-scroll-behavior="smooth"
+    >
       <head>
         {/* Material Symbols Outlined */}
         <link

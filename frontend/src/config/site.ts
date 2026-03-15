@@ -4,7 +4,7 @@
  */
 
 export const siteConfig = {
-  name: "ISCREAM",
+  name: "ISCREAM: The Ultimate Ice Cream Recipe Hub",
   shortName: "ISCREAM",
   description:
     "Discover secret recipes, order IScream's famous books, or share your own frozen creations with our sweet community.",
