@@ -204,7 +204,7 @@ export function Navbar() {
             <MaterialIcon name="icecream" filled className="text-[22px]" />
           </div>
           <h2 className="font-serif-display text-lg font-bold tracking-tight text-text-main dark:text-white">
-            {siteConfig.name}
+            {siteConfig.shortName}
           </h2>
         </Link>
 
